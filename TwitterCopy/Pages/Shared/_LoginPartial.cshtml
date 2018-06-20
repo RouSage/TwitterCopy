@@ -1,7 +1,8 @@
 @using Microsoft.AspNetCore.Identity
+@using TwitterCopy.Areas.Identity
 
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<TwitterCopyUser> SignInManager
+@inject UserManager<TwitterCopyUser> UserManager
 
 @if (SignInManager.IsSignedIn(User))
 {
