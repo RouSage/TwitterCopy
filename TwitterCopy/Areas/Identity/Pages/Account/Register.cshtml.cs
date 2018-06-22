@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using TwitterCopy.Areas.Identity;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 namespace TwitterCopy.Areas.Identity.Pages.Account
 {
@@ -41,6 +38,11 @@ namespace TwitterCopy.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "Name")]
+            [StringLength(50, MinimumLength = 2)]
+            public string UserName { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -50,11 +52,6 @@ namespace TwitterCopy.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
-
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
         }
 
         public void OnGet(string returnUrl = null)
@@ -65,9 +62,10 @@ namespace TwitterCopy.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
+
             if (ModelState.IsValid)
             {
-                var user = new TwitterCopyUser { UserName = Input.Email, Email = Input.Email };
+                var user = new TwitterCopyUser { UserName = Input.UserName, Email = Input.Email, };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
@@ -83,9 +81,11 @@ namespace TwitterCopy.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    // Prevent newly registered users from being automatically logged on
+                    //await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);

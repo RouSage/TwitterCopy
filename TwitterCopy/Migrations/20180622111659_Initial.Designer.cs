@@ -10,7 +10,7 @@ using TwitterCopy.Data;
 namespace TwitterCopy.Migrations
 {
     [DbContext(typeof(TwitterCopyContext))]
-    [Migration("20180620172827_Initial")]
+    [Migration("20180622111659_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

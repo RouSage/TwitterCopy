@@ -28,8 +28,6 @@ namespace TwitterCopy.Areas.Identity.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
 
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
         public string ReturnUrl { get; set; }
 
         [TempData]
@@ -38,8 +36,8 @@ namespace TwitterCopy.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+            [Display(Name = "Username")]
+            public string UserName { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
@@ -49,7 +47,7 @@ namespace TwitterCopy.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public void OnGet(string returnUrl = null)
         {
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
@@ -58,10 +56,8 @@ namespace TwitterCopy.Areas.Identity.Pages.Account
 
             returnUrl = returnUrl ?? Url.Content("~/");
 
-            // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            // Clear the existing application auth cookie to ensure a clean login process
+            //await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
 
             ReturnUrl = returnUrl;
         }
@@ -74,10 +70,10 @@ namespace TwitterCopy.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
+                    _logger.LogInformation($"User ({Input.UserName}) logged in.");
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -86,7 +82,7 @@ namespace TwitterCopy.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
+                    _logger.LogWarning($"User account ({Input.UserName}) locked out.");
                     return RedirectToPage("./Lockout");
                 }
                 else

@@ -34,8 +34,8 @@ namespace TwitterCopy
             });
 
             services.AddDbContext<TwitterCopyContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("TwitterCopyContextConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("TwitterCopyContextConnection")));
+
             services.AddIdentity<TwitterCopyUser, TwitterCopyRole>(options =>
                 {
                     // Password setting
@@ -61,13 +61,27 @@ namespace TwitterCopy
                 .AddEntityFrameworkStores<TwitterCopyContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            services.AddMvc()
                 .AddRazorPagesOptions(options =>
                 {
                     options.AllowAreas = true;
                     options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
-                });
+                    options.Conventions.AddAreaFolderRouteModelConvention("Identity", "/Account/",
+                        model =>
+                        {
+                            foreach (var selector in model.Selectors)
+                            {
+                                var attributeRouteModel = selector.AttributeRouteModel;
+                                attributeRouteModel.Order = -1;
+                                attributeRouteModel.Template = attributeRouteModel.Template.Remove(0, "Identity".Length);
+                            }
+                        });
+                    options.Conventions.AddAreaPageRoute("Identity", "/Account/Register", "/Account/Signup");
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -79,6 +93,8 @@ namespace TwitterCopy
             });
 
             services.AddSingleton<IEmailSender, EmailSender>();
+
+            services.Configure<AuthMessageSenderOptions>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
