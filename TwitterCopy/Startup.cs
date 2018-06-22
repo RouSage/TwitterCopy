@@ -67,6 +67,7 @@ namespace TwitterCopy
                     options.AllowAreas = true;
                     options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
+                    // Removes /Identity/ from the links
                     options.Conventions.AddAreaFolderRouteModelConvention("Identity", "/Account/",
                         model =>
                         {
@@ -87,9 +88,11 @@ namespace TwitterCopy
             {
                 options.Cookie.Name = "TwitterCopyCookies";
                 options.ExpireTimeSpan = TimeSpan.FromDays(10);
-                options.LoginPath = $"/Identity/Account/Login";
-                options.LogoutPath = $"/Identity/Account/Logout";
-                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+
+                // /Identity/ removed from links
+                options.LoginPath = $"/Account/Login";
+                options.LogoutPath = $"/Account/Logout";
+                options.AccessDeniedPath = $"/Account/AccessDenied";
             });
 
             services.AddSingleton<IEmailSender, EmailSender>();
@@ -116,6 +119,20 @@ namespace TwitterCopy
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+
+            // Solution for redirecting from https://github.com/aspnet/Identity/issues/1815
+            //app.Use(async (context, next) =>
+            //{
+            //    var request = context.Request;
+            //    if (request.Path == "/Identity/Account/Login")
+            //    {
+            //        context.Response.Redirect("/Account/Login");
+            //    }
+            //    else
+            //    {
+            //        await next.Invoke();
+            //    }
+            //});
 
             app.UseMvc();
         }
