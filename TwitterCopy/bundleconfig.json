@@ -1,0 +1,80 @@
+[
+  // Site styles
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ]
+  },
+  // Site scripts
+  {
+    "outputFileName": "wwwroot/js/site.min.js",
+    "inputFiles": [
+      "wwwroot/js/site.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  // Bootstrap styles
+  {
+    "outputFileName": "wwwroot/lib/bootstrap/css/bootstrap.min.css",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap/css/bootstrap.css",
+      "wwwroot/lib/bootstrap/css/bootstrap-grid.css",
+      "wwwroot/lib/bootstrap/css/bootstrap-reboot.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "colorNames": "major",
+      "indentSize": 2
+    }
+  },
+  // Bootstrap scripts and popper.js
+  {
+    "outputFileName": "wwwroot/lib/bootstrap/js/bootstrap.min.js",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap/js/bootstrap.js",
+      "wwwroot/lib/bootstrap/js/popper.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  // jQuery
+  {
+    "outputFileName": "wwwroot/lib/jquery/jquery-3.3.1.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery/jquery-3.3.1.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  // jQuery validation
+  {
+    "outputFileName": "wwwroot/lib/jquery-validation/jquery.validate.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery-validation/jquery.validate.js",
+      "wwwroot/lib/jquery-validation/additional-methods.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  // jQuery validation unobtrusive
+  {
+    "outputFileName": "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  }
+]
