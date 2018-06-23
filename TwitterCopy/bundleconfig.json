@@ -1,12 +1,10 @@
 [
-  // Site styles
   {
     "outputFileName": "wwwroot/css/site.min.css",
     "inputFiles": [
       "wwwroot/css/site.css"
     ]
   },
-  // Site scripts
   {
     "outputFileName": "wwwroot/js/site.min.js",
     "inputFiles": [
@@ -17,7 +15,6 @@
       "renameLocals": true
     }
   },
-  // Bootstrap styles
   {
     "outputFileName": "wwwroot/lib/bootstrap/css/bootstrap.min.css",
     "inputFiles": [
@@ -31,7 +28,6 @@
       "indentSize": 2
     }
   },
-  // Bootstrap scripts and popper.js
   {
     "outputFileName": "wwwroot/lib/bootstrap/js/bootstrap.min.js",
     "inputFiles": [
@@ -43,7 +39,6 @@
       "renameLocals": true
     }
   },
-  // jQuery
   {
     "outputFileName": "wwwroot/lib/jquery/jquery-3.3.1.min.js",
     "inputFiles": [
@@ -54,7 +49,6 @@
       "renameLocals": true
     }
   },
-  // jQuery validation
   {
     "outputFileName": "wwwroot/lib/jquery-validation/jquery.validate.min.js",
     "inputFiles": [
@@ -66,11 +60,20 @@
       "renameLocals": true
     }
   },
-  // jQuery validation unobtrusive
   {
     "outputFileName": "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
     "inputFiles": [
       "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/qrcode/qrcode.min.js",
+    "inputFiles": [
+      "wwwroot/lib/qrcode/qrcode.js"
     ],
     "minify": {
       "enabled": true,
