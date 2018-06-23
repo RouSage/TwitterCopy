@@ -15,4 +15,8 @@
     <PackageReference Include="SendGrid" Version="9.9.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

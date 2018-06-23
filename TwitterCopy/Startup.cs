@@ -9,8 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using TwitterCopy.Areas.Identity;
-using TwitterCopy.Areas.Identity.Services;
 using TwitterCopy.Data;
+using TwitterCopy.Services;
 
 namespace TwitterCopy
 {
