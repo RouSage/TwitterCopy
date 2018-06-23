@@ -1,14 +1,18 @@
-﻿@page "{userName?}"
+﻿@page
 @model IndexModel
 
 <div class="row">
     <div class="col-md-3">
         <h2>Left sidebar</h2>
         <h4>
-            <a href="#">@Model.TwitterCopyUser.UserName</a>
+            <a asp-page="/Profiles/Index" asp-route-userName="@Model.TwitterCopyUser.UserName">
+                @Model.TwitterCopyUser.UserName
+            </a>
         </h4>
         <p>
-            <a href="#">@@@Model.TwitterCopyUser.UserName</a>
+            <a asp-page="/Profiles/Index" asp-route-userName="@Model.TwitterCopyUser.UserName">
+                @@@Model.TwitterCopyUser.UserName
+            </a>
         </p>
     </div>
     

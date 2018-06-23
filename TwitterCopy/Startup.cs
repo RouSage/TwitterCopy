@@ -79,6 +79,8 @@ namespace TwitterCopy
                             }
                         });
                     options.Conventions.AddAreaPageRoute("Identity", "/Account/Register", "/Account/Signup");
+
+                    options.Conventions.AddPageRoute("/Profiles/Index", "{userName}");
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 

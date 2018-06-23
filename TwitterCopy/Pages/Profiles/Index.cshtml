@@ -1,0 +1,61 @@
+﻿@page "{userName}"
+@model TwitterCopy.Pages.Profiles.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Tweet[0].Text)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tweet[0].User)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tweet[0].PostedOn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tweet[0].Likes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tweet[0].Retweets)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Tweet) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PostedOn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Likes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Retweets)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
