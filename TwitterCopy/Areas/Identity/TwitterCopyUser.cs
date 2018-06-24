@@ -34,8 +34,11 @@ namespace TwitterCopy.Areas.Identity
         //[Display(Name = "Likes")]
         //public ICollection<Tweet> LikedTweets { get; set; }
 
-        //[PersonalData]
-        //public ICollection<Follower> Followers { get; set; }
+        [PersonalData]
+        public ICollection<UserToUser> Following { get; set; }
+
+        [PersonalData]
+        public ICollection<UserToUser> Followers { get; set; }
 
         [PersonalData]
         public ICollection<Tweet> Tweets { get; set; }

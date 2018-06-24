@@ -31,6 +31,19 @@ namespace TwitterCopy.Data
                 .HasOne(x => x.User)
                 .WithMany(t => t.Tweets)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserToUser>()
+                .HasKey(k => new { k.UserId, k.FollowerId });
+
+            builder.Entity<UserToUser>()
+                .HasOne(l => l.User)
+                .WithMany(a => a.Followers)
+                .HasForeignKey(l => l.UserId);
+
+            builder.Entity<UserToUser>()
+                .HasOne(l => l.Follower)
+                .WithMany(a => a.Following)
+                .HasForeignKey(l => l.FollowerId);
         }
     }
 }
