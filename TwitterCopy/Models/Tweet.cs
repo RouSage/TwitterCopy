@@ -16,7 +16,6 @@ namespace TwitterCopy.Models
 
         public Guid UserId { get; set; }
 
-        [Required]
         [ForeignKey("UserId")]
         public TwitterCopyUser User { get; set; }
 

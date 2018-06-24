@@ -18,7 +18,49 @@
     
     <div class="col-md-6">
         <h2>Tweets</h2>
-    </div>
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input asp-for="Tweet.Text" class="form-control" />
+                <span asp-validation-for="Tweet.Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Tweet" class="btn" />
+            </div>
+        </form>
+        @if (Model.FeedTweets.Count() > 0)
+        {
+            foreach (var tweet in Model.FeedTweets)
+            {
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <ul class="list-inline">
+                                <li class="list-inline-item">
+                                    <a asp-page="/Profiles/Index" asp-route-userName="@tweet.User.UserName">
+                                        @tweet.User.UserName
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <span class="text-muted">
+                                        @@@tweet.User.UserName
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <p>@tweet.Text</p>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        }
+        else
+        {
+            <p>There're no tweets yet.</p>
+        }
+        </div>
 
     <div class="col-md-3">
         <h2>Right sidebar</h2>

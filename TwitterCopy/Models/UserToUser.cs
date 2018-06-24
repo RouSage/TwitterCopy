@@ -3,6 +3,9 @@ using TwitterCopy.Areas.Identity;
 
 namespace TwitterCopy.Models
 {
+    /// <summary>
+    /// Implements Follower/Following system
+    /// </summary>
     public class UserToUser
     {
         public Guid UserId { get; set; }
