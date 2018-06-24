@@ -25,17 +25,18 @@ namespace TwitterCopy.Pages
             _userManager = userManager;
         }
 
-        public TwitterCopyUser TwitterCopyUser { get; set; }
-
-        public IList<Tweet> FeedTweets { get; set; }
-
         [BindProperty]
         public Tweet Tweet { get; set; }
+
+        public TwitterCopyUser TwitterCopyUser { get; set; }
+        public IList<Tweet> FeedTweets { get; set; }
 
         public async Task<IActionResult> OnGet()
         {
             TwitterCopyUser = await _context.Users
+                .AsNoTracking()
                 .Include(t => t.Tweets)
+                .Include(f => f.Following)
                 .FirstOrDefaultAsync(x => x.UserName.Equals(User.Identity.Name));
 
             if(TwitterCopyUser == null)
@@ -51,6 +52,7 @@ namespace TwitterCopy.Pages
             return Page();
         }
 
+        // Add tweets
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -80,7 +82,20 @@ namespace TwitterCopy.Pages
 
         private IList<Tweet> GetTweets(TwitterCopyUser user)
         {
+            //var currentUser = _context.Users
+            //    .AsNoTracking()
+            //    .Include(t => t.Tweets)
+            //    .Include(f => f.Following)
+            //    .FirstOrDefault(x => x.Id.Equals(user.Id));
+
+            //var followingTweets = currentUser.Following
+            //    .Where(u => currentUser.Id.Equals(u.FollowerId))
+            //    .Select(t => t.User.Tweets
+            //        .OrderByDescending(x => x.PostedOn));
+
             return _context.Tweets
+                .AsNoTracking()
+                .Include(u=>u.User)
                 .Where(u => u.UserId.Equals(user.Id))
                 .OrderByDescending(t => t.PostedOn)
                 .ToList();
