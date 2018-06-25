@@ -80,6 +80,29 @@ namespace TwitterCopy.Pages
             return null;
         }
 
+        // Delete tweet (TODO: call modal window first)
+        public async Task<IActionResult> OnPostDeleteAsync(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            // TODO: check owner with authorization
+            var tweetToDelete = await _context.Tweets
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if(tweetToDelete == null)
+            {
+                return NotFound();
+            }
+
+            _context.Tweets.Remove(tweetToDelete);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage();
+        }
+
         private IList<Tweet> GetTweets(TwitterCopyUser user)
         {
             //var currentUser = _context.Users

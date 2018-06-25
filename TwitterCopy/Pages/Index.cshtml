@@ -52,6 +52,14 @@
                     <div class="card-body">
                         <p>@tweet.Text</p>
                     </div>
+                    <div class="card-footer">
+                        <form method="post"
+                              asp-page="./Index"
+                              asp-route-id="@tweet.Id"
+                              asp-page-handler="delete">
+                            <input type="submit" value="Delete" class="btn btn-danger" />
+                        </form>
+                    </div>
                 </div>
             }
 
