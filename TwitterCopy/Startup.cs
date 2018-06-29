@@ -84,6 +84,8 @@ namespace TwitterCopy
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddMvc().AddJsonOptions(options => { options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; });
+
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.ConfigureApplicationCookie(options =>

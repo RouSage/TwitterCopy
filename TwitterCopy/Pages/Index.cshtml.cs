@@ -31,6 +31,12 @@ namespace TwitterCopy.Pages
         public TwitterCopyUser TwitterCopyUser { get; set; }
         public IList<Tweet> FeedTweets { get; set; }
 
+        /// <summary>
+        /// Provides data for the view
+        /// - User
+        /// - Feed for the user
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> OnGet()
         {
             TwitterCopyUser = await _context.Users
@@ -52,7 +58,10 @@ namespace TwitterCopy.Pages
             return Page();
         }
 
-        // Add tweets
+        /// <summary>
+        /// Inserts new tweet to the database
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -80,7 +89,25 @@ namespace TwitterCopy.Pages
             return null;
         }
 
-        // Delete tweet (TODO: call modal window first)
+        /// <summary>
+        /// Provides tweet for the modal dialog
+        /// </summary>
+        /// <param name="id">Tweet's id</param>
+        /// <returns>Tweet info in JSON</returns>
+        public async Task<JsonResult> OnGetTweetAsync(int? id)
+        {
+            var tweetToDelete = await _context.Tweets
+                .Include(u => u.User)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            return new JsonResult(tweetToDelete);
+        }
+
+        /// <summary>
+        /// Deletes tweet from the database
+        /// </summary>
+        /// <param name="id">Tweet's id</param>
+        /// <returns></returns>
         public async Task<IActionResult> OnPostDeleteAsync(int? id)
         {
             if(id == null)
@@ -103,6 +130,11 @@ namespace TwitterCopy.Pages
             return RedirectToPage();
         }
 
+        /// <summary>
+        /// Returns all the user's tweets
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         private IList<Tweet> GetTweets(TwitterCopyUser user)
         {
             //var currentUser = _context.Users
