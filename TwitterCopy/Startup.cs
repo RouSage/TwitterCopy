@@ -61,7 +61,7 @@ namespace TwitterCopy
                 .AddEntityFrameworkStores<TwitterCopyContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc()
+            services.AddMvc(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); })
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AddPageRoute("/Account/Register", "/Account/Signup");
