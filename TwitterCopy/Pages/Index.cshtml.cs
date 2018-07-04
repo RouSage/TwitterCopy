@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopy.Data;
@@ -25,10 +26,25 @@ namespace TwitterCopy.Pages
         }
 
         [BindProperty]
-        public Tweet Tweet { get; set; }
+        public TweetModel Tweet { get; set; }
 
-        public TwitterCopyUser TwitterCopyUser { get; set; }
-        public IList<Tweet> FeedTweets { get; set; }
+        public TwitterCopyUser CurrentUser { get; set; }
+
+        public IList<TweetModel> FeedTweets { get; set; }
+
+        public class TweetModel
+        {
+            public int Id { get; set; }
+
+            [Required]
+            [StringLength(280)]
+            public string Text { get; set; }
+
+            public string AuthorName { get; set; }
+
+            [DataType(DataType.DateTime)]
+            public DateTime PostedOn { get; set; } = DateTime.Now;
+        }
 
         /// <summary>
         /// Provides data for the view
@@ -38,21 +54,14 @@ namespace TwitterCopy.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnGet()
         {
-            TwitterCopyUser = await _context.Users
-                .AsNoTracking()
-                .Include(t => t.Tweets)
-                .Include(f => f.Following)
-                .FirstOrDefaultAsync(x => x.UserName.Equals(User.Identity.Name));
+            CurrentUser = await _userManager.FindByNameAsync(User.Identity.Name);
 
-            if(TwitterCopyUser == null)
+            if(CurrentUser == null)
             {
                 return NotFound();
             }
 
-            if (TwitterCopyUser.Tweets != null)
-            {
-                FeedTweets = GetTweets(TwitterCopyUser);
-            }
+            FeedTweets = GetTweets(CurrentUser);
 
             return Page();
         }
@@ -68,18 +77,19 @@ namespace TwitterCopy.Pages
                 return Page();
             }
 
-            if (Tweet.User == null)
-            {
-                Tweet.User = await _userManager.FindByNameAsync(User.Identity.Name);
-            }
-            Tweet.PostedOn = DateTime.Now;
-
-            if (await TryUpdateModelAsync<Tweet>(
+            if (await TryUpdateModelAsync<TweetModel>(
                 Tweet,
                 "tweet",
-                t => t.Text, t => t.User, t => t.PostedOn))
+                t => t.Text, t => t.AuthorName, t => t.PostedOn))
             {
-                _context.Tweets.Add(Tweet);
+                var newTweet = new Tweet
+                {
+                    Text = Tweet.Text,
+                    User = await _userManager.FindByNameAsync(User.Identity.Name),
+                    PostedOn = Tweet.PostedOn
+                };
+
+                _context.Tweets.Add(newTweet);
                 await _context.SaveChangesAsync();
 
                 return RedirectToPage();
@@ -93,11 +103,23 @@ namespace TwitterCopy.Pages
         /// </summary>
         /// <param name="id">Tweet's id</param>
         /// <returns>Tweet info in JSON</returns>
-        public async Task<JsonResult> OnGetTweetAsync(int? id)
+        public async Task<IActionResult> OnGetTweetAsync(int? id)
         {
             var tweetToDelete = await _context.Tweets
                 .Include(u => u.User)
+                .Select(x => new TweetModel
+                {
+                    Id = x.Id,
+                    AuthorName = x.User.UserName,
+                    Text = x.Text,
+                    PostedOn = x.PostedOn
+                })
                 .FirstOrDefaultAsync(t => t.Id == id);
+
+            if(tweetToDelete == null)
+            {
+                return NotFound();
+            }
 
             return new JsonResult(tweetToDelete);
         }
@@ -116,6 +138,7 @@ namespace TwitterCopy.Pages
 
             // TODO: check owner with authorization
             var tweetToDelete = await _context.Tweets
+                .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if(tweetToDelete == null)
@@ -134,7 +157,7 @@ namespace TwitterCopy.Pages
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        private IList<Tweet> GetTweets(TwitterCopyUser user)
+        private IList<TweetModel> GetTweets(TwitterCopyUser user)
         {
             //var currentUser = _context.Users
             //    .AsNoTracking()
@@ -149,8 +172,14 @@ namespace TwitterCopy.Pages
 
             return _context.Tweets
                 .AsNoTracking()
-                .Include(u=>u.User)
                 .Where(u => u.UserId.Equals(user.Id))
+                .Select(x => new TweetModel
+                {
+                    Id = x.Id,
+                    Text = x.Text,
+                    PostedOn = x.PostedOn,
+                    AuthorName = x.User.UserName
+                })
                 .OrderByDescending(t => t.PostedOn)
                 .ToList();
         }
