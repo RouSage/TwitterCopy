@@ -79,8 +79,12 @@ namespace TwitterCopy
                             }
                         });
                     options.Conventions.AddAreaPageRoute("Identity", "/Account/Register", "/Account/Signup");
+
+                    options.Conventions.AddPageRoute("/Profiles/Index", "{userName}");
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddMvc().AddJsonOptions(options => { options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; });
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -107,6 +111,7 @@ namespace TwitterCopy
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+                app.UseBrowserLink();
             }
             else
             {

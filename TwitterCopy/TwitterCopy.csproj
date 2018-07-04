@@ -8,15 +8,15 @@
   <ItemGroup>
     <Compile Remove="Migrations\20180622104912_Initial.cs" />
     <Compile Remove="Migrations\20180622104912_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20180624095342_UserTableUpdate.cs" />
+    <Compile Remove="Migrations\20180624095342_UserTableUpdate.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.0" />
     <PackageReference Include="SendGrid" Version="9.9.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

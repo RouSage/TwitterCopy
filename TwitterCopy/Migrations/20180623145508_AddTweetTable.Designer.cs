@@ -3,19 +3,21 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TwitterCopy.Data;
 
 namespace TwitterCopy.Migrations
 {
     [DbContext(typeof(TwitterCopyContext))]
-    partial class TwitterCopyContextModelSnapshot : ModelSnapshot
+    [Migration("20180623145508_AddTweetTable")]
+    partial class AddTweetTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("ProductVersion", "2.1.0-rtm-30799")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -133,11 +135,6 @@ namespace TwitterCopy.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
-                    b.Property<string>("Bio")
-                        .HasMaxLength(1000);
-
-                    b.Property<DateTime?>("BirthDate");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -145,8 +142,6 @@ namespace TwitterCopy.Migrations
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
-
-                    b.Property<string>("Location");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -164,16 +159,12 @@ namespace TwitterCopy.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
-                    b.Property<DateTime>("RegisterDate");
-
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
-
-                    b.Property<string>("Website");
 
                     b.HasKey("Id");
 
@@ -211,19 +202,6 @@ namespace TwitterCopy.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Tweet");
-                });
-
-            modelBuilder.Entity("TwitterCopy.Models.UserToUser", b =>
-                {
-                    b.Property<Guid>("UserId");
-
-                    b.Property<Guid>("FollowerId");
-
-                    b.HasKey("UserId", "FollowerId");
-
-                    b.HasIndex("FollowerId");
-
-                    b.ToTable("UserToUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -275,19 +253,6 @@ namespace TwitterCopy.Migrations
                 {
                     b.HasOne("TwitterCopy.Areas.Identity.TwitterCopyUser", "User")
                         .WithMany("Tweets")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("TwitterCopy.Models.UserToUser", b =>
-                {
-                    b.HasOne("TwitterCopy.Areas.Identity.TwitterCopyUser", "Follower")
-                        .WithMany("Following")
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("TwitterCopy.Areas.Identity.TwitterCopyUser", "User")
-                        .WithMany("Followers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

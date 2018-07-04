@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TwitterCopy.Data;
 
 namespace TwitterCopy.Migrations
 {
     [DbContext(typeof(TwitterCopyContext))]
-    partial class TwitterCopyContextModelSnapshot : ModelSnapshot
+    [Migration("20180624095517_UserTableUpdate")]
+    partial class UserTableUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -213,19 +215,6 @@ namespace TwitterCopy.Migrations
                     b.ToTable("Tweet");
                 });
 
-            modelBuilder.Entity("TwitterCopy.Models.UserToUser", b =>
-                {
-                    b.Property<Guid>("UserId");
-
-                    b.Property<Guid>("FollowerId");
-
-                    b.HasKey("UserId", "FollowerId");
-
-                    b.HasIndex("FollowerId");
-
-                    b.ToTable("UserToUser");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("TwitterCopy.Areas.Identity.TwitterCopyRole")
@@ -275,19 +264,6 @@ namespace TwitterCopy.Migrations
                 {
                     b.HasOne("TwitterCopy.Areas.Identity.TwitterCopyUser", "User")
                         .WithMany("Tweets")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("TwitterCopy.Models.UserToUser", b =>
-                {
-                    b.HasOne("TwitterCopy.Areas.Identity.TwitterCopyUser", "Follower")
-                        .WithMany("Following")
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("TwitterCopy.Areas.Identity.TwitterCopyUser", "User")
-                        .WithMany("Followers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
