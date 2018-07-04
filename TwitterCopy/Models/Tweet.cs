@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TwitterCopy.Areas.Identity;
 
 namespace TwitterCopy.Models
 {

@@ -1,5 +1,4 @@
 ﻿using System;
-using TwitterCopy.Areas.Identity;
 
 namespace TwitterCopy.Models
 {

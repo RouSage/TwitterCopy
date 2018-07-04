@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using TwitterCopy.Areas.Identity;
 using TwitterCopy.Data;
+using TwitterCopy.Models;
 using TwitterCopy.Services;
 
 namespace TwitterCopy
@@ -64,36 +64,22 @@ namespace TwitterCopy
             services.AddMvc()
                 .AddRazorPagesOptions(options =>
                 {
-                    options.AllowAreas = true;
-                    options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
-                    options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
-                    // Removes /Identity/ from the links
-                    options.Conventions.AddAreaFolderRouteModelConvention("Identity", "/Account/",
-                        model =>
-                        {
-                            foreach (var selector in model.Selectors)
-                            {
-                                var attributeRouteModel = selector.AttributeRouteModel;
-                                attributeRouteModel.Order = -1;
-                                attributeRouteModel.Template = attributeRouteModel.Template.Remove(0, "Identity".Length);
-                            }
-                        });
-                    options.Conventions.AddAreaPageRoute("Identity", "/Account/Register", "/Account/Signup");
-
+                    options.Conventions.AddPageRoute("/Account/Register", "/Account/Signup");
                     options.Conventions.AddPageRoute("/Profiles/Index", "{userName}");
                 })
+                .AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            services.AddMvc().AddJsonOptions(options => { options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; });
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = "TwitterCopyCookies";
-                options.ExpireTimeSpan = TimeSpan.FromDays(10);
+                options.ExpireTimeSpan = TimeSpan.FromDays(30);
 
-                // /Identity/ removed from links
                 options.LoginPath = $"/Account/Login";
                 options.LogoutPath = $"/Account/Logout";
                 options.AccessDeniedPath = $"/Account/AccessDenied";
