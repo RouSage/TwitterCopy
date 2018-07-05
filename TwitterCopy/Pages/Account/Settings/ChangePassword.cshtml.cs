@@ -35,7 +35,7 @@ namespace TwitterCopy.Pages.Account.Settings
             [Required]
             [DataType(DataType.Password)]
             [Display(Name = "Current password")]
-            public string OldPassword { get; set; }
+            public string CurrentPassword { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -44,13 +44,15 @@ namespace TwitterCopy.Pages.Account.Settings
             public string NewPassword { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm new password")]
+            [Display(Name = "Verify password")]
             [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
+            ViewData["SettingsName"] = "Password";
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -79,7 +81,7 @@ namespace TwitterCopy.Pages.Account.Settings
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword);
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.CurrentPassword, Input.NewPassword);
             if (!changePasswordResult.Succeeded)
             {
                 foreach (var error in changePasswordResult.Errors)
