@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 
-namespace TwitterCopy.Pages.Account.Manage
+namespace TwitterCopy.Pages.Account.Settings
 {
     public static class ManageNavPages
     {

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopy.Models;
 
-namespace TwitterCopy.Pages.Account.Manage
+namespace TwitterCopy.Pages.Account.Settings
 {
     public class ExternalLoginsModel : PageModel
     {

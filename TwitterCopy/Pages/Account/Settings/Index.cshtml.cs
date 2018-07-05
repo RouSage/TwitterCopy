@@ -8,7 +8,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using TwitterCopy.Models;
 
-namespace TwitterCopy.Pages.Account.Manage
+namespace TwitterCopy.Pages.Account.Settings
 {
     public partial class IndexModel : PageModel
     {
@@ -49,6 +49,8 @@ namespace TwitterCopy.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
+            ViewData["SettingsName"] = "Account";
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
