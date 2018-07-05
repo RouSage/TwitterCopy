@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopy.Data;
@@ -12,13 +15,33 @@ namespace TwitterCopy.Pages.Profiles
     public class IndexModel : PageModel
     {
         private readonly TwitterCopyContext _context;
+        private readonly UserManager<TwitterCopyUser> _userManager;
 
-        public IndexModel(TwitterCopyContext context)
+        public IndexModel(UserManager<TwitterCopyUser> userManager, TwitterCopyContext context)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        public IList<Tweet> Tweet { get; set; }
+        public IList<TweetModel> Tweets { get; set; }
+
+        public TwitterCopyUser ProfileUser { get; set; }
+
+        public bool IsYourself { get; set; }
+
+        public class TweetModel
+        {
+            public int Id { get; set; }
+
+            public string Text { get; set; }
+
+            public string AuthorName { get; set; }
+
+            public string AuthorSlug { get; set; }
+
+            [DataType(DataType.DateTime)]
+            public DateTime PostedOn { get; set; }
+        }
 
         public async Task<ActionResult> OnGetAsync(string userName)
         {
@@ -27,11 +50,30 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound();
             }
 
-            Tweet = await _context.Tweets
-                .Where(t => t.User.UserName.Equals(userName))
-                .Include(t => t.User)
+            var profileOwner = await _userManager.FindByNameAsync(userName);
+            if (profileOwner == null)
+            {
+                return NotFound();
+            }
+
+            Tweets = await _context.Tweets
+                .AsNoTracking()
+                .Where(t => t.UserId == profileOwner.Id)
+                .Select(x => new TweetModel
+                {
+                    Id = x.Id,
+                    AuthorName = x.User.UserName,
+                    AuthorSlug = x.User.Slug,
+                    PostedOn = x.PostedOn,
+                    Text = x.Text
+                })
+                .OrderByDescending(p=>p.PostedOn)
                 .ToListAsync();
 
+            ProfileUser = profileOwner;
+
+            IsYourself = profileOwner.UserName.Equals(User.Identity.Name, StringComparison.InvariantCultureIgnoreCase);
+            
             return Page();
         }
     }
