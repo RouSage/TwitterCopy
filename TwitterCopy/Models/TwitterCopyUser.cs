@@ -9,6 +9,9 @@ namespace TwitterCopy.Models
     public class TwitterCopyUser : IdentityUser<Guid>
     {
         [PersonalData]
+        public string Slug { get; set; }
+
+        [PersonalData]
         [StringLength(1000)]
         public string Bio { get; set; }
 

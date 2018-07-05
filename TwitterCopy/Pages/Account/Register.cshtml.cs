@@ -66,7 +66,8 @@ namespace TwitterCopy.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new TwitterCopyUser { UserName = Input.UserName, Email = Input.Email, };
+                // TODO: Function for generating Slug if the UserName has white-spaces or other characters
+                var user = new TwitterCopyUser { UserName = Input.UserName, Email = Input.Email, Slug = Input.UserName };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

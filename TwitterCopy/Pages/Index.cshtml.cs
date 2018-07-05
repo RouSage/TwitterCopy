@@ -42,6 +42,8 @@ namespace TwitterCopy.Pages
 
             public string AuthorName { get; set; }
 
+            public string AuthorSlug { get; set; }
+
             [DataType(DataType.DateTime)]
             public DateTime PostedOn { get; set; } = DateTime.Now;
         }
@@ -111,6 +113,7 @@ namespace TwitterCopy.Pages
                 {
                     Id = x.Id,
                     AuthorName = x.User.UserName,
+                    AuthorSlug = x.User.Slug,
                     Text = x.Text,
                     PostedOn = x.PostedOn
                 })
@@ -178,7 +181,8 @@ namespace TwitterCopy.Pages
                     Id = x.Id,
                     Text = x.Text,
                     PostedOn = x.PostedOn,
-                    AuthorName = x.User.UserName
+                    AuthorName = x.User.UserName,
+                    AuthorSlug = x.User.Slug
                 })
                 .OrderByDescending(t => t.PostedOn)
                 .ToList();

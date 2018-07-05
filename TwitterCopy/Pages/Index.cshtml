@@ -5,13 +5,13 @@
     <div class="col-md-3">
         <h2>Left sidebar</h2>
         <h4>
-            <a asp-page="/Profiles/Index" asp-route-userName="@Model.CurrentUser.UserName">
+            <a asp-page="/Profiles/Index" asp-route-userName="@Model.CurrentUser.Slug">
                 @Model.CurrentUser.UserName
             </a>
         </h4>
         <p>
-            <a asp-page="/Profiles/Index" asp-route-userName="@Model.CurrentUser.UserName">
-                @@@Model.CurrentUser.UserName
+            <a asp-page="/Profiles/Index" asp-route-userName="@Model.CurrentUser.Slug">
+                @@@Model.CurrentUser.Slug
             </a>
         </p>
     </div>
@@ -37,13 +37,13 @@
                         <div>
                             <ul class="list-inline">
                                 <li class="list-inline-item">
-                                    <a asp-page="/Profiles/Index" asp-route-userName="@tweet.AuthorName">
+                                    <a asp-page="/Profiles/Index" asp-route-userName="@tweet.AuthorSlug">
                                         @tweet.AuthorName
                                     </a>
                                 </li>
                                 <li class="list-inline-item">
                                     <span class="text-muted">
-                                        @@@tweet.AuthorName
+                                        @@@tweet.AuthorSlug
                                     </span>
                                 </li>
                             </ul>
