@@ -26,8 +26,6 @@ namespace TwitterCopy.Pages.Account.Settings
             _emailSender = emailSender;
         }
 
-        public string Username { get; set; }
-
         public bool IsEmailConfirmed { get; set; }
 
         [TempData]
@@ -39,12 +37,13 @@ namespace TwitterCopy.Pages.Account.Settings
         public class InputModel
         {
             [Required]
+            [MinLength(5, ErrorMessage = "Username is too short")]
+            [MaxLength(15)]
+            public string Username { get; set; }
+
+            [Required]
             [EmailAddress]
             public string Email { get; set; }
-
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -59,14 +58,11 @@ namespace TwitterCopy.Pages.Account.Settings
 
             var userName = await _userManager.GetUserNameAsync(user);
             var email = await _userManager.GetEmailAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-            Username = userName;
 
             Input = new InputModel
             {
+                Username = userName,
                 Email = email,
-                PhoneNumber = phoneNumber
             };
 
             IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
@@ -87,6 +83,17 @@ namespace TwitterCopy.Pages.Account.Settings
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            var username = await _userManager.GetUserNameAsync(user);
+            if(Input.Username != username)
+            {
+                var setUsernameResult = await _userManager.SetUserNameAsync(user, Input.Username);
+                if (!setUsernameResult.Succeeded)
+                {
+                    var userId = await _userManager.GetUserIdAsync(user);
+                    throw new InvalidOperationException($"Unexpected error occurred setting username for user with ID '{userId}'.");
+                }
+            }
+
             var email = await _userManager.GetEmailAsync(user);
             if (Input.Email != email)
             {
@@ -98,16 +105,16 @@ namespace TwitterCopy.Pages.Account.Settings
                 }
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
-                }
-            }
+            //var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            //if (Input.PhoneNumber != phoneNumber)
+            //{
+            //    var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+            //    if (!setPhoneResult.Succeeded)
+            //    {
+            //        var userId = await _userManager.GetUserIdAsync(user);
+            //        throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
+            //    }
+            //}
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
