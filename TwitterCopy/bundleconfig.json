@@ -79,5 +79,15 @@
       "enabled": true,
       "renameLocals": true
     }
+  },
+  {
+    "outputFileName": "wwwroot/lib/signalr/signalr.min.js",
+    "inputFiles": [
+      "wwwroot/lib/signalr/signalr.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
   }
 ]
