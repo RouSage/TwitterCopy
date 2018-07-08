@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,7 +22,9 @@ namespace TwitterCopy.Models
         [DataType(DataType.DateTime)]
         public DateTime PostedOn { get; set; }
 
-        public int Likes { get; set; }
+        public int LikeCount { get; set; }
+
+        public ICollection<Like> Likes { get; set; }
 
         public int Retweets { get; set; }
     }
