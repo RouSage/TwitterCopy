@@ -31,8 +31,7 @@ namespace TwitterCopy.Models
         [DataType(DataType.Url)]
         public string Website { get; set; }
 
-        //[Display(Name = "Likes")]
-        //public ICollection<Tweet> LikedTweets { get; set; }
+        public ICollection<Like> Likes { get; set; }
 
         [PersonalData]
         public ICollection<UserToUser> Following { get; set; }

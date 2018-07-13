@@ -10,7 +10,7 @@ using TwitterCopy.Data;
 namespace TwitterCopy.Migrations
 {
     [DbContext(typeof(TwitterCopyContext))]
-    [Migration("20180708144431_TweetLike")]
+    [Migration("20180713151645_TweetLike")]
     partial class TweetLike
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -122,7 +122,7 @@ namespace TwitterCopy.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Like");
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("TwitterCopy.Models.Tweet", b =>
@@ -301,12 +301,12 @@ namespace TwitterCopy.Migrations
                     b.HasOne("TwitterCopy.Models.Tweet", "Tweet")
                         .WithMany("Likes")
                         .HasForeignKey("TweetId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("TwitterCopy.Models.TwitterCopyUser", "User")
-                        .WithMany()
+                        .WithMany("Likes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("TwitterCopy.Models.Tweet", b =>

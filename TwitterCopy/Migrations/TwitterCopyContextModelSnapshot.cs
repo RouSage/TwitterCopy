@@ -120,7 +120,7 @@ namespace TwitterCopy.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Like");
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("TwitterCopy.Models.Tweet", b =>
@@ -299,12 +299,12 @@ namespace TwitterCopy.Migrations
                     b.HasOne("TwitterCopy.Models.Tweet", "Tweet")
                         .WithMany("Likes")
                         .HasForeignKey("TweetId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("TwitterCopy.Models.TwitterCopyUser", "User")
-                        .WithMany()
+                        .WithMany("Likes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("TwitterCopy.Models.Tweet", b =>
