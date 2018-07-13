@@ -53,4 +53,34 @@
         tweetInfoBody.empty();
     });
 
+    $('button').click(function (e) {
+        var btnClicked = $(e.currentTarget);
+        var tweetId;
+
+        if (btnClicked.data('id') === undefined) {
+            return;
+        }
+        else {
+            tweetId = $(this).data('id');
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: `/user1?handler=Liked&id=${tweetId}`,
+            //beforeSend: function (xhr) {
+            //    xhr.setRequestHeader("XSRF-TOKEN",
+            //        $('input:hidden[name="__RequestVerificationToken"]').val());
+            //},
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (response) {
+                var tweetCount = btnClicked.find('span');
+                tweetCount.text(`${response}`);
+            },
+            failure: function (response) {
+                alert(response);
+            }
+        });
+    });
+
 });

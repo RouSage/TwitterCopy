@@ -38,6 +38,7 @@ namespace TwitterCopy
 
             services.AddCustomizedIdentity();
             services.AddCustomizedMvc();
+            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
             services.AddRouting(options => options.LowercaseUrls = true);
             services.CustomizedApplicationCookie();
             services.AddSingleton<IEmailSender, EmailSender>();
