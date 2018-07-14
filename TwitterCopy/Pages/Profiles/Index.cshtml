@@ -5,12 +5,12 @@
     <div class="col-md-3">
         <h2>Left sidebar</h2>
         <h4>
-            <a asp-page="/Profiles/Index" asp-route-userName="@Model.ProfileUser.Slug">
+            <a asp-page="./Index" asp-route-userName="@Model.ProfileUser.Slug">
                 @Model.ProfileUser.UserName
             </a>
         </h4>
         <p>
-            <a asp-page="/Profiles/Index" asp-route-userName="@Model.ProfileUser.Slug">
+            <a asp-page="./Index" asp-route-userName="@Model.ProfileUser.Slug">
                 @@@Model.ProfileUser.Slug
             </a>
         </p>
@@ -20,43 +20,7 @@
         <h2>Tweets</h2>
         @if (Model.Tweets.Count() > 0)
         {
-            foreach (var tweet in Model.Tweets)
-            {
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <ul class="list-inline">
-                                <li class="list-inline-item">
-                                    <a asp-page="/Profiles/Index" asp-route-userName="@tweet.AuthorSlug">
-                                        @tweet.AuthorName
-                                    </a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <span class="text-muted">
-                                        @@@tweet.AuthorSlug
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <p>@tweet.Text</p>
-                    </div>
-                    @if (Model.IsYourself)
-                    {
-                        <div class="card-footer">
-                            <button type="button" class="btn btn-danger" data-toggle="modal"
-                                    data-target="#deleteTweetModal" data-tweet="@tweet.Id">
-                                Delete
-                            </button>
-                            <button type="button" class="btn btn-outline-primary" data-id="@tweet.Id">
-                                <span>@tweet.LikeCount</span>
-                            </button>
-                        </div>
-                    }
-                </div>
-            }
-
+            <partial name="_Tweets" model="Model.Tweets" />
         }
         else
         {

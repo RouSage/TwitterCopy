@@ -30,37 +30,7 @@
         </form>
         @if (Model.FeedTweets.Count() > 0)
         {
-            foreach (var tweet in Model.FeedTweets)
-            {
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <ul class="list-inline">
-                                <li class="list-inline-item">
-                                    <a asp-page="/Profiles/Index" asp-route-userName="@tweet.AuthorSlug">
-                                        @tweet.AuthorName
-                                    </a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <span class="text-muted">
-                                        @@@tweet.AuthorSlug
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <p>@tweet.Text</p>
-                    </div>
-                    <div class="card-footer">
-                        <button type="button" class="btn btn-danger" data-toggle="modal"
-                                data-target="#deleteTweetModal" data-tweet="@tweet.Id">
-                            Delete
-                        </button>
-                    </div>
-                </div>
-            }
-
+            <partial name="_Tweets" model="Model.FeedTweets" />
         }
         else
         {

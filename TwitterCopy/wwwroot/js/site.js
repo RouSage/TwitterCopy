@@ -66,7 +66,7 @@
 
         $.ajax({
             type: 'GET',
-            url: `/user1?handler=Liked&id=${tweetId}`,
+            url: `/Index?handler=UpdateLikes&id=${tweetId}`,
             //beforeSend: function (xhr) {
             //    xhr.setRequestHeader("XSRF-TOKEN",
             //        $('input:hidden[name="__RequestVerificationToken"]').val());
