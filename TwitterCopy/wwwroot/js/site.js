@@ -1,6 +1,8 @@
 ﻿$(document).ready(function () {
 
-    // Show modal dialog for confirmation of deletion of tweet
+    /*
+     * Show modal dialog for confirmation of deletion of tweet
+     */
     $('#deleteTweetModal').on('show.bs.modal', function (event) {
         // Button that triggered the modal
         var button = $(event.relatedTarget);
@@ -41,7 +43,9 @@
         });
     });
 
-    // After modal dialog is closed, remove content (tweet info) from the body
+    /*
+     * After modal dialog is closed, remove content (tweet info) from the body
+     */
     $('#deleteTweetModal').on('hide.bs.modal', function (event) {
         // Clean form's 'action' attribute if the form was just closed
         // and not submitted
@@ -53,6 +57,9 @@
         tweetInfoBody.empty();
     });
 
+    /*
+     * Searches for the Like button
+     */
     $('button').click(function (e) {
         var btnClicked = $(e.currentTarget);
         var tweetId;
@@ -82,5 +89,51 @@
             }
         });
     });
+
+    /*
+     * Send Tweet button disabled and hidden by default
+     */
+    $('#sendTweetForm input[type=submit]').prop('disabled', true);
+    $('#sendTweetForm input[type=submit]').hide();
+
+    /*
+     * Show Send Tweet button when any element inside form is focused
+     */
+    $('#sendTweetForm').focusin(function () {
+        $('#sendTweetForm input[type=submit]').show();
+    });
+
+    /*
+     * Hide Send Tweet button when any element inside form loses
+     * focus or text box doesn't have any value
+     */
+    $('#sendTweetForm').focusout(function () {
+        if (!$(this).find('input[type = text]').val().trim())
+            $('#sendTweetForm input[type=submit]').hide();
+    });
+
+    /*
+     * Enable Send Tweet button only if text box has value
+     */
+    $('#sendTweetForm input[type=text]').keyup(function () {
+        var sendTweetBtn = $('#sendTweetForm input[type=submit]'); 
+
+        if ($(this).val().trim())
+            sendTweetBtn.prop('disabled', false);
+        else
+            sendTweetBtn.prop('disabled', true);
+    });
+
+    /*
+     * Do not submit form if input has no value
+     */
+    //$('#sendTweetForm').submit(function () {
+    //    if ($('#tweetTextInput').val().trim()) {
+    //        return true;
+    //    }
+    //    else {
+    //        return false;
+    //    }
+    //});
 
 });

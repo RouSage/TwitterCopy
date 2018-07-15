@@ -18,14 +18,15 @@
 
     <div class="col-md-6">
         <h2>Tweets</h2>
-        <form method="post">
+        <form method="post" id="sendTweetForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <input asp-for="Tweet.Text" class="form-control" />
+                <input asp-for="Tweet.Text" id="tweetTextInput"
+                       class="form-control" placeholder="What's happening?" />
                 <span asp-validation-for="Tweet.Text" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Tweet" class="btn" />
+                <input type="submit" value="Tweet" class="btn btn-primary" />
             </div>
         </form>
         @if (Model.FeedTweets.Count() > 0)
