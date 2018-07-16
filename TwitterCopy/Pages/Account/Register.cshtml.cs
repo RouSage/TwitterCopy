@@ -36,6 +36,9 @@ namespace TwitterCopy.Pages.Account
 
         public string ReturnUrl { get; set; }
 
+        [TempData]
+        public string Message { get; set; }
+
         public class InputModel
         {
             [Required]
@@ -85,7 +88,8 @@ namespace TwitterCopy.Pages.Account
 
                     // Prevent newly registered users from being automatically logged on
                     //await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
+                    Message = "Check your email and confirm your account, you must be confirmed before you can log in.";
+                    return RedirectToPage("/Info");
                 }
 
                 foreach (var error in result.Errors)
