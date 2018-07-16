@@ -185,6 +185,53 @@ namespace TwitterCopy.Pages
             return new JsonResult(tweet.LikeCount);
         }
 
+        public async Task<IActionResult> OnPostFollowAsync(string userName)
+        {
+            if (userName == null)
+            {
+                return NotFound();
+            }
+
+            if(userName == User.Identity.Name)
+            {
+                return NotFound("You cannot follow yourself");
+            }
+
+            var userToFollow = await _context.Users
+                .Include(f => f.Followers)
+                .FirstOrDefaultAsync(u => u.UserName == userName);
+            if (userToFollow == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
+
+            bool alreadyFollowing = await _context.Users
+                .AsNoTracking()
+                .AnyAsync(x => x.Followers
+                    .Any(u => u.FollowerId.Equals(currentUser.Id)));
+            if (alreadyFollowing)
+            {
+                return NotFound("You cannot follow the User you are already following");
+            }
+
+            userToFollow.Followers.Add(new UserToUser
+            {
+                User = userToFollow,
+                Follower = currentUser
+            });
+
+            _context.Update(userToFollow);
+            await _context.SaveChangesAsync();
+
+            return new JsonResult(userToFollow.Followers.Count);
+        }
+
         /// <summary>
         /// Returns all the user's tweets
         /// </summary>

@@ -14,6 +14,23 @@
                 @@@Model.ProfileUser.Slug
             </a>
         </p>
+        <div>
+            @if (Model.ProfileUser.UserName != User.Identity.Name)
+            {
+                <button type="button" class="btn btn-outline-primary btn-follow-main @(Model.IsFollowed ? "d-none" : "")">
+                    <span data-username="@Model.ProfileUser.Slug">Follow</span>
+                </button>
+                <button type="button" class="btn btn-primary btn-following-main @(Model.IsFollowed ? "" : "d-none")">
+                    <span data-username="@Model.ProfileUser.Slug">Following</span>
+                </button>
+                <button type="button" class="btn btn-danger btn-unfollow-main d-none">
+                    <span data-username="@Model.ProfileUser.Slug">Unfollow</span>
+                </button>
+            }
+        </div>
+        <div>
+            <p id="followersCount">Followers: <span>@Model.ProfileUser.Followers.Count</span></p>
+        </div>
     </div>
 
     <div class="col-md-6">

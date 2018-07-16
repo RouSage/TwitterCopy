@@ -116,7 +116,7 @@
      * Enable Send Tweet button only if text box has value
      */
     $('#sendTweetForm input[type=text]').keyup(function () {
-        var sendTweetBtn = $('#sendTweetForm input[type=submit]'); 
+        var sendTweetBtn = $('#sendTweetForm input[type=submit]');
 
         if ($(this).val().trim())
             sendTweetBtn.prop('disabled', false);
@@ -124,16 +124,27 @@
             sendTweetBtn.prop('disabled', true);
     });
 
-    /*
-     * Do not submit form if input has no value
-     */
-    //$('#sendTweetForm').submit(function () {
-    //    if ($('#tweetTextInput').val().trim()) {
-    //        return true;
-    //    }
-    //    else {
-    //        return false;
-    //    }
-    //});
+    $('.btn-follow-main').click(function (e) {
+        e.preventDefault();
+
+        var pressedBtn = $(this);
+        var userName = pressedBtn.find('span').data('username');
+
+        $.ajax({
+            type: 'POST',
+            url: `/Index/?handler=Follow&userName=${userName}`,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (response) {
+                pressedBtn.addClass('d-none');
+                $('.btn-following-main').removeClass('d-none');
+                $('#followersCount span').text(response);
+            }
+        });
+    });
 
 });
