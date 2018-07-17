@@ -58,34 +58,23 @@
     });
 
     /*
-     * Searches for the Like button
+     * Like button functionality
      */
-    $('button').click(function (e) {
-        var btnClicked = $(e.currentTarget);
-        var tweetId;
-
-        if (btnClicked.data('id') === undefined) {
-            return;
-        }
-        else {
-            tweetId = $(this).data('id');
-        }
+    $('.btn-like').click(function (e) {
+        var btnClicked = $(this);
+        var tweetId = btnClicked.data('id');
 
         $.ajax({
             type: 'GET',
             url: `/Index?handler=UpdateLikes&id=${tweetId}`,
-            //beforeSend: function (xhr) {
-            //    xhr.setRequestHeader("XSRF-TOKEN",
-            //        $('input:hidden[name="__RequestVerificationToken"]').val());
-            //},
             contentType: 'application/json',
             dataType: 'json',
             success: function (response) {
-                var tweetCount = btnClicked.find('span');
-                tweetCount.text(`${response}`);
+                var tweetLikeCount = btnClicked.find('span');
+                tweetLikeCount.text(`${response}`);
             },
             failure: function (response) {
-                alert(response);
+                console.log(response);
             }
         });
     });
