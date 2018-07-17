@@ -232,6 +232,48 @@ namespace TwitterCopy.Pages
             return new JsonResult(userToFollow.Followers.Count);
         }
 
+        public async Task<IActionResult> OnPostUnfollowAsync(string userName)
+        {
+            if (userName == null)
+            {
+                return NotFound();
+            }
+
+            if (userName == User.Identity.Name)
+            {
+                return NotFound("You cannot unfollow yourself");
+            }
+
+            var userToUnfollow = await _context.Users
+                .Include(f => f.Followers)
+                .FirstOrDefaultAsync(u => u.UserName == userName);
+            if (userToUnfollow == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
+
+            bool alreadyFollowing = await _context.Users
+                .AsNoTracking()
+                .AnyAsync(x => x.Followers
+                    .Any(u => u.FollowerId.Equals(currentUser.Id)));
+            if (!alreadyFollowing)
+            {
+                return NotFound("You cannot unfollow the User you are already unfollowing");
+            }
+
+            userToUnfollow.Followers.Remove(userToUnfollow.Followers
+                .FirstOrDefault(x => x.FollowerId.Equals(currentUser.Id)));
+            await _context.SaveChangesAsync();
+
+            return new JsonResult(userToUnfollow.Followers.Count);
+        }
+
         /// <summary>
         /// Returns all the user's tweets
         /// </summary>

@@ -139,6 +139,30 @@
         });
     });
 
+    $('.btn-unfollow-main').click(function (e) {
+        e.preventDefault();
+
+        var pressedBtn = $(this);
+        var userName = pressedBtn.find('span').data('username');
+
+        $.ajax({
+            type: 'POST',
+            url: `/Index?handler=Unfollow&userName=${userName}`,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (response) {
+                pressedBtn.addClass('d-none');
+                $('.btn-follow-main').removeClass('d-none');
+                $('.btn-following-main').addClass('d-none');
+                $('#followersCount span').text(response);
+            }
+        });
+    });
+
     /*
      * Show Unfollow button when mouse enters Following button
      */
