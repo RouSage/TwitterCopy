@@ -185,21 +185,16 @@ namespace TwitterCopy.Pages
             return new JsonResult(tweet.LikeCount);
         }
 
-        public async Task<IActionResult> OnPostFollowAsync(string userName)
+        public async Task<IActionResult> OnPostFollowAsync(string userSlug)
         {
-            if (userName == null)
+            if (userSlug == null)
             {
                 return NotFound();
             }
 
-            if(userName == User.Identity.Name)
-            {
-                return NotFound("You cannot follow yourself");
-            }
-
             var userToFollow = await _context.Users
                 .Include(f => f.Followers)
-                .FirstOrDefaultAsync(u => u.UserName == userName);
+                .FirstOrDefaultAsync(u => u.Slug == userSlug);
             if (userToFollow == null)
             {
                 return NotFound();
@@ -211,8 +206,12 @@ namespace TwitterCopy.Pages
                 return NotFound();
             }
 
+            if (userSlug == currentUser.Slug)
+            {
+                return NotFound("You cannot follow yourself");
+            }
+
             bool alreadyFollowing = await _context.Users
-                .AsNoTracking()
                 .AnyAsync(x => x.Followers
                     .Any(u => u.FollowerId.Equals(currentUser.Id)));
             if (alreadyFollowing)
@@ -232,21 +231,16 @@ namespace TwitterCopy.Pages
             return new JsonResult(userToFollow.Followers.Count);
         }
 
-        public async Task<IActionResult> OnPostUnfollowAsync(string userName)
+        public async Task<IActionResult> OnPostUnfollowAsync(string userSlug)
         {
-            if (userName == null)
+            if (userSlug == null)
             {
                 return NotFound();
             }
 
-            if (userName == User.Identity.Name)
-            {
-                return NotFound("You cannot unfollow yourself");
-            }
-
             var userToUnfollow = await _context.Users
                 .Include(f => f.Followers)
-                .FirstOrDefaultAsync(u => u.UserName == userName);
+                .FirstOrDefaultAsync(u => u.Slug == userSlug);
             if (userToUnfollow == null)
             {
                 return NotFound();
@@ -258,8 +252,12 @@ namespace TwitterCopy.Pages
                 return NotFound();
             }
 
+            if (userSlug == currentUser.Slug)
+            {
+                return NotFound("You cannot unfollow yourself");
+            }
+
             bool alreadyFollowing = await _context.Users
-                .AsNoTracking()
                 .AnyAsync(x => x.Followers
                     .Any(u => u.FollowerId.Equals(currentUser.Id)));
             if (!alreadyFollowing)

@@ -18,13 +18,13 @@
             @if (Model.ProfileUser.UserName != User.Identity.Name)
             {
                 <button type="button" class="btn btn-outline-primary btn-follow-main @(Model.IsFollowed ? "d-none" : "")">
-                    <span data-username="@Model.ProfileUser.UserName">Follow</span>
+                    <span data-userslug="@Model.ProfileUser.Slug">Follow</span>
                 </button>
                 <button type="button" class="btn btn-primary btn-following-main @(Model.IsFollowed ? "" : "d-none")">
-                    <span data-username="@Model.ProfileUser.UserName">Following</span>
+                    <span data-userslug="@Model.ProfileUser.Slug">Following</span>
                 </button>
                 <button type="button" class="btn btn-danger btn-unfollow-main d-none">
-                    <span data-username="@Model.ProfileUser.UserName">Unfollow</span>
+                    <span data-userslug="@Model.ProfileUser.Slug">Unfollow</span>
                 </button>
             }
         </div>

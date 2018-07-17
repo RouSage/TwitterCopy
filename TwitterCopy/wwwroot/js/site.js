@@ -114,17 +114,42 @@
     });
 
     /*
+     * Show Following button when mouse leaves Unfollow button
+     */
+    function unfollowMouseleaveHandler() {
+        // hide Unfollow button when mouseleave
+        $('.btn-unfollow-main').addClass('d-none');
+        // show Following button
+        $('.btn-following-main').removeClass('d-none');
+    }
+
+    /*
+     * Enable mouseleave event for the Unfollow button by default
+     */
+    $('.btn-unfollow-main').on('mouseleave', unfollowMouseleaveHandler);
+
+    /*
+     * Show Unfollow button when mouse enters Following button
+     */
+    $('.btn-following-main').mouseenter(function () {
+        // hide Following button when hover
+        $(this).addClass('d-none');
+        // and show Unfollow button
+        $('.btn-unfollow-main').removeClass('d-none');
+    });
+
+    /*
      * Click event for the main Follow button (profile page)
      */
     $('.btn-follow-main').click(function (e) {
         e.preventDefault();
 
         var pressedBtn = $(this);
-        var userName = pressedBtn.find('span').data('username');
+        var userSlug = pressedBtn.find('span').data('userslug');
 
         $.ajax({
             type: 'POST',
-            url: `/Index/?handler=Follow&userName=${userName}`,
+            url: `/Index/?handler=Follow&userSlug=${userSlug}`,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $('input:hidden[name="__RequestVerificationToken"]').val());
@@ -132,8 +157,13 @@
             contentType: 'application/json',
             dataType: 'json',
             success: function (response) {
+                // hide Follow button
                 pressedBtn.addClass('d-none');
+                // show Following button
                 $('.btn-following-main').removeClass('d-none');
+                // enable MouseLeave event for the Unfollow button (for correct hover behaviour)
+                $('.btn-unfollow-main').on('mouseleave', unfollowMouseleaveHandler);
+                // update Followers count
                 $('#followersCount span').text(response);
             }
         });
@@ -143,40 +173,37 @@
         e.preventDefault();
 
         var pressedBtn = $(this);
-        var userName = pressedBtn.find('span').data('username');
+        var userSlug = pressedBtn.find('span').data('userslug');
 
         $.ajax({
             type: 'POST',
-            url: `/Index?handler=Unfollow&userName=${userName}`,
+            url: `/Index?handler=Unfollow&userSlug=${userSlug}`,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $('input:hidden[name="__RequestVerificationToken"]').val());
+
+                // disable MouseLeave event so Following button
+                // won't show after unfollowing
+                pressedBtn.off('mouseleave');
             },
             contentType: 'application/json',
             dataType: 'json',
             success: function (response) {
+                // hide Unfollow button
                 pressedBtn.addClass('d-none');
+                // show Follow button
                 $('.btn-follow-main').removeClass('d-none');
-                $('.btn-following-main').addClass('d-none');
+                // update Followers count
                 $('#followersCount span').text(response);
+            },
+            failure: function (response) {
+                console.log(response);
+
+                // enable MouseLeave event in case of failure
+                // because it was disabled in beforeSend
+                pressedBtn.on('mouseleave', unfollowMouseleaveHandler);
             }
         });
-    });
-
-    /*
-     * Show Unfollow button when mouse enters Following button
-     */
-    $('.btn-following-main').mouseenter(function () {
-        $(this).addClass('d-none');
-        $('.btn-unfollow-main').removeClass('d-none');
-    });
-
-    /*
-     * Show Following button when mouse leaves Unfollow button
-     */
-    $('.btn-unfollow-main').mouseleave(function () {
-        $(this).addClass('d-none');
-        $('.btn-following-main').removeClass('d-none');
     });
 
 });
