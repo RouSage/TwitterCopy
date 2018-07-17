@@ -124,6 +124,9 @@
             sendTweetBtn.prop('disabled', true);
     });
 
+    /*
+     * Click event for the main Follow button (profile page)
+     */
     $('.btn-follow-main').click(function (e) {
         e.preventDefault();
 
@@ -145,6 +148,22 @@
                 $('#followersCount span').text(response);
             }
         });
+    });
+
+    /*
+     * Show Unfollow button when mouse enters Following button
+     */
+    $('.btn-following-main').mouseenter(function () {
+        $(this).addClass('d-none');
+        $('.btn-unfollow-main').removeClass('d-none');
+    });
+
+    /*
+     * Show Following button when mouse leaves Unfollow button
+     */
+    $('.btn-unfollow-main').mouseleave(function () {
+        $(this).addClass('d-none');
+        $('.btn-following-main').removeClass('d-none');
     });
 
 });
