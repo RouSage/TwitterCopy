@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopy.Data;
@@ -47,7 +46,7 @@ namespace TwitterCopy.Pages
                 return NotFound();
             }
 
-            FeedTweets = GetTweets(CurrentUser);
+            FeedTweets = GetTweets(CurrentUser.Id);
 
             return Page();
         }
@@ -277,32 +276,44 @@ namespace TwitterCopy.Pages
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        private IList<TweetModel> GetTweets(TwitterCopyUser user)
+        private IList<TweetModel> GetTweets(Guid userId)
         {
-            //var currentUser = _context.Users
-            //    .AsNoTracking()
-            //    .Include(t => t.Tweets)
-            //    .Include(f => f.Following)
-            //    .FirstOrDefault(x => x.Id.Equals(user.Id));
-
-            //var followingTweets = currentUser.Following
-            //    .Where(u => currentUser.Id.Equals(u.FollowerId))
-            //    .Select(t => t.User.Tweets
-            //        .OrderByDescending(x => x.PostedOn));
-
-            return _context.Tweets
+            var user = _context.Users
                 .AsNoTracking()
-                .Where(u => u.UserId.Equals(user.Id))
+                .Include(t => t.Tweets)
+                .Include(f => f.Following)
+                    .ThenInclude(u => u.User)
+                        .ThenInclude(t=>t.Tweets)
+                .FirstOrDefault(x => x.Id.Equals(userId));
+
+            var currentUserTweets = user.Tweets
                 .Select(x => new TweetModel
                 {
                     Id = x.Id,
-                    Text = x.Text,
-                    PostedOn = x.PostedOn,
                     AuthorName = x.User.UserName,
-                    AuthorSlug = x.User.Slug
-                })
+                    AuthorSlug = x.User.Slug,
+                    LikeCount = x.LikeCount,
+                    PostedOn = x.PostedOn,
+                    Text = x.Text
+                });
+
+            var followingTweets = user.Following
+                .SelectMany(x => x.User.Tweets
+                    .Select(t => new TweetModel
+                    {
+                        Id = t.Id,
+                        AuthorName = t.User.UserName,
+                        AuthorSlug = t.User.Slug,
+                        LikeCount = t.LikeCount,
+                        PostedOn = t.PostedOn,
+                        Text = t.Text
+                    }));
+
+            var feed = currentUserTweets.Concat(followingTweets)
                 .OrderByDescending(t => t.PostedOn)
                 .ToList();
+
+            return feed;
         }
     }
 }
