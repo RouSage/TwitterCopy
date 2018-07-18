@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TwitterCopy.Data;
 using TwitterCopy.Models;
@@ -178,7 +179,7 @@ namespace TwitterCopy.Pages
                 tweet.LikeCount--;
             }
 
-            _context.Update<Tweet>(tweet);
+            //_context.Update<Tweet>(tweet);
             await _context.SaveChangesAsync();
 
             return new JsonResult(tweet.LikeCount);
@@ -269,6 +270,57 @@ namespace TwitterCopy.Pages
             await _context.SaveChangesAsync();
 
             return new JsonResult(userToUnfollow.Followers.Count);
+        }
+
+        public async Task<IActionResult> OnPostRetweetAsync(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var tweet = await _context.Tweets
+                .Include(r => r.Retweets)
+                .FirstOrDefaultAsync(t => t.Id.Equals(id));
+            if(tweet == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            if(currentUser == null)
+            {
+                return NotFound();
+            }
+
+            var retweet = new Retweet
+            {
+                Tweet = tweet,
+                User = currentUser,
+                RetweetDate = DateTime.UtcNow
+            };
+
+            var dupe = await _context.Retweets.FirstOrDefaultAsync(x => x.TweetId == tweet.Id && x.UserId == currentUser.Id);
+            if (dupe == null)
+            {
+                // If no duplicate was found
+                // Add new retweet to the database
+                _context.Retweets.Add(retweet);
+                tweet.RetweetCount++;
+            }
+            else
+            {
+                // If duplicate was found in the Retweets table
+                // Delete dupe instead of retweer because
+                // retweet doesn't have Id value
+                _context.Retweets.Remove(dupe);
+                tweet.RetweetCount--;
+            }
+
+            //_context.Update<Tweet>(tweet);
+            await _context.SaveChangesAsync();
+
+            return new JsonResult(tweet.RetweetCount);
         }
 
         /// <summary>

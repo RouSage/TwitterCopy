@@ -61,6 +61,8 @@
      * Like button functionality
      */
     $('.btn-like').click(function (e) {
+        e.preventDefault();
+
         var btnClicked = $(this);
         var tweetId = btnClicked.data('id');
 
@@ -202,6 +204,31 @@
                 // enable MouseLeave event in case of failure
                 // because it was disabled in beforeSend
                 pressedBtn.on('mouseleave', unfollowMouseleaveHandler);
+            }
+        });
+    });
+
+    $('.btn-retweet').click(function (e) {
+        e.preventDefault();
+
+        var clickedBtn = $(this);
+        var tweetId = clickedBtn.data('id');
+
+        $.ajax({
+            type: 'POST',
+            url: `/Index?handler=Retweet&id=${tweetId}`,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (response) {
+                var tweetRetweetCount = clickedBtn.find('span');
+                tweetRetweetCount.text(`${response}`);
+            },
+            failure: function (response) {
+                console.log(response);
             }
         });
     });
