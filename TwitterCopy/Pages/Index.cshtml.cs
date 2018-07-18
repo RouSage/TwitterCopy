@@ -92,7 +92,7 @@ namespace TwitterCopy.Pages
         public async Task<IActionResult> OnGetTweetAsync(int? id)
         {
             var tweetToDelete = await _context.Tweets
-                .Include(u => u.User)
+                .AsNoTracking()
                 .Select(x => new TweetModel
                 {
                     Id = x.Id,
@@ -125,9 +125,7 @@ namespace TwitterCopy.Pages
 
             // TODO: check owner with authorization
             var tweetToDelete = await _context.Tweets
-                .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.Id == id);
-
             if(tweetToDelete == null)
             {
                 return NotFound();
@@ -326,16 +324,18 @@ namespace TwitterCopy.Pages
         /// <summary>
         /// Returns all the user's tweets
         /// </summary>
-        /// <param name="user"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
         private IList<TweetModel> GetTweets(Guid userId)
         {
             var user = _context.Users
                 .AsNoTracking()
                 .Include(t => t.Tweets)
+                .Include(r => r.Retweets)
+                    .ThenInclude(t => t.Tweet)
                 .Include(f => f.Following)
                     .ThenInclude(u => u.User)
-                        .ThenInclude(t=>t.Tweets)
+                        .ThenInclude(t => t.Tweets)
                 .FirstOrDefault(x => x.Id.Equals(userId));
 
             var currentUserTweets = user.Tweets
@@ -348,7 +348,19 @@ namespace TwitterCopy.Pages
                     RetweetCount = x.RetweetCount,
                     PostedOn = x.PostedOn,
                     Text = x.Text
-                });
+                })
+                .Union(user.Retweets
+                    .Select(x => new TweetModel
+                    {
+                        Id = x.Tweet.Id,
+                        AuthorName = x.Tweet.User.UserName,
+                        AuthorSlug = x.Tweet.User.Slug,
+                        LikeCount = x.Tweet.LikeCount,
+                        PostedOn = x.RetweetDate,
+                        RetweetCount = x.Tweet.RetweetCount,
+                        Text = x.Tweet.Text
+                    })
+                );
 
             var followingTweets = user.Following
                 .SelectMany(x => x.User.Tweets
@@ -363,11 +375,9 @@ namespace TwitterCopy.Pages
                         Text = t.Text
                     }));
 
-            var feed = currentUserTweets.Concat(followingTweets)
-                .OrderByDescending(t => t.PostedOn)
-                .ToList();
-
-            return feed;
+            return currentUserTweets.Concat(followingTweets)
+                    .OrderByDescending(t => t.PostedOn)
+                    .ToList();
         }
     }
 }
