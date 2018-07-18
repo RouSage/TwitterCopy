@@ -60,7 +60,8 @@ namespace TwitterCopy.Pages.Profiles
                     AuthorSlug = x.User.Slug,
                     PostedOn = x.PostedOn,
                     Text = x.Text,
-                    LikeCount = x.LikeCount
+                    LikeCount = x.LikeCount,
+                    RetweetCount = x.RetweetCount
                 })
                 .OrderByDescending(p => p.PostedOn)
                 .ToListAsync();

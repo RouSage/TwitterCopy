@@ -14,6 +14,7 @@ namespace TwitterCopy.Data
 
         public DbSet<Tweet> Tweets { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<Retweet> Retweets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -50,6 +51,18 @@ namespace TwitterCopy.Data
             builder.Entity<Like>()
                 .HasOne(u => u.User)
                 .WithMany(l => l.Likes)
+                .HasForeignKey("UserId")
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Retweet>()
+                .HasOne(t => t.Tweet)
+                .WithMany(r => r.Retweets)
+                .HasForeignKey("TweetId")
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Retweet>()
+                .HasOne(u => u.User)
+                .WithMany(r => r.Retweets)
                 .HasForeignKey("UserId")
                 .OnDelete(DeleteBehavior.Restrict);
         }

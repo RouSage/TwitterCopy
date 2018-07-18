@@ -33,6 +33,8 @@ namespace TwitterCopy.Models
 
         public ICollection<Like> Likes { get; set; }
 
+        public ICollection<Retweet> Retweets { get; set; }
+
         [PersonalData]
         public ICollection<UserToUser> Following { get; set; }
 

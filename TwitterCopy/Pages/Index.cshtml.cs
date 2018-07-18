@@ -293,6 +293,7 @@ namespace TwitterCopy.Pages
                     AuthorName = x.User.UserName,
                     AuthorSlug = x.User.Slug,
                     LikeCount = x.LikeCount,
+                    RetweetCount = x.RetweetCount,
                     PostedOn = x.PostedOn,
                     Text = x.Text
                 });
@@ -305,6 +306,7 @@ namespace TwitterCopy.Pages
                         AuthorName = t.User.UserName,
                         AuthorSlug = t.User.Slug,
                         LikeCount = t.LikeCount,
+                        RetweetCount = t.RetweetCount,
                         PostedOn = t.PostedOn,
                         Text = t.Text
                     }));

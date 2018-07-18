@@ -26,6 +26,8 @@ namespace TwitterCopy.Models
 
         public ICollection<Like> Likes { get; set; }
 
-        public int Retweets { get; set; }
+        public int RetweetCount { get; set; }
+
+        public ICollection<Retweet> Retweets { get; set; }
     }
 }
