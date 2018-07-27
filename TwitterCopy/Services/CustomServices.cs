@@ -15,7 +15,7 @@ namespace TwitterCopy.Services
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AddPageRoute("/Account/Register", "/Account/Signup");
-                    options.Conventions.AddPageRoute("/Profiles/Index", "{userName}");
+                    options.Conventions.AddPageRoute("/Profiles/Index", "{slug}");
                     options.Conventions.AddPageRoute("/Account/Settings/Index", "Account/Settings/Account");
                     options.Conventions.AddPageRoute("/Account/Settings/ChangePassword", "Account/Settings/Password");
                 })

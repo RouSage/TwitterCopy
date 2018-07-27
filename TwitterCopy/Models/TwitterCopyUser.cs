@@ -27,7 +27,7 @@ namespace TwitterCopy.Models
         public string Location { get; set; }
 
         [PersonalData]
-        [Url]
+        [Url(ErrorMessage = "Url is not valid")]
         [DataType(DataType.Url)]
         public string Website { get; set; }
 

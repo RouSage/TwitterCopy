@@ -233,4 +233,68 @@
         });
     });
 
+    var ProfileEditor = {
+        updateProfileInfo: function (newData) {
+            $('#profileInfoUserName').text(newData.username);
+            $('#profileInfoBio').text(newData.bio);
+            $('#profileInfoLocation').text(newData.location);
+            $('#profileInfoWebsite').text(newData.website);
+        },
+        saveChangesButtonClick: function () {
+            $('#profileEdit').addClass('d-none');
+            $('#profileInfo').removeClass('d-none');
+            $('#cancelEditBtn').addClass('d-none');
+            $('#saveEditBtn').addClass('d-none');
+            $('#editProfileBtn').removeClass('d-none');
+        },
+        cancelButtonClick: function () {
+            $('#cancelEditBtn').addClass('d-none');
+            $('#saveEditBtn').addClass('d-none');
+            $('#editProfileBtn').removeClass('d-none');
+            $('#profileEdit').addClass('d-none');
+            $('#profileInfo').removeClass('d-none');
+        },
+        editButtonClick: function () {
+            $('#editProfileBtn').addClass('d-none');
+            $('#cancelEditBtn').removeClass('d-none');
+            $('#saveEditBtn').removeClass('d-none');
+            $('#profileInfo').addClass('d-none');
+            $('#profileEdit').removeClass('d-none');
+        }
+    };
+
+    $('#editProfileBtn').click(function (e) {
+        e.preventDefault();
+        ProfileEditor.editButtonClick();
+    });
+
+    $('#cancelEditBtn').click(function (e) {
+        e.preventDefault();
+        ProfileEditor.cancelButtonClick();
+    });
+
+    $('#saveEditBtn').click(function (e) {
+        var token = $('input:hidden[name="__RequestVerificationToken"]').val();
+        var userName = $('input[name="userName"]').val();
+        var bio = $('input[name="bio"]').val();
+        var location = $('input[name="location"]').val();
+        var website = $('input[name="website"]').val();
+
+        var postedValues = {};
+        postedValues['__RequestVerificationToken'] = token;
+        postedValues.UserName = userName;
+        postedValues.Bio = bio;
+        postedValues.Location = location;
+        postedValues.Website = website;
+
+        var postUrl = window.location.pathname + '?handler=EditUser';
+
+        $.post(postUrl, postedValues, function (response) {
+            ProfileEditor.updateProfileInfo(response);
+            ProfileEditor.saveChangesButtonClick();
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            alert(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
+        });
+    });
+
 });

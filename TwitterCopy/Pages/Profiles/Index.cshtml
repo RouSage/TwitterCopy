@@ -1,39 +1,85 @@
-﻿@page "{userName}"
+﻿@page "{slug}"
 @model TwitterCopy.Pages.Profiles.IndexModel
 
 <div class="row">
     <div class="col-md-3">
         <h2>Left sidebar</h2>
-        <h4>
-            <a asp-page="./Index" asp-route-userName="@Model.ProfileUser.Slug">
-                @Model.ProfileUser.UserName
-            </a>
-        </h4>
-        <p>
-            <a asp-page="./Index" asp-route-userName="@Model.ProfileUser.Slug">
-                @@@Model.ProfileUser.Slug
-            </a>
-        </p>
-        <div>
-            @if (Model.ProfileUser.UserName != User.Identity.Name)
-            {
-                <button type="button" class="btn btn-outline-primary btn-follow-main @(Model.IsFollowed ? "d-none" : "")">
-                    <span data-userslug="@Model.ProfileUser.Slug">Follow</span>
-                </button>
-                <button type="button" class="btn btn-primary btn-following-main @(Model.IsFollowed ? "" : "d-none")">
-                    <span data-userslug="@Model.ProfileUser.Slug">Following</span>
-                </button>
-                <button type="button" class="btn btn-danger btn-unfollow-main d-none">
-                    <span data-userslug="@Model.ProfileUser.Slug">Unfollow</span>
-                </button>
-            }
+        <div id="profileInfo">
+            <h4>
+                <a id="profileInfoUserName" asp-page="./Index" asp-route-slug="@Model.ProfileUser.Slug">
+                    @Model.ProfileUser.UserName
+                </a>
+            </h4>
+            <p>
+                <a asp-page="./Index" asp-route-slug="@Model.ProfileUser.Slug">
+                    @@@Model.ProfileUser.Slug
+                </a>
+            </p>
+            <p>
+                <span id="profileInfoBio">@Model.ProfileUser.Bio</span>
+            </p>
+            <p>
+                <span id="profileInfoLocation">@Model.ProfileUser.Location</span>
+            </p>
+            <p>
+                <span id="profileInfoWebsite">@Model.ProfileUser.Website</span>
+            </p>
         </div>
-        <div>
-            <p id="followersCount">Followers: <span>@Model.ProfileUser.Followers.Count</span></p>
+        <div id="profileEdit" class="d-none">
+            <form method="post" id="profileEditForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <input asp-for="Input.UserName" name="userName" class="form-control" placeholder="Name" />
+                    <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Input.Bio" name="bio" class="form-control" placeholder="Bio" />
+                    <span asp-validation-for="Input.Bio" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Input.Location" name="location" class="form-control" placeholder="Location" />
+                </div>
+                <div class="form-group">
+                    <input asp-for="Input.Website" name="website" class="form-control" placeholder="Website" />
+                    <span asp-validation-for="ProfileUser.Website" class="text-danger"></span>
+                </div>
+            </form>
         </div>
     </div>
 
     <div class="col-md-6">
+        <div id="profileActions">
+            @if (!(bool)ViewData["IsYourself"])
+            {
+                <div id="profileFollowActions">
+                    <button type="button" class="btn btn-outline-primary btn-follow-main @((bool)ViewData["IsFollowed"] ? "d-none" : "")">
+                        <span data-userslug="@Model.ProfileUser.Slug">Follow</span>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-following-main @((bool)ViewData["IsFollowed"] ? "" : "d-none")">
+                        <span data-userslug="@Model.ProfileUser.Slug">Following</span>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-unfollow-main d-none">
+                        <span data-userslug="@Model.ProfileUser.Slug">Unfollow</span>
+                    </button>
+                </div>
+            }
+            else if ((bool)ViewData["IsYourself"])
+            {
+                <div id="profileEditActions">
+                    <button type="button" id="editProfileBtn" class="btn btn-outline-secondary">
+                        <span>Edit profile</span>
+                    </button>
+                    <button type="button" id="cancelEditBtn" class="btn btn-outline-secondary d-none">
+                        <span>Cancel</span>
+                    </button>
+                    <button type="button" id="saveEditBtn" class="btn btn-outline-primary d-none">
+                        <span>Save changes</span>
+                    </button>
+                </div>
+            }
+        </div>
+        <p id="followersCount">Followers: <span>@Model.ProfileUser.Followers.Count</span></p>
+
         <h2>Tweets</h2>
         @if (Model.Tweets.Count() > 0)
         {

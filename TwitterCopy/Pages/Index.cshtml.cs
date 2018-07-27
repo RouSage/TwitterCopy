@@ -40,7 +40,7 @@ namespace TwitterCopy.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnGet()
         {
-            CurrentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            CurrentUser = await _userManager.GetUserAsync(User);
 
             if(CurrentUser == null)
             {
