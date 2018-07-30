@@ -4,6 +4,8 @@ namespace TwitterCopy.Models
 {
     public class ProfileViewModel
     {
+        public string Id { get; set; }
+
         public string UserName { get; set; }
 
         public string Slug { get; set; }

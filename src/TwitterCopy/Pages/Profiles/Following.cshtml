@@ -1,5 +1,8 @@
 ﻿@page "{slug}"
-@model TwitterCopy.Pages.Profiles.IndexModel
+@model TwitterCopy.Pages.Profiles.FollowingModel
+@{
+    ViewData["Title"] = "Following";
+}
 
 <div class="row">
     <div class="col-md-3">
@@ -28,12 +31,12 @@
         <partial name="_ProfileEditForm" model="Model.Input" />
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md">
         <a asp-page="./Index" asp-route-slug="@Model.Profile.Slug">
             <span>Tweets</span>
             <span id="tweetsCount">@Model.Profile.TweetsCount</span>
         </a>
-        <a asp-page="./Following" asp-route-slug="@Model.Profile.Slug">
+        <a asp-page="./Following" asp-route-id="@Model.Profile.Id">
             <span>Following</span>
             <span id="followingsCount">@Model.Profile.FollowingCount</span>
         </a>
@@ -70,20 +73,23 @@
             }
         </div>
 
-        <h2>Tweets</h2>
-        @if (Model.Tweets.Count() > 0)
+        <h2>Following</h2>
+        @if (Model.Following.Count() > 0)
         {
-            <partial name="_Tweets" model="Model.Tweets" />
+            foreach (var follow in Model.Following)
+            {
+                <ul>
+                    <li>
+                        @follow.UserName
+                    </li>
+                </ul>
+            }
         }
         else
         {
-            <p>User doesn't have Tweets yet.</p>
+            <p>User doesn't follow anyone yet.</p>
         }
     </div>
-
-    <partial name="_DeleteTweetModal" />
-
-    <div class="col-md-3">
-        <h2>Right sidebar</h2>
-    </div>
 </div>
+
+

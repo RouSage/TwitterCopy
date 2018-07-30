@@ -1,0 +1,22 @@
+﻿@model TwitterCopy.Models.ProfileInputModel
+
+<div id="profileEdit" class="d-none">
+    <form method="post" id="profileEditForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <input asp-for="UserName" name="userName" class="form-control" placeholder="Name" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="Bio" name="bio" class="form-control" placeholder="Bio" />
+            <span asp-validation-for="Bio" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="Location" name="location" class="form-control" placeholder="Location" />
+        </div>
+        <div class="form-group">
+            <input asp-for="Website" name="website" class="form-control" placeholder="Website" />
+            <span asp-validation-for="Website" class="text-danger"></span>
+        </div>
+    </form>
+</div>

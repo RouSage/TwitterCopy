@@ -18,6 +18,7 @@ namespace TwitterCopy.Services
                     options.Conventions.AddPageRoute("/Profiles/Index", "{slug}");
                     options.Conventions.AddPageRoute("/Account/Settings/Index", "Account/Settings/Account");
                     options.Conventions.AddPageRoute("/Account/Settings/ChangePassword", "Account/Settings/Password");
+                    options.Conventions.AddPageRoute("/Profiles/Following", "{slug}/Following");
                 })
                 .AddJsonOptions(options =>
                 {

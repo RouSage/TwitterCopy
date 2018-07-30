@@ -28,8 +28,11 @@ namespace TwitterCopy.Pages.Profiles
 
         public ProfileViewModel Profile { get; set; }
 
+        [TempData]
+        public string UserId { get; set; }
+
         [BindProperty]
-        public InputModel Input { get; set; }
+        public ProfileInputModel Input { get; set; }
         
         public class InputModel
         {
@@ -93,6 +96,7 @@ namespace TwitterCopy.Pages.Profiles
 
             Profile = new ProfileViewModel
             {
+                Id = profileOwner.Id.ToString(),
                 UserName = profileOwner.UserName,
                 Slug = profileOwner.Slug,
                 Bio = profileOwner.Bio,
@@ -104,7 +108,9 @@ namespace TwitterCopy.Pages.Profiles
                 TweetsCount = Tweets.Count
             };
 
-            Input = new InputModel
+            UserId = profileOwner.Id.ToString();
+
+            Input = new ProfileInputModel
             {
                 UserName = profileOwner.UserName,
                 Bio = profileOwner.Bio,
