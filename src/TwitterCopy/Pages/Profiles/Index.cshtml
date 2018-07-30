@@ -6,23 +6,23 @@
         <h2>Left sidebar</h2>
         <div id="profileInfo">
             <h4>
-                <a id="profileInfoUserName" asp-page="./Index" asp-route-slug="@Model.ProfileUser.Slug">
-                    @Model.ProfileUser.UserName
+                <a id="profileInfoUserName" asp-page="./Index" asp-route-slug="@Model.Profile.Slug">
+                    @Model.Profile.UserName
                 </a>
             </h4>
             <p>
-                <a asp-page="./Index" asp-route-slug="@Model.ProfileUser.Slug">
-                    @@@Model.ProfileUser.Slug
+                <a asp-page="./Index" asp-route-slug="@Model.Profile.Slug">
+                    @@@Model.Profile.Slug
                 </a>
             </p>
             <p>
-                <span id="profileInfoBio">@Model.ProfileUser.Bio</span>
+                <span id="profileInfoBio">@Model.Profile.Bio</span>
             </p>
             <p>
-                <span id="profileInfoLocation">@Model.ProfileUser.Location</span>
+                <span id="profileInfoLocation">@Model.Profile.Location</span>
             </p>
             <p>
-                <span id="profileInfoWebsite">@Model.ProfileUser.Website</span>
+                <span id="profileInfoWebsite">@Model.Profile.Website</span>
             </p>
         </div>
         <div id="profileEdit" class="d-none">
@@ -41,25 +41,35 @@
                 </div>
                 <div class="form-group">
                     <input asp-for="Input.Website" name="website" class="form-control" placeholder="Website" />
-                    <span asp-validation-for="ProfileUser.Website" class="text-danger"></span>
+                    <span asp-validation-for="Input.Website" class="text-danger"></span>
                 </div>
             </form>
         </div>
     </div>
 
     <div class="col-md-6">
+        <a asp-page="./Index" asp-route-slug="@Model.Profile.Slug">
+            <span>Tweets</span>
+            <span id="tweetsCount">@Model.Profile.TweetsCount</span>
+        </a>
+        <a asp-page="./Following">
+            <span>Following</span>
+            <span id="followingsCount">@Model.Profile.FollowingCount</span>
+        </a>
+        <p id="followersCount">Followers: <span>@Model.Profile.FollowersCount</span></p>
+        <p id="likesCount">Likes: <span>@Model.Profile.LikesCount</span></p>
         <div id="profileActions">
             @if (!(bool)ViewData["IsYourself"])
             {
                 <div id="profileFollowActions">
                     <button type="button" class="btn btn-outline-primary btn-follow-main @((bool)ViewData["IsFollowed"] ? "d-none" : "")">
-                        <span data-userslug="@Model.ProfileUser.Slug">Follow</span>
+                        <span data-userslug="@Model.Profile.Slug">Follow</span>
                     </button>
                     <button type="button" class="btn btn-primary btn-following-main @((bool)ViewData["IsFollowed"] ? "" : "d-none")">
-                        <span data-userslug="@Model.ProfileUser.Slug">Following</span>
+                        <span data-userslug="@Model.Profile.Slug">Following</span>
                     </button>
                     <button type="button" class="btn btn-danger btn-unfollow-main d-none">
-                        <span data-userslug="@Model.ProfileUser.Slug">Unfollow</span>
+                        <span data-userslug="@Model.Profile.Slug">Unfollow</span>
                     </button>
                 </div>
             }
@@ -78,7 +88,6 @@
                 </div>
             }
         </div>
-        <p id="followersCount">Followers: <span>@Model.ProfileUser.Followers.Count</span></p>
 
         <h2>Tweets</h2>
         @if (Model.Tweets.Count() > 0)

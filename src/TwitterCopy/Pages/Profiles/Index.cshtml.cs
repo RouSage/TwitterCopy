@@ -26,10 +26,10 @@ namespace TwitterCopy.Pages.Profiles
 
         public IList<TweetModel> Tweets { get; set; }
 
+        public ProfileViewModel Profile { get; set; }
+
         [BindProperty]
         public InputModel Input { get; set; }
-
-        public TwitterCopyUser ProfileUser { get; set; }
         
         public class InputModel
         {
@@ -57,7 +57,9 @@ namespace TwitterCopy.Pages.Profiles
             var profileOwner = await _context.Users
                 .AsNoTracking()
                 .Include(f => f.Followers)
-                .FirstOrDefaultAsync(u => u.Slug == slug);
+                .Include(f => f.Following)
+                .Include(l => l.Likes)
+                .FirstOrDefaultAsync(u => u.Slug.Equals(slug));
             if (profileOwner == null)
             {
                 return NotFound();
@@ -71,7 +73,7 @@ namespace TwitterCopy.Pages.Profiles
 
             Tweets = await _context.Tweets
                 .AsNoTracking()
-                .Where(t => t.UserId == profileOwner.Id)
+                .Where(t => t.UserId.Equals(profileOwner.Id))
                 .Select(x => new TweetModel
                 {
                     Id = x.Id,
@@ -89,7 +91,18 @@ namespace TwitterCopy.Pages.Profiles
             ViewData["IsFollowed"] = profileOwner.Followers
                 .Any(x => x.FollowerId.Equals(currentUser.Id));
 
-            ProfileUser = profileOwner;
+            Profile = new ProfileViewModel
+            {
+                UserName = profileOwner.UserName,
+                Slug = profileOwner.Slug,
+                Bio = profileOwner.Bio,
+                Location = profileOwner.Location,
+                Website = profileOwner.Website,
+                FollowersCount = profileOwner.Followers.Count,
+                FollowingCount = profileOwner.Following.Count,
+                LikesCount = profileOwner.Likes.Count,
+                TweetsCount = Tweets.Count
+            };
 
             Input = new InputModel
             {
