@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopy.Data;
@@ -22,9 +21,9 @@ namespace TwitterCopy.Pages.Profiles
             _userManager = userManager;
         }
 
-        public ProfileViewModel Profile { get; set; }
+        public ProfileViewModel ProfileUser { get; set; }
 
-        public IList<TwitterCopyUser> Following { get; set; }
+        public IList<UserToUser> Following { get; set; }
 
         [TempData]
         public string UserId { get; set; }
@@ -58,11 +57,12 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound();
             }
 
+            ViewData["CurrentUserId"] = currentUser.Id.ToString();
             ViewData["IsYourself"] = profileOwner.Slug == currentUser.Slug;
             ViewData["IsFollowed"] = profileOwner.Followers
                 .Any(x => x.FollowerId.Equals(currentUser.Id));
 
-            Profile = new ProfileViewModel
+            ProfileUser = new ProfileViewModel
             {
                 Id = profileOwner.Id.ToString(),
                 UserName = profileOwner.UserName,
@@ -77,7 +77,6 @@ namespace TwitterCopy.Pages.Profiles
             };
 
             Following = profileOwner.Following
-                .Select(u => u.User)
                 .ToList();
 
             Input = new ProfileInputModel

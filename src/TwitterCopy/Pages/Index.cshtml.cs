@@ -209,9 +209,8 @@ namespace TwitterCopy.Pages
                 return NotFound("You cannot follow yourself");
             }
 
-            bool alreadyFollowing = await _context.Users
-                .AnyAsync(x => x.Followers
-                    .Any(u => u.FollowerId.Equals(currentUser.Id)));
+            bool alreadyFollowing = userToFollow.Followers
+                .Any(f => f.FollowerId.Equals(currentUser.Id));
             if (alreadyFollowing)
             {
                 return NotFound("You cannot follow the User you are already following");
@@ -226,7 +225,7 @@ namespace TwitterCopy.Pages
             _context.Update(userToFollow);
             await _context.SaveChangesAsync();
 
-            return new JsonResult(userToFollow.Followers.Count);
+            return new JsonResult(new { Count = userToFollow.Followers.Count, Slug = userToFollow.Slug });
         }
 
         public async Task<IActionResult> OnPostUnfollowAsync(string userSlug)
@@ -267,7 +266,7 @@ namespace TwitterCopy.Pages
                 .FirstOrDefault(x => x.FollowerId.Equals(currentUser.Id)));
             await _context.SaveChangesAsync();
 
-            return new JsonResult(userToUnfollow.Followers.Count);
+            return new JsonResult(new { Count = userToUnfollow.Followers.Count, Slug = userToUnfollow.Slug });
         }
 
         public async Task<IActionResult> OnPostRetweetAsync(int? id)

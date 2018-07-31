@@ -137,7 +137,7 @@
         // hide Following button when hover
         $(this).addClass('d-none');
         // and show Unfollow button
-        $('.btn-unfollow-main').removeClass('d-none');
+        $(this).next('.btn-unfollow-main').removeClass('d-none');
     });
 
     /*
@@ -148,6 +148,8 @@
 
         var pressedBtn = $(this);
         var userSlug = pressedBtn.find('span').data('userslug');
+        var followingBtn = pressedBtn.next('.btn-following-main');
+        var unfollowBtn = followingBtn.next('.btn-unfollow-main');
 
         $.ajax({
             type: 'POST',
@@ -162,11 +164,14 @@
                 // hide Follow button
                 pressedBtn.addClass('d-none');
                 // show Following button
-                $('.btn-following-main').removeClass('d-none');
+                followingBtn.removeClass('d-none');
                 // enable MouseLeave event for the Unfollow button (for correct hover behaviour)
-                $('.btn-unfollow-main').on('mouseleave', unfollowMouseleaveHandler);
+                //$('.btn-unfollow-main')
+                unfollowBtn.on('mouseleave', unfollowMouseleaveHandler);
                 // update Followers count
-                $('#followersCount span').text(response);
+                if (userSlug === response.slug) {
+                    $('#followersCount').text(response.count);
+                }
             }
         });
     });
@@ -176,6 +181,8 @@
 
         var pressedBtn = $(this);
         var userSlug = pressedBtn.find('span').data('userslug');
+        var followingBtn = pressedBtn.prev('.btn-following-main');
+        var followBtn = followingBtn.prev('.btn-follow-main');
 
         $.ajax({
             type: 'POST',
@@ -194,9 +201,11 @@
                 // hide Unfollow button
                 pressedBtn.addClass('d-none');
                 // show Follow button
-                $('.btn-follow-main').removeClass('d-none');
+                followBtn.removeClass('d-none');
                 // update Followers count
-                $('#followersCount span').text(response);
+                if (userSlug === response.slug) {
+                    $('#followersCount').text(response.count);
+                }
             },
             failure: function (response) {
                 console.log(response);

@@ -4,86 +4,44 @@
     ViewData["Title"] = "Following";
 }
 
+<partial name="_ProfileNav" model="@Model.ProfileUser" view-data="ViewData" />
 <div class="row">
     <div class="col-md-3">
-        <h2>Left sidebar</h2>
         <div id="profileInfo">
             <h4>
-                <a id="profileInfoUserName" asp-page="./Index" asp-route-slug="@Model.Profile.Slug">
-                    @Model.Profile.UserName
+                <a id="profileInfoUserName" asp-page="./Index" asp-route-slug="@Model.ProfileUser.Slug">
+                    @Model.ProfileUser.UserName
                 </a>
             </h4>
             <p>
-                <a asp-page="./Index" asp-route-slug="@Model.Profile.Slug">
-                    @@@Model.Profile.Slug
+                <a asp-page="./Index" asp-route-slug="@Model.ProfileUser.Slug">
+                    @@@Model.ProfileUser.Slug
                 </a>
             </p>
             <p>
-                <span id="profileInfoBio">@Model.Profile.Bio</span>
+                <span id="profileInfoBio">@Model.ProfileUser.Bio</span>
             </p>
             <p>
-                <span id="profileInfoLocation">@Model.Profile.Location</span>
+                <span id="profileInfoLocation">@Model.ProfileUser.Location</span>
             </p>
             <p>
-                <span id="profileInfoWebsite">@Model.Profile.Website</span>
+                <span id="profileInfoWebsite">@Model.ProfileUser.Website</span>
             </p>
         </div>
         <partial name="_ProfileEditForm" model="Model.Input" />
     </div>
 
     <div class="col-md">
-        <a asp-page="./Index" asp-route-slug="@Model.Profile.Slug">
-            <span>Tweets</span>
-            <span id="tweetsCount">@Model.Profile.TweetsCount</span>
-        </a>
-        <a asp-page="./Following" asp-route-id="@Model.Profile.Id">
-            <span>Following</span>
-            <span id="followingsCount">@Model.Profile.FollowingCount</span>
-        </a>
-        <p id="followersCount">Followers: <span>@Model.Profile.FollowersCount</span></p>
-        <p id="likesCount">Likes: <span>@Model.Profile.LikesCount</span></p>
-        <div id="profileActions">
-            @if (!(bool)ViewData["IsYourself"])
-            {
-                <div id="profileFollowActions">
-                    <button type="button" class="btn btn-outline-primary btn-follow-main @((bool)ViewData["IsFollowed"] ? "d-none" : "")">
-                        <span data-userslug="@Model.Profile.Slug">Follow</span>
-                    </button>
-                    <button type="button" class="btn btn-primary btn-following-main @((bool)ViewData["IsFollowed"] ? "" : "d-none")">
-                        <span data-userslug="@Model.Profile.Slug">Following</span>
-                    </button>
-                    <button type="button" class="btn btn-danger btn-unfollow-main d-none">
-                        <span data-userslug="@Model.Profile.Slug">Unfollow</span>
-                    </button>
-                </div>
-            }
-            else if ((bool)ViewData["IsYourself"])
-            {
-                <div id="profileEditActions">
-                    <button type="button" id="editProfileBtn" class="btn btn-outline-secondary">
-                        <span>Edit profile</span>
-                    </button>
-                    <button type="button" id="cancelEditBtn" class="btn btn-outline-secondary d-none">
-                        <span>Cancel</span>
-                    </button>
-                    <button type="button" id="saveEditBtn" class="btn btn-outline-primary d-none">
-                        <span>Save changes</span>
-                    </button>
-                </div>
-            }
-        </div>
-
-        <h2>Following</h2>
         @if (Model.Following.Count() > 0)
         {
-            foreach (var follow in Model.Following)
-            {
-                <ul>
-                    <li>
-                        @follow.UserName
-                    </li>
-                </ul>
-            }
+            <div class="row">
+                @foreach (var follow in Model.Following)
+                {
+                    <div class="col-md-4">
+                        <partial name="_ProfileCardSmall" model="follow" view-data="ViewData" />
+                    </div>
+                }
+            </div>
         }
         else
         {
