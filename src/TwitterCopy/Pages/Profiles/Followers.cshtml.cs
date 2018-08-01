@@ -11,12 +11,12 @@ using TwitterCopy.Models;
 
 namespace TwitterCopy.Pages.Profiles
 {
-    public class FollowingModel : PageModel
+    public class FollowersModel : PageModel
     {
         private readonly TwitterCopyContext _context;
         private readonly UserManager<TwitterCopyUser> _userManager;
 
-        public FollowingModel(TwitterCopyContext context, UserManager<TwitterCopyUser> userManager)
+        public FollowersModel(TwitterCopyContext context, UserManager<TwitterCopyUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -24,14 +24,14 @@ namespace TwitterCopy.Pages.Profiles
 
         public ProfileViewModel ProfileUser { get; set; }
 
-        public IList<UserToUser> Following { get; set; }
+        public IList<UserToUser> Followers { get; set; }
 
         [BindProperty]
         public ProfileInputModel Input { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string slug)
         {
-            if(slug == null)
+            if (slug == null)
             {
                 return NotFound();
             }
@@ -39,12 +39,12 @@ namespace TwitterCopy.Pages.Profiles
             var profileOwner = await _context.Users
                 .AsNoTracking()
                 .Include(f => f.Following)
-                    .ThenInclude(u => u.User)
                 .Include(f => f.Followers)
+                    .ThenInclude(u => u.User)
                 .Include(t => t.Tweets)
                 .Include(l => l.Likes)
                 .FirstOrDefaultAsync(u => u.Slug.Equals(slug));
-            if(profileOwner == null)
+            if (profileOwner == null)
             {
                 return NotFound();
             }
@@ -74,7 +74,7 @@ namespace TwitterCopy.Pages.Profiles
                 TweetsCount = profileOwner.Tweets.Count
             };
 
-            Following = profileOwner.Following
+            Followers = profileOwner.Followers
                 .ToList();
 
             Input = new ProfileInputModel

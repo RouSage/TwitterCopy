@@ -1,6 +1,6 @@
-﻿@model TwitterCopy.Models.UserToUser
+﻿@model TwitterCopy.Entities.UserToUser
 
-<div id="followingCard" class="border mt-3">
+<div id="profileCardSmall" class="border mt-3">
     <div class="profile-follow-actions d-flex justify-content-end p-1">
         <button type="button" class="btn btn-sm btn-outline-primary btn-follow-main
                                         @(Model.FollowerId.ToString() == ViewData["CurrentUserId"].ToString() ? "d-none" : "")">

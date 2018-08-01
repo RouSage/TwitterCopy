@@ -1,0 +1,52 @@
+﻿@page "{slug}"
+@model TwitterCopy.Pages.Profiles.FollowersModel
+@{
+    ViewData["Title"] = "Followers";
+}
+
+<partial name="_ProfileNav" model="@Model.ProfileUser" view-data="ViewData" />
+<div class="row">
+    <div class="col-md-3">
+        <div id="profileInfo">
+            <h4>
+                <a id="profileInfoUserName" asp-page="./Index" asp-route-slug="@Model.ProfileUser.Slug">
+                    @Model.ProfileUser.UserName
+                </a>
+            </h4>
+            <p>
+                <a asp-page="./Index" asp-route-slug="@Model.ProfileUser.Slug">
+                    @@@Model.ProfileUser.Slug
+                </a>
+            </p>
+            <p>
+                <span id="profileInfoBio">@Model.ProfileUser.Bio</span>
+            </p>
+            <p>
+                <span id="profileInfoLocation">@Model.ProfileUser.Location</span>
+            </p>
+            <p>
+                <span id="profileInfoWebsite">@Model.ProfileUser.Website</span>
+            </p>
+        </div>
+        <partial name="_ProfileEditForm" model="Model.Input" />
+    </div>
+
+    <div class="col-md">
+        @if (Model.Followers.Count() > 0)
+        {
+            <div class="row">
+                @foreach (var follower in Model.Followers)
+                {
+                    <div class="col-md-4">
+                        <partial name="_ProfileCardSmall" model="follower" view-data="ViewData" />
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>User doesn't have followers yet.</p>
+        }
+    </div>
+</div>
+

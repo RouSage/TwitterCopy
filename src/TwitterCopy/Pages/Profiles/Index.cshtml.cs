@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -28,9 +27,6 @@ namespace TwitterCopy.Pages.Profiles
         public IList<TweetModel> Tweets { get; set; }
 
         public ProfileViewModel Profile { get; set; }
-
-        [TempData]
-        public string UserId { get; set; }
 
         [BindProperty]
         public ProfileInputModel Input { get; set; }
@@ -108,8 +104,6 @@ namespace TwitterCopy.Pages.Profiles
                 LikesCount = profileOwner.Likes.Count,
                 TweetsCount = Tweets.Count
             };
-
-            UserId = profileOwner.Id.ToString();
 
             Input = new ProfileInputModel
             {
