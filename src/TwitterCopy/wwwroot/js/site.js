@@ -299,7 +299,7 @@
         postedValues.Location = location;
         postedValues.Website = website;
 
-        var postUrl = window.location.pathname + '?handler=EditUser';
+        var postUrl = '/Profiles/Index?handler=EditUser';
 
         $.post(postUrl, postedValues, function (response) {
             ProfileEditor.updateProfileInfo(response);
