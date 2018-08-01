@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TwitterCopy.Models
+namespace TwitterCopy.Entities
 {
     /// <summary>
     /// Implements Follower/Following system

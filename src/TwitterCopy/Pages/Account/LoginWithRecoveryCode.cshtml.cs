@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using TwitterCopy.Models;
+using TwitterCopy.Entities;
 
 namespace TwitterCopy.Pages.Account
 {

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopy.Data;
+using TwitterCopy.Entities;
 using TwitterCopy.Models;
 
 namespace TwitterCopy.Pages.Profiles

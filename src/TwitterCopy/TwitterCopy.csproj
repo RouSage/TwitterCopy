@@ -20,4 +20,8 @@
     <PackageReference Include="SendGrid" Version="9.9.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TwitterCopy.Entities\TwitterCopy.Entities.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using TwitterCopy.Data;
-using TwitterCopy.Models;
+using TwitterCopy.Entities;
 using TwitterCopy.Services;
 
 namespace TwitterCopy

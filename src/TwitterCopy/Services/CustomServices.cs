@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using TwitterCopy.Data;
-using TwitterCopy.Models;
+using TwitterCopy.Entities;
 
 namespace TwitterCopy.Services
 {

@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TwitterCopy.Models
+namespace TwitterCopy.Entities
 {
-    public class Like
+    public class Retweet
     {
         [Key]
         public int Id { get; set; }
@@ -20,6 +20,6 @@ namespace TwitterCopy.Models
         public TwitterCopyUser User { get; set; }
 
         [DataType(DataType.DateTime)]
-        public DateTime DateLiked { get; set; } = DateTime.UtcNow;
+        public DateTime RetweetDate { get; set; } = DateTime.UtcNow;
     }
 }

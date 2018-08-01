@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using TwitterCopy.Data;
+using TwitterCopy.Entities;
 using TwitterCopy.Models;
 
 namespace TwitterCopy.Pages

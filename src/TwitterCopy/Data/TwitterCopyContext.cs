@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
-using TwitterCopy.Models;
+using TwitterCopy.Entities;
 
 namespace TwitterCopy.Data
 {

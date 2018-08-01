@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace TwitterCopy.Models
+namespace TwitterCopy.Entities
 {
     // Add profile data for application users by adding properties to the TwitterCopyUser class
     public class TwitterCopyUser : IdentityUser<Guid>
