@@ -1,0 +1,45 @@
+﻿@page "{slug}"
+@model TwitterCopy.Pages.Profiles.LikesModel
+@{
+    ViewData["Title"] = "Likes";
+}
+
+<partial name="_ProfileNav" model="@Model.ProfileUser" view-data="ViewData" />
+<div class="row">
+    <div class="col-md-3">
+        <div id="profileInfo">
+            <h4>
+                <a id="profileInfoUserName" asp-page="./Index" asp-route-slug="@Model.ProfileUser.Slug">
+                    @Model.ProfileUser.UserName
+                </a>
+            </h4>
+            <p>
+                <a asp-page="./Index" asp-route-slug="@Model.ProfileUser.Slug">
+                    @@@Model.ProfileUser.Slug
+                </a>
+            </p>
+            <p>
+                <span id="profileInfoBio">@Model.ProfileUser.Bio</span>
+            </p>
+            <p>
+                <span id="profileInfoLocation">@Model.ProfileUser.Location</span>
+            </p>
+            <p>
+                <span id="profileInfoWebsite">@Model.ProfileUser.Website</span>
+            </p>
+        </div>
+        <partial name="_ProfileEditForm" model="Model.Input" />
+    </div>
+
+    <div class="col-md-6">
+        @if (Model.LikedTweets.Count() > 0)
+        {
+            <partial name="_Tweets" model="Model.LikedTweets" />
+        }
+        else
+        {
+            <p>User doesn't liked anything yet.</p>
+        }
+    </div>
+</div>
+
