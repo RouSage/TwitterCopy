@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
+using System.Net;
 using System.Threading.Tasks;
 using TwitterCopy.Data;
 using TwitterCopy.Models;
@@ -41,7 +41,6 @@ namespace TwitterCopy.Pages
         public async Task<IActionResult> OnGet()
         {
             CurrentUser = await _userManager.GetUserAsync(User);
-
             if(CurrentUser == null)
             {
                 return NotFound();
@@ -145,11 +144,19 @@ namespace TwitterCopy.Pages
             }
 
             // Get current authenticated user
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var user = await _userManager.GetUserAsync(User);
+            if(user == null)
+            {
+                return NotFound();
+            }
             // Get tweet with the given Id
             var tweet = await _context.Tweets
                 .Include(l => l.Likes)
                 .FirstOrDefaultAsync(t => t.Id == id);
+            if(tweet == null)
+            {
+                return NotFound();
+            }
 
             // Apply the user and tweet object from above to the new Like
             var like = new Like
@@ -206,14 +213,16 @@ namespace TwitterCopy.Pages
 
             if (userSlug == currentUser.Slug)
             {
-                return NotFound("You cannot follow yourself");
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new { Message = "You can't follow yourself." });
             }
 
             bool alreadyFollowing = userToFollow.Followers
                 .Any(f => f.FollowerId.Equals(currentUser.Id));
             if (alreadyFollowing)
             {
-                return NotFound("You cannot follow the User you are already following");
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new { Message = "You can't follow the user you're already following." });
             }
 
             userToFollow.Followers.Add(new UserToUser
@@ -251,7 +260,8 @@ namespace TwitterCopy.Pages
 
             if (userSlug == currentUser.Slug)
             {
-                return NotFound("You cannot unfollow yourself");
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new { Message = "You can't unfollow yourself." });
             }
 
             bool alreadyFollowing = await _context.Users
@@ -259,7 +269,8 @@ namespace TwitterCopy.Pages
                     .Any(u => u.FollowerId.Equals(currentUser.Id)));
             if (!alreadyFollowing)
             {
-                return NotFound("You cannot unfollow the User you are already unfollowing");
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new { Message = "You can't unfollow the user you're alredy unfollowing." });
             }
 
             userToUnfollow.Followers.Remove(userToUnfollow.Followers

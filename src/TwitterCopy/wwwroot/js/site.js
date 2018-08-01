@@ -172,6 +172,9 @@
                 if (userSlug === response.slug) {
                     $('#followersCount').text(response.count);
                 }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
             }
         });
     });
@@ -207,12 +210,12 @@
                     $('#followersCount').text(response.count);
                 }
             },
-            failure: function (response) {
-                console.log(response);
-
+            error: function (jqXHT, textStatus, errorThrown) {
                 // enable MouseLeave event in case of failure
                 // because it was disabled in beforeSend
                 pressedBtn.on('mouseleave', unfollowMouseleaveHandler);
+
+                alert(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
             }
         });
     });
