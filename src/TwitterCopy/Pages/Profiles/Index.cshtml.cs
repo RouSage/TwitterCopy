@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -155,6 +156,65 @@ namespace TwitterCopy.Pages.Profiles
                 Location = userToUpdate.Location,
                 Website = userToUpdate.Website
             });
+        }
+
+        public async Task<IActionResult> OnGetStatusAsync(string slug, int? tweetId)
+        {
+            if (string.IsNullOrEmpty(slug) || tweetId == null)
+            {
+                return NotFound();
+            }
+
+            var profileOwner = await _context.Users
+                .AsNoTracking()
+                .Include(f => f.Followers)
+                .FirstOrDefaultAsync(u => u.Slug == slug);
+            if(profileOwner == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if(currentUser == null)
+            {
+                return NotFound();
+            }
+
+            var tweet = await _context.Tweets
+                .AsNoTracking()
+                .Select(t => new TweetModel
+                {
+                    Id = t.Id,
+                    AuthorName = t.User.UserName,
+                    AuthorSlug = t.User.Slug,
+                    LikeCount = t.LikeCount,
+                    PostedOn = t.PostedOn,
+                    RetweetCount = t.RetweetCount,
+                    Text = t.Text
+                })
+                .FirstOrDefaultAsync(t => t.Id == tweetId);
+            if(tweet == null)
+            {
+                return NotFound();
+            }
+
+            var viewData = new ViewDataDictionary(
+                new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(),
+                new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary()) { { "TweetModel", tweet } };
+            viewData.Model = tweet;
+
+            viewData["IsYourself"] = profileOwner.Slug == currentUser.Slug;
+            viewData["IsFollowed"] = profileOwner.Followers
+                .Any(x => x.FollowerId.Equals(currentUser.Id));
+
+            var result = new PartialViewResult
+            {
+                ViewName = "_TweetPopUp",
+                ViewData = viewData,
+            };
+
+            //return new JsonResult(tweet);
+            return result;
         }
     }
 }

@@ -1,0 +1,51 @@
+﻿@model TwitterCopy.Models.TweetModel
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <a asp-page="/Profiles/Index" asp-route-slug="@Model.AuthorSlug">
+        <span class="d-block">
+            <strong>@Model.AuthorName</strong>
+        </span>
+        <span>
+            <small class="text-muted">@@@Model.AuthorSlug</small>
+        </span>
+    </a>
+    <div class="profile-actions">
+        @if (!(bool)ViewData["IsYourself"])
+        {
+            <div class="profile-follow-actions">
+                <button type="button" class="btn btn-outline-primary btn-follow-main @((bool)ViewData["IsFollowed"] ? "d-none" : "")">
+                    <span data-userslug="@Model.AuthorSlug">Follow</span>
+                </button>
+                <button type="button" class="btn btn-primary btn-following-main @((bool)ViewData["IsFollowed"] ? "" : "d-none")">
+                    <span data-userslug="@Model.AuthorSlug">Following</span>
+                </button>
+                <button type="button" class="btn btn-danger btn-unfollow-main d-none">
+                    <span data-userslug="@Model.AuthorSlug">Unfollow</span>
+                </button>
+            </div>
+        }
+    </div>
+</div>
+<div class="w-100 mb-2">
+    <p class="text-body mb-0">@Model.Text</p>
+</div>
+<div class="w-100 mb-2">
+    <span class="text-muted">
+        <small>@Model.PostedOn.ToString("h:mm tt '-' d MMM yyyy")</small>
+    </span>
+</div>
+<div class="w-100">
+    @if (Model.AuthorName == User.Identity.Name)
+    {
+        <button type="button" class="btn btn-danger" data-toggle="modal"
+                data-target="#deleteTweetModal" data-tweet-id="@Model.Id">
+            Delete
+        </button>
+    }
+    <button type="button" class="btn btn-outline-success btn-retweet" data-tweet-id="@Model.Id">
+        <span>@Model.RetweetCount</span>
+    </button>
+    <button type="button" class="btn btn-outline-primary btn-like" data-tweet-id="@Model.Id">
+        <span>@Model.LikeCount</span>
+    </button>
+</div>

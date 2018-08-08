@@ -1,0 +1,38 @@
+﻿@model TwitterCopy.Models.TweetModel
+
+<div class="card tweet-actionable"
+     data-tweet-id="@Model.Id"
+     data-user-slug="@Model.AuthorSlug">
+    <div class="card-header">
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                <a asp-page="/Profiles/Index" asp-route-slug="@Model.AuthorSlug">
+                    @Model.AuthorName
+                </a>
+            </li>
+            <li class="list-inline-item">
+                <span class="text-muted">
+                    @@@Model.AuthorSlug
+                </span>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <p>@Model.Text</p>
+    </div>
+    <div class="card-footer">
+        @if (Model.AuthorName == User.Identity.Name)
+        {
+            <button type="button" class="btn btn-danger" data-toggle="modal"
+                    data-target="#deleteTweetModal" data-tweet-id="@Model.Id">
+                Delete
+            </button>
+        }
+        <button type="button" class="btn btn-outline-success btn-retweet" data-tweet-id="@Model.Id">
+            <span>@Model.RetweetCount</span>
+        </button>
+        <button type="button" class="btn btn-outline-primary btn-like" data-tweet-id="@Model.Id">
+            <span>@Model.LikeCount</span>
+        </button>
+    </div>
+</div>

@@ -34,7 +34,10 @@
     <div class="col-md-6">
         @if (Model.LikedTweets.Count() > 0)
         {
-            <partial name="_Tweets" model="Model.LikedTweets" />
+            foreach (var tweet in Model.LikedTweets)
+            {
+                <partial name="_Tweet" model="tweet" />
+            }
         }
         else
         {

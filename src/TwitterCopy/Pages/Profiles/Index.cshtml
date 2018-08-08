@@ -32,7 +32,10 @@
     <div class="col-md-6">
         @if (Model.Tweets.Count() > 0)
         {
-            <partial name="_Tweets" model="Model.Tweets" />
+            foreach (var tweet in Model.Tweets)
+            {
+                <partial name="_Tweet" model="tweet" />
+            }
         }
         else
         {
@@ -41,6 +44,7 @@
     </div>
 
     <partial name="_DeleteTweetModal" />
+    <partial name="_TweetModal" />
 
     <div class="col-md-3">
         <h2>Right sidebar</h2>

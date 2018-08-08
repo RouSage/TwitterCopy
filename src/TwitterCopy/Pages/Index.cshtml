@@ -31,7 +31,10 @@
         </form>
         @if (Model.FeedTweets.Count() > 0)
         {
-            <partial name="_Tweets" model="Model.FeedTweets" />
+            foreach (var tweet in Model.FeedTweets)
+            {
+                <partial name="_Tweet" model="tweet" />
+            }
         }
         else
         {
@@ -40,6 +43,7 @@
     </div>
 
     <partial name="_DeleteTweetModal" />
+    <partial name="_TweetModal" />
 
     <div class="col-md-3">
         <h2>Right sidebar</h2>

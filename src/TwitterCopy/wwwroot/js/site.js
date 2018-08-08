@@ -7,7 +7,7 @@
         // Button that triggered the modal
         var button = $(event.relatedTarget);
         // Extract tweet's id from the button's 'data-tweet' attribute
-        var tweetId = button.data('tweet');
+        var tweetId = button.data('tweet-id');
 
         // Add 'action' attribute to the form with url to the delete action
         var deleteForm = $('#deleteTweetForm');
@@ -60,11 +60,11 @@
     /*
      * Like button functionality
      */
-    $('.btn-like').click(function (e) {
+    $(document.body).on('click', '.btn-like', function (e) {
         e.preventDefault();
 
         var btnClicked = $(this);
-        var tweetId = btnClicked.data('id');
+        var tweetId = btnClicked.data('tweet-id');
 
         $.ajax({
             type: 'GET',
@@ -118,22 +118,25 @@
     /*
      * Show Following button when mouse leaves Unfollow button
      */
-    function unfollowMouseleaveHandler() {
+    function unfollowMouseleaveHandler(unfollowBtn) {
         // hide Unfollow button when mouseleave
-        $('.btn-unfollow-main').addClass('d-none');
+        unfollowBtn.addClass('d-none');
         // show Following button
-        $('.btn-following-main').removeClass('d-none');
+        unfollowBtn.prev('.btn-following-main').removeClass('d-none');
     }
 
     /*
      * Enable mouseleave event for the Unfollow button by default
      */
-    $('.btn-unfollow-main').on('mouseleave', unfollowMouseleaveHandler);
-
+    $(document.body).on('mouseleave', '.btn-unfollow-main', function (e) {
+        var pressedBtn = $(e.currentTarget);
+        if (!pressedBtn.hasClass('d-none'))
+            unfollowMouseleaveHandler(pressedBtn);
+    });
     /*
      * Show Unfollow button when mouse enters Following button
      */
-    $('.btn-following-main').mouseenter(function () {
+    $(document.body).on('mouseenter', '.btn-following-main', function () {
         // hide Following button when hover
         $(this).addClass('d-none');
         // and show Unfollow button
@@ -143,7 +146,7 @@
     /*
      * Click event for the main Follow button (profile page)
      */
-    $('.btn-follow-main').click(function (e) {
+    $(document.body).on('click', '.btn-follow-main', function (e) {
         e.preventDefault();
 
         var pressedBtn = $(this);
@@ -165,9 +168,6 @@
                 pressedBtn.addClass('d-none');
                 // show Following button
                 followingBtn.removeClass('d-none');
-                // enable MouseLeave event for the Unfollow button (for correct hover behaviour)
-                //$('.btn-unfollow-main')
-                unfollowBtn.on('mouseleave', unfollowMouseleaveHandler);
                 // update Followers count
                 if (userSlug === response.slug) {
                     $('#followersCount').text(response.count);
@@ -179,7 +179,7 @@
         });
     });
 
-    $('.btn-unfollow-main').click(function (e) {
+    $(document.body).on('click', '.btn-unfollow-main', function (e) {
         e.preventDefault();
 
         var pressedBtn = $(this);
@@ -193,10 +193,6 @@
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $('input:hidden[name="__RequestVerificationToken"]').val());
-
-                // disable MouseLeave event so Following button
-                // won't show after unfollowing
-                pressedBtn.off('mouseleave');
             },
             contentType: 'application/json',
             dataType: 'json',
@@ -211,20 +207,16 @@
                 }
             },
             error: function (jqXHT, textStatus, errorThrown) {
-                // enable MouseLeave event in case of failure
-                // because it was disabled in beforeSend
-                pressedBtn.on('mouseleave', unfollowMouseleaveHandler);
-
                 alert(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
             }
         });
     });
 
-    $('.btn-retweet').click(function (e) {
+    $(document.body).on('click', '.btn-retweet', function (e) {
         e.preventDefault();
 
         var clickedBtn = $(this);
-        var tweetId = clickedBtn.data('id');
+        var tweetId = clickedBtn.data('tweet-id');
 
         $.ajax({
             type: 'POST',
@@ -306,6 +298,31 @@
             ProfileEditor.saveChangesButtonClick();
         }).fail(function (jqXHR, textStatus, errorThrown) {
             alert(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
+        });
+    });
+
+    $('.tweet-actionable').click(function (e) {
+        var tweet = $(this);
+        var tweetId = tweet.data('tweet-id');
+        var userSlug = tweet.data('user-slug');
+
+        $.ajax({
+            type: 'GET',
+            url: `/Profiles/Index/${userSlug}`,
+            data: {
+                handler: 'Status',
+                tweetId: tweetId
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                var tweetModal = $('#tweetModal');
+                var tweetContainer = tweetModal.find('.modal-body');
+                tweetContainer.html(response);
+                tweetModal.modal('show');
+            },
+            failure: function (response) {
+                alert(response);
+            }
         });
     });
 
