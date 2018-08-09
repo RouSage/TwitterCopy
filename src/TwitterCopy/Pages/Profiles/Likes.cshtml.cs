@@ -77,6 +77,7 @@ namespace TwitterCopy.Pages.Profiles
             };
 
             LikedTweets = profileOwner.Likes
+                .OrderByDescending(d => d.DateLiked)
                 .Select(x => new TweetModel
                 {
                     Id = x.TweetId,
@@ -87,7 +88,6 @@ namespace TwitterCopy.Pages.Profiles
                     RetweetCount = x.Tweet.RetweetCount,
                     Text = x.Tweet.Text
                 })
-                .OrderByDescending(p => p.PostedOn)
                 .ToList();
 
             Input = new ProfileInputModel
