@@ -29,7 +29,7 @@ namespace TwitterCopy.Pages
         [BindProperty]
         public TweetModel Tweet { get; set; }
 
-        public TwitterCopyUser CurrentUser { get; set; }
+        public ProfileViewModel CurrentUser { get; set; }
 
         public IList<TweetModel> FeedTweets { get; set; }
 
@@ -41,8 +41,20 @@ namespace TwitterCopy.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnGet()
         {
-            CurrentUser = await _userManager.GetUserAsync(User);
-            if(CurrentUser == null)
+            var userId = _userManager.GetUserId(User);
+            CurrentUser = await _context.Users
+                .AsNoTracking()
+                .Select(x => new ProfileViewModel
+                {
+                    Id = x.Id.ToString(),
+                    UserName = x.UserName,
+                    Slug = x.Slug,
+                    TweetsCount = x.Tweets.Count,
+                    FollowingCount = x.Following.Count,
+                    FollowersCount = x.Followers.Count
+                })
+                .FirstOrDefaultAsync(u => u.Id.Equals(userId));
+            if (CurrentUser == null)
             {
                 return NotFound();
             }
@@ -71,7 +83,7 @@ namespace TwitterCopy.Pages
                 var newTweet = new Tweet
                 {
                     Text = Tweet.Text,
-                    User = await _userManager.FindByNameAsync(User.Identity.Name),
+                    User = await _userManager.GetUserAsync(User),
                     PostedOn = Tweet.PostedOn
                 };
 
@@ -337,7 +349,7 @@ namespace TwitterCopy.Pages
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        private IList<TweetModel> GetTweets(Guid userId)
+        private IList<TweetModel> GetTweets(string userId)
         {
             var user = _context.Users
                 .AsNoTracking()
@@ -347,7 +359,7 @@ namespace TwitterCopy.Pages
                 .Include(f => f.Following)
                     .ThenInclude(u => u.User)
                         .ThenInclude(t => t.Tweets)
-                .FirstOrDefault(x => x.Id.Equals(userId));
+                .FirstOrDefault(x => x.Id.ToString().Equals(userId));
 
             var currentUserTweets = user.Tweets
                 .Select(x => new TweetModel

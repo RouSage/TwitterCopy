@@ -31,22 +31,6 @@ namespace TwitterCopy.Pages.Profiles
 
         [BindProperty]
         public ProfileInputModel Input { get; set; }
-        
-        public class InputModel
-        {
-            [Required(ErrorMessage = "Name can't be blank.")]
-            [StringLength(50, MinimumLength = 2)]
-            public string UserName { get; set; }
-
-            [StringLength(1000)]
-            public string Bio { get; set; }
-
-            public string Location { get; set; }
-
-            [Url(ErrorMessage = "Url is not valid.")]
-            [DataType(DataType.Url)]
-            public string Website { get; set; }
-        }
 
         public async Task<IActionResult> OnGetAsync(string slug)
         {
@@ -117,7 +101,7 @@ namespace TwitterCopy.Pages.Profiles
             return Page();
         }
 
-        public async Task<IActionResult> OnPostEditUserAsync(InputModel postedData)
+        public async Task<IActionResult> OnPostEditUserAsync(ProfileInputModel postedData)
         {
             if (!ModelState.IsValid)
             {

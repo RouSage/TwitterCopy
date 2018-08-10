@@ -2,19 +2,45 @@
 @model IndexModel
 
 <div class="row">
-    <div class="col-md-3">
-        <h2>Left sidebar</h2>
-        <h4>
-            <a asp-page="/Profiles/Index" asp-route-slug="@Model.CurrentUser.Slug">
-                @Model.CurrentUser.UserName
-            </a>
-        </h4>
-        <p>
-            <a asp-page="/Profiles/Index" asp-route-slug="@Model.CurrentUser.Slug">
-                @@@Model.CurrentUser.Slug
-            </a>
-        </p>
+    <div class="col-md-3 p-0">
+        <div class="border mt-3">
+            <div class="d-flex flex-column p-2">
+                <h4>
+                    <a asp-page="/Profiles/Index" asp-route-slug="@Model.CurrentUser.Slug">
+                        <strong>@Model.CurrentUser.UserName</strong>
+                    </a>
+                </h4>
+                <h6>
+                    <a asp-page="/Profiles/Index" asp-route-slug="@Model.CurrentUser.Slug">
+                        <span class="text-muted">@@@Model.CurrentUser.Slug</span>
+                    </a>
+                </h6>
+            </div>
+            <div class="d-flex align-items-center">
+                <ul class="nav text-center">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Profiles/Index" asp-route-slug="@Model.CurrentUser.Slug">
+                            <small class="d-block">Tweets</small>
+                            <span id="tweetsCount">@Model.CurrentUser.TweetsCount</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Profiles/Following" asp-route-slug="@Model.CurrentUser.Slug">
+                            <small class="d-block">Following</small>
+                            <span id="followingsCount">@Model.CurrentUser.FollowingCount</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Profiles/Followers" asp-route-slug="@Model.CurrentUser.Slug">
+                            <small class="d-block">Followers</small>
+                            <span id="followersCount">@Model.CurrentUser.FollowersCount</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
+    <!-- /.col-md-3 -->
 
     <div class="col-md-6">
         <h2>Tweets</h2>
