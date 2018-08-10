@@ -1,30 +1,30 @@
-﻿@model TwitterCopy.Entities.TwitterCopyUser
+﻿@model TwitterCopy.Entities.UserToUser
 
 <div id="profileCardSmall" class="border mt-3">
     <div class="profile-follow-actions d-flex justify-content-end p-1">
         <button type="button" class="btn btn-sm btn-outline-primary btn-follow-main
-                                        @(Model.Id.ToString() == ViewData["CurrentUserId"].ToString() ? "d-none" : "")">
-            <span data-userslug="@Model.Slug">Follow</span>
+                                        @(Model.FollowerId.ToString() == ViewData["CurrentUserId"].ToString() ? "d-none" : "")">
+            <span data-userslug="@Model.User.Slug">Follow</span>
         </button>
         <button type="button" class="btn btn-sm btn-primary btn-following-main
-                                        @(Model.Id.ToString() == ViewData["CurrentUserId"].ToString() ? "" : "d-none")">
-            <span data-userslug="@Model.Slug">Following</span>
+                                        @(Model.FollowerId.ToString() == ViewData["CurrentUserId"].ToString() ? "" : "d-none")">
+            <span data-userslug="@Model.User.Slug">Following</span>
         </button>
         <button type="button" class="btn btn-sm btn-danger btn-unfollow-main d-none">
-            <span data-userslug="@Model.Slug">Unfollow</span>
+            <span data-userslug="@Model.User.Slug">Unfollow</span>
         </button>
     </div>
     <h4>
-        <a asp-page="./Index" asp-route-slug="@Model.Slug">
-            @Model.UserName
+        <a asp-page="./Index" asp-route-slug="@Model.User.Slug">
+            @Model.User.UserName
         </a>
     </h4>
     <p>
-        <a asp-page="./Index" asp-route-slug="@Model.Slug">
-            @@@Model.Slug
+        <a asp-page="./Index" asp-route-slug="@Model.User.Slug">
+            @@@Model.User.Slug
         </a>
     </p>
     <p>
-        <span>@Model.Bio</span>
+        <span>@Model.User.Bio</span>
     </p>
 </div>

@@ -12,7 +12,7 @@
                 </a>
             </h4>
             <p>
-                <a asp-page="./Index" asp-route-slug="@Model.Profile.Slug">
+                <a id="profileInfoSlug" asp-page="./Index" asp-route-slug="@Model.Profile.Slug" data-slug="@Model.Profile.Slug">
                     @@@Model.Profile.Slug
                 </a>
             </p>

@@ -247,7 +247,12 @@ namespace TwitterCopy.Pages
             _context.Update(userToFollow);
             await _context.SaveChangesAsync();
 
-            return new JsonResult(new { Count = userToFollow.Followers.Count, Slug = userToFollow.Slug });
+            return new JsonResult(new
+            {
+                Count = userToFollow.Followers.Count,
+                Slug = userToFollow.Slug,
+                CurrentUserSlug = currentUser.Slug
+            });
         }
 
         public async Task<IActionResult> OnPostUnfollowAsync(string userSlug)
@@ -290,7 +295,12 @@ namespace TwitterCopy.Pages
                 .FirstOrDefault(x => x.FollowerId.Equals(currentUser.Id)));
             await _context.SaveChangesAsync();
 
-            return new JsonResult(new { Count = userToUnfollow.Followers.Count, Slug = userToUnfollow.Slug });
+            return new JsonResult(new
+            {
+                Count = userToUnfollow.Followers.Count,
+                Slug = userToUnfollow.Slug,
+                CurrentUserSlug = currentUser.Slug
+            });
         }
 
         public async Task<IActionResult> OnPostRetweetAsync(int? id)

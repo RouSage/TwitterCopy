@@ -150,13 +150,14 @@
         e.preventDefault();
 
         var pressedBtn = $(this);
-        var userSlug = pressedBtn.find('span').data('userslug');
+        var profileUserSlug = $('#profileInfoSlug').data('slug');
+        var userToFollow = pressedBtn.find('span').data('userslug');
         var followingBtn = pressedBtn.next('.btn-following-main');
         var unfollowBtn = followingBtn.next('.btn-unfollow-main');
 
         $.ajax({
             type: 'POST',
-            url: `/Index/?handler=Follow&userSlug=${userSlug}`,
+            url: `/Index/?handler=Follow&userSlug=${userToFollow}`,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $('input:hidden[name="__RequestVerificationToken"]').val());
@@ -169,8 +170,11 @@
                 // show Following button
                 followingBtn.removeClass('d-none');
                 // update Followers count
-                if (userSlug === response.slug) {
+                if (profileUserSlug === response.slug) {
                     $('#followersCount').text(response.count);
+                }
+                else if (profileUserSlug === response.currentUserSlug) {
+                    $('#followingCount').text(response.count);
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -183,6 +187,7 @@
         e.preventDefault();
 
         var pressedBtn = $(this);
+        var profileUserSlug = $('#profileInfoSlug').data('slug');
         var userSlug = pressedBtn.find('span').data('userslug');
         var followingBtn = pressedBtn.prev('.btn-following-main');
         var followBtn = followingBtn.prev('.btn-follow-main');
@@ -202,11 +207,14 @@
                 // show Follow button
                 followBtn.removeClass('d-none');
                 // update Followers count
-                if (userSlug === response.slug) {
+                if (profileUserSlug === response.slug) {
                     $('#followersCount').text(response.count);
                 }
+                else if (profileUserSlug === response.currentUserSlug) {
+                    $('#followingCount').text(response.count);
+                }
             },
-            error: function (jqXHT, textStatus, errorThrown) {
+            error: function (jqXHR, textStatus, errorThrown) {
                 alert(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
             }
         });

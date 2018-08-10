@@ -14,7 +14,7 @@
                 </a>
             </h4>
             <p>
-                <a asp-page="./Index" asp-route-slug="@Model.ProfileUser.Slug">
+                <a id="profileInfoSlug" asp-page="./Index" asp-route-slug="@Model.ProfileUser.Slug" data-slug="@Model.ProfileUser.Slug">
                     @@@Model.ProfileUser.Slug
                 </a>
             </p>
@@ -38,7 +38,36 @@
                 @foreach (var follow in Model.Following)
                 {
                     <div class="col-md-4">
-                        <partial name="_ProfileCardSmall" model="follow" view-data="ViewData" />
+                        <div class="border mt-3">
+                            <div class="profile-follow-actions d-flex justify-content-end p-1">
+                                <button type="button" class="btn btn-sm btn-outline-primary btn-follow-main
+                                        @(follow.UserId.ToString() == ViewData["CurrentUserId"].ToString()
+                                            || follow.FollowerId.ToString() == ViewData["CurrentUserId"].ToString()
+                                            ? "d-none" : "")">
+                                    <span data-userslug="@follow.User.Slug">Follow</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-primary btn-following-main
+                                        @(follow.FollowerId.ToString() == ViewData["CurrentUserId"].ToString() ? "" : "d-none")">
+                                    <span data-userslug="@follow.User.Slug">Following</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger btn-unfollow-main d-none">
+                                    <span data-userslug="@follow.User.Slug">Unfollow</span>
+                                </button>
+                            </div>
+                            <h4>
+                                <a asp-page="./Index" asp-route-slug="@follow.User.Slug">
+                                    @follow.User.UserName
+                                </a>
+                            </h4>
+                            <p>
+                                <a asp-page="./Index" asp-route-slug="@follow.User.Slug">
+                                    @@@follow.User.Slug
+                                </a>
+                            </p>
+                            <p>
+                                <span>@follow.User.Bio</span>
+                            </p>
+                        </div>
                     </div>
                 }
             </div>

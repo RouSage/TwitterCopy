@@ -24,7 +24,7 @@ namespace TwitterCopy.Pages.Profiles
 
         public ProfileViewModel ProfileUser { get; set; }
 
-        public IList<TwitterCopyUser> Followers { get; set; }
+        public IList<UserToUser> Followers { get; set; }
 
         [BindProperty]
         public ProfileInputModel Input { get; set; }
@@ -75,7 +75,6 @@ namespace TwitterCopy.Pages.Profiles
             };
 
             Followers = profileOwner.Followers
-                .Select(t => t.Follower)
                 .ToList();
 
             Input = new ProfileInputModel
