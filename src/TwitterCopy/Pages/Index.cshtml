@@ -20,20 +20,20 @@
                 <ul class="nav text-center">
                     <li class="nav-item">
                         <a class="nav-link" asp-page="/Profiles/Index" asp-route-slug="@Model.CurrentUser.Slug">
-                            <small class="d-block">Tweets</small>
-                            <span id="tweetsCount">@Model.CurrentUser.TweetsCount</span>
+                            <small class="profile-card-label">Tweets</small>
+                            <span id="tweetsCount" class="profile-card-value">@Model.CurrentUser.TweetsCount</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-page="/Profiles/Following" asp-route-slug="@Model.CurrentUser.Slug">
-                            <small class="d-block">Following</small>
-                            <span id="followingsCount">@Model.CurrentUser.FollowingCount</span>
+                            <small class="profile-card-label">Following</small>
+                            <span id="followingsCount" class="profile-card-value">@Model.CurrentUser.FollowingCount</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-page="/Profiles/Followers" asp-route-slug="@Model.CurrentUser.Slug">
-                            <small class="d-block">Followers</small>
-                            <span id="followersCount">@Model.CurrentUser.FollowersCount</span>
+                            <small class="profile-card-label">Followers</small>
+                            <span id="followersCount" class="profile-card-value">@Model.CurrentUser.FollowersCount</span>
                         </a>
                     </li>
                 </ul>

@@ -1,34 +1,38 @@
 ﻿@model TwitterCopy.Models.ProfileViewModel
 
-<div class="row">
+<div class="row mb-3">
     <div class="col-md-3">
     </div>
     <!-- /.col-md-3 -->
     <div class="col-md">
-        <div class="profileStats border">
-            <ul class="nav text-center d-flex align-items-center">
+        <div class="profileStats">
+            <ul class="profile-nav nav text-center d-flex align-items-center">
                 <li class="nav-item">
-                    <a class="nav-link" asp-page="./Index" asp-route-slug="@Model.Slug">
-                        <span class="d-block">Tweets</span>
-                        <span id="tweetsCount">@Model.TweetsCount</span>
+                    <a class="nav-link @ManageProfileNavPages.IndexNavClass(ViewContext)"
+                       asp-page="./Index" asp-route-slug="@Model.Slug">
+                        <span class="profile-nav-label">Tweets</span>
+                        <span id="tweetsCount" class="profile-nav-value">@Model.TweetsCount</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-page="./Following" asp-route-slug="@Model.Slug">
-                        <span class="d-block">Following</span>
-                        <span id="followingCount">@Model.FollowingCount</span>
+                    <a class="nav-link @ManageProfileNavPages.FollowingNavClass(ViewContext)"
+                       asp-page="./Following" asp-route-slug="@Model.Slug">
+                        <span class="profile-nav-label">Following</span>
+                        <span id="followingCount" class="profile-nav-value">@Model.FollowingCount</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-page="./Followers" asp-route-slug="@Model.Slug">
-                        <span class="d-block">Followers</span>
-                        <span id="followersCount">@Model.FollowersCount</span>
+                    <a class="nav-link @ManageProfileNavPages.FollowersNavClass(ViewContext)"
+                       asp-page="./Followers" asp-route-slug="@Model.Slug">
+                        <span class="profile-nav-label">Followers</span>
+                        <span id="followersCount" class="profile-nav-value">@Model.FollowersCount</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-page="./Likes" asp-route-slug="@Model.Slug">
-                        <span class="d-block">Likes</span>
-                        <span id="likesCount">@Model.LikesCount</span>
+                    <a class="nav-link @ManageProfileNavPages.LikesNavClass(ViewContext)"
+                       asp-page="./Likes" asp-route-slug="@Model.Slug">
+                        <span class="profile-nav-label">Likes</span>
+                        <span id="likesCount" class="profile-nav-value">@Model.LikesCount</span>
                     </a>
                 </li>
                 <li class="nav-item ml-auto mr-2">

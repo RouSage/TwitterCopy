@@ -10,3 +10,73 @@ body {
     margin: 15px;
 }
 
+.profile-nav.nav .nav-link::after {
+    content: "";
+    width: 100%;
+    height: 2px;
+    background-color: #007bff;
+    display: block;
+    transform: translateY(8px) scale(0);
+    transition: all 0.2s;
+}
+
+.profile-nav.nav .nav-link:hover::after {
+    transform: translateY(8px) scale(1);
+}
+
+.profile-nav.nav .nav-link.active::after {
+    content: "";
+    width: 100%;
+    height: 2px;
+    background-color: #007bff;
+    display: block;
+    transform: translateY(8px);
+}
+
+.profile-nav.nav .nav-link.active:hover {
+    color: #007bff;
+    cursor: default;
+}
+
+.profile-nav-label {
+    color: #657786;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.profile-nav-value {
+    display: block;
+    color: #657786;
+    font-size: 18px;
+    font-weight: bold;
+    transition: color .15s ease-in-out;
+}
+
+.nav-link.active .profile-nav-value {
+    color: inherit;
+}
+
+.nav-link:hover .profile-nav-value {
+    color: #007bff;
+}
+
+.nav-link .profile-card-label {
+    color: #657786;
+    font-size: 12px;
+    font-weight: bold;
+    transition: color .15s ease-in-out;
+}
+
+.nav-link .profile-card-value {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.nav-link:hover .profile-card-value {
+    color: #007bff;
+}
+
+.nav-link:hover .profile-card-label {
+    color: #007bff;
+}
