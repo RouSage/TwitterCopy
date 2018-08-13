@@ -314,24 +314,29 @@
         var tweetId = tweet.data('tweet-id');
         var userSlug = tweet.data('user-slug');
 
-        $.ajax({
-            type: 'GET',
-            url: `/Profiles/Index/${userSlug}`,
-            data: {
-                handler: 'Status',
-                tweetId: tweetId
-            },
-            contentType: 'application/json; charset=utf-8',
-            success: function (response) {
-                var tweetModal = $('#tweetModal');
-                var tweetContainer = tweetModal.find('.modal-body');
-                tweetContainer.html(response);
-                tweetModal.modal('show');
-            },
-            failure: function (response) {
-                alert(response);
-            }
-        });
+        if (e.target.localName != 'button'
+            && e.target.localName != 'span'
+            && e.target.localName != 'a') {
+            $.ajax({
+                type: 'GET',
+                url: `/Profiles/Index/${userSlug}`,
+                data: {
+                    handler: 'Status',
+                    tweetId: tweetId
+                },
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    var tweetModal = $('#tweetModal');
+                    var tweetContainer = tweetModal.find('.modal-body');
+                    tweetContainer.html(response);
+                    tweetModal.modal('show');
+                },
+                failure: function (response) {
+                    alert(response);
+                }
+            });
+
+        }
     });
 
 });

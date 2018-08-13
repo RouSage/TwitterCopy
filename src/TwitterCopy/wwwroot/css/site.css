@@ -80,3 +80,7 @@ body {
 .nav-link:hover .profile-card-label {
     color: #007bff;
 }
+
+.tweet-actionable {
+    cursor: pointer;
+}
