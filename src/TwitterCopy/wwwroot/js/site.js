@@ -169,7 +169,7 @@
                 pressedBtn.addClass('d-none');
                 // show Following button
                 followingBtn.removeClass('d-none');
-                // update Followers count
+                // update Followers count if you're on a followed user's page
                 if (profileUserSlug === response.slug) {
                     $('#followersCount').text(response.count);
                 }
@@ -183,6 +183,9 @@
         });
     });
 
+    /*
+     * Click event for the main unfollow button
+     */
     $(document.body).on('click', '.btn-unfollow-main', function (e) {
         e.preventDefault();
 
@@ -206,7 +209,7 @@
                 pressedBtn.addClass('d-none');
                 // show Follow button
                 followBtn.removeClass('d-none');
-                // update Followers count
+                // update Followers count if you're on the user's page only
                 if (profileUserSlug === response.slug) {
                     $('#followersCount').text(response.count);
                 }
@@ -220,6 +223,9 @@
         });
     });
 
+    /*
+     * Click event for the Retweet button
+     */
     $(document.body).on('click', '.btn-retweet', function (e) {
         e.preventDefault();
 
@@ -236,7 +242,10 @@
             contentType: 'application/json',
             dataType: 'json',
             success: function (response) {
+                // find a span on the clicked button
+                // which has a retweet count
                 var tweetRetweetCount = clickedBtn.find('span');
+                // set a new count of retweets
                 tweetRetweetCount.text(`${response}`);
             },
             failure: function (response) {
@@ -275,23 +284,39 @@
         }
     };
 
+    /*
+     * Click event for the Edit profile button
+     */
     $('#editProfileBtn').click(function (e) {
         e.preventDefault();
+        // call function to hide Edit profile button
+        // and show a Cancel, Save changes buttons
+        // and a form for profile editing
         ProfileEditor.editButtonClick();
     });
 
+    /*
+     * Click event for the Cancel button
+     * which cancels profile editing
+     */
     $('#cancelEditBtn').click(function (e) {
         e.preventDefault();
         ProfileEditor.cancelButtonClick();
     });
 
+    /*
+     * Click for the Save changes button
+     */
     $('#saveEditBtn').click(function (e) {
+        // Get all values from the form for profile editing
         var token = $('input:hidden[name="__RequestVerificationToken"]').val();
         var userName = $('input[name="userName"]').val();
         var bio = $('input[name="bio"]').val();
         var location = $('input[name="location"]').val();
         var website = $('input[name="website"]').val();
 
+        // Create new object which will be posted to the server
+        // with new profile info values
         var postedValues = {};
         postedValues['__RequestVerificationToken'] = token;
         postedValues.UserName = userName;
@@ -301,7 +326,9 @@
 
         var postUrl = '/Profiles/Index?handler=EditUser';
 
+        // Post values to the server
         $.post(postUrl, postedValues, function (response) {
+            // update profile info
             ProfileEditor.updateProfileInfo(response);
             ProfileEditor.saveChangesButtonClick();
         }).fail(function (jqXHR, textStatus, errorThrown) {
