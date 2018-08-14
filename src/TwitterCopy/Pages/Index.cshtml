@@ -1,9 +1,9 @@
 ﻿@page
 @model IndexModel
 
-<div class="row">
+<div class="row mt-3">
     <div class="col-md-3 p-0">
-        <div class="border mt-3">
+        <div class="main-profile-card border">
             <div class="d-flex flex-column p-2">
                 <h4>
                     <a asp-page="/Profiles/Index" asp-route-slug="@Model.CurrentUser.Slug">
@@ -43,7 +43,6 @@
     <!-- /.col-md-3 -->
 
     <div class="col-md-6">
-        <h2>Tweets</h2>
         <form method="post" id="sendTweetForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">

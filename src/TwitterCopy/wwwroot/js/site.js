@@ -341,9 +341,11 @@
         var tweetId = tweet.data('tweet-id');
         var userSlug = tweet.data('user-slug');
 
-        if (e.target.localName != 'button'
-            && e.target.localName != 'span'
-            && e.target.localName != 'a') {
+        if (e.target.localName !== 'button'
+            && e.target.localName !== 'span'
+            && e.target.localName !== 'a'
+            && e.target.localName !== 'strong'
+            && e.target.localName !== 'b') {
             $.ajax({
                 type: 'GET',
                 url: `/Profiles/Index/${userSlug}`,
