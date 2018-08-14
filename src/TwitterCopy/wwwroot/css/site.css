@@ -15,6 +15,33 @@ b {
     margin: 15px;
 }
 
+.alert-message {
+    position: fixed;
+    top: 46px;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    transition: top .5s;
+}
+.message {
+    position: relative;
+    width: 600px;
+    padding: 20px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 0 0 6px 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+}
+.message .message-text {
+    display: block;
+    margin: 0 20px;
+    color: #66757f;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    word-wrap: break-word;
+}
+
 .profile-navbar {
     background-color: #fff;
 }

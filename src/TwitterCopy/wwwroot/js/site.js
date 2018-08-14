@@ -38,7 +38,7 @@
                 var $tweetText = $('<p>').append(response.text).appendTo(tweetInfoBody);
             },
             failure: function (response) {
-                alert(response);
+                AlertMessage.showAlertMessage(response);
             }
         });
     });
@@ -76,7 +76,7 @@
                 tweetLikeCount.text(`${response}`);
             },
             failure: function (response) {
-                console.log(response);
+                AlertMessage.showAlertMessage(response);
             }
         });
     });
@@ -178,7 +178,7 @@
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                alert(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
+                AlertMessage.showAlertMessage(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
             }
         });
     });
@@ -218,7 +218,7 @@
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                alert(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
+                AlertMessage.showAlertMessage(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
             }
         });
     });
@@ -249,7 +249,7 @@
                 tweetRetweetCount.text(`${response}`);
             },
             failure: function (response) {
-                console.log(response);
+                AlertMessage.showAlertMessage(response);
             }
         });
     });
@@ -332,7 +332,7 @@
             ProfileEditor.updateProfileInfo(response);
             ProfileEditor.saveChangesButtonClick();
         }).fail(function (jqXHR, textStatus, errorThrown) {
-            alert(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
+            AlertMessage.showAlertMessage(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
         });
     });
 
@@ -361,11 +361,25 @@
                     tweetModal.modal('show');
                 },
                 failure: function (response) {
-                    alert(response);
+                    AlertMessage.showAlertMessage(response);
                 }
             });
 
         }
     });
+
+    var AlertMessage = {
+        showAlertMessage: function (message) {
+            var alert = $('#alertMessage');
+            alert.removeClass('d-none');
+            var messageText = alert.find('.message-text');
+            messageText.text(message);
+        },
+        hideAlertMessage: function () {
+            $('#alertMessage').addClass('d-none');
+        }
+    };
+
+    $('#alertMessage .close').on('click', AlertMessage.hideAlertMessage);
 
 });
