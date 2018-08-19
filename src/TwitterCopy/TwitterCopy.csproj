@@ -24,4 +24,8 @@
     <ProjectReference Include="..\TwitterCopy.Entities\TwitterCopy.Entities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\profile-images\" />
+  </ItemGroup>
+
 </Project>

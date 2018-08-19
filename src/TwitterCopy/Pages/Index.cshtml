@@ -3,42 +3,7 @@
 
 <div class="row mt-3">
     <div class="col-md-3 p-0">
-        <div class="main-profile-card border">
-            <div class="d-flex flex-column p-2">
-                <h4>
-                    <a asp-page="/Profiles/Index" asp-route-slug="@Model.CurrentUser.Slug">
-                        <strong>@Model.CurrentUser.UserName</strong>
-                    </a>
-                </h4>
-                <h6>
-                    <a asp-page="/Profiles/Index" asp-route-slug="@Model.CurrentUser.Slug">
-                        <span class="text-muted">@@@Model.CurrentUser.Slug</span>
-                    </a>
-                </h6>
-            </div>
-            <div class="d-flex align-items-center">
-                <ul class="nav text-center">
-                    <li class="nav-item">
-                        <a class="nav-link" asp-page="/Profiles/Index" asp-route-slug="@Model.CurrentUser.Slug">
-                            <small class="profile-card-label">Tweets</small>
-                            <span id="tweetsCount" class="profile-card-value">@Model.CurrentUser.TweetsCount</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-page="/Profiles/Following" asp-route-slug="@Model.CurrentUser.Slug">
-                            <small class="profile-card-label">Following</small>
-                            <span id="followingsCount" class="profile-card-value">@Model.CurrentUser.FollowingCount</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-page="/Profiles/Followers" asp-route-slug="@Model.CurrentUser.Slug">
-                            <small class="profile-card-label">Followers</small>
-                            <span id="followersCount" class="profile-card-value">@Model.CurrentUser.FollowersCount</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        <partial name="_MainProfileCard" model="Model.CurrentUser" />
     </div>
     <!-- /.col-md-3 -->
 
@@ -66,6 +31,7 @@
             <p>There're no tweets yet.</p>
         }
     </div>
+    <!-- /.col-md-6 -->
 
     <partial name="_DeleteTweetModal" />
     <partial name="_TweetModal" />
@@ -73,4 +39,5 @@
     <div class="col-md-3">
         <h2>Right sidebar</h2>
     </div>
+    <!-- /.col-md-3 -->
 </div>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace TwitterCopy.Models
 {
@@ -27,5 +28,10 @@ namespace TwitterCopy.Models
 
         [Display(Name = "Likes")]
         public int LikesCount { get; set; }
+
+        public string Avatar { get; set; }
+
+        [Display(Name = "Join Date")]
+        public string JoinDate { get; set; }
     }
 }

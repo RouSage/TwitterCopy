@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -18,19 +22,29 @@ namespace TwitterCopy.Pages.Profiles
     {
         private readonly TwitterCopyContext _context;
         private readonly UserManager<TwitterCopyUser> _userManager;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public IndexModel(UserManager<TwitterCopyUser> userManager, TwitterCopyContext context)
+        public IndexModel(UserManager<TwitterCopyUser> userManager, TwitterCopyContext context,
+            IHostingEnvironment hostingEnvironment)
         {
             _context = context;
             _userManager = userManager;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public IList<TweetModel> Tweets { get; set; }
 
         public ProfileViewModel Profile { get; set; }
 
-        [BindProperty]
         public ProfileInputModel Input { get; set; }
+
+        public class AvatarVm
+        {
+            public IFormFile Avatar { get; set; }
+        }
+
+        [BindProperty]
+        public AvatarVm Vm { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string slug)
         {
@@ -87,7 +101,9 @@ namespace TwitterCopy.Pages.Profiles
                 FollowersCount = profileOwner.Followers.Count,
                 FollowingCount = profileOwner.Following.Count,
                 LikesCount = profileOwner.Likes.Count,
-                TweetsCount = Tweets.Count
+                TweetsCount = Tweets.Count,
+                Avatar = profileOwner.Avatar,
+                JoinDate = profileOwner.RegisterDate.ToString("MMMM yyyy")
             };
 
             Input = new ProfileInputModel
@@ -95,7 +111,7 @@ namespace TwitterCopy.Pages.Profiles
                 UserName = profileOwner.UserName,
                 Bio = profileOwner.Bio,
                 Location = profileOwner.Location,
-                Website = profileOwner.Website
+                Website = profileOwner.Website,
             };
 
             return Page();
@@ -131,6 +147,19 @@ namespace TwitterCopy.Pages.Profiles
             userToUpdate.Location = postedData.Location;
             userToUpdate.Website = postedData.Website;
 
+            if(postedData.Avatar?.Length > 0)
+            {
+                var avatarFileName = Guid.NewGuid().ToString().Replace("-", "") + Path.GetExtension(postedData.Avatar.FileName);
+
+                var avatarFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "images\\profile-images", avatarFileName);
+                using (var stream = new FileStream(avatarFilePath, FileMode.Create))
+                {
+                    await postedData.Avatar.CopyToAsync(stream);
+                }
+
+                userToUpdate.Avatar = avatarFileName;
+            }
+
             await _context.SaveChangesAsync();
 
             return new JsonResult(new
@@ -138,7 +167,8 @@ namespace TwitterCopy.Pages.Profiles
                 UserName = userToUpdate.UserName,
                 Bio = userToUpdate.Bio,
                 Location = userToUpdate.Location,
-                Website = userToUpdate.Website
+                Website = userToUpdate.Website,
+                Avatar = string.Concat("/images/profile-images/", userToUpdate.Avatar)
             });
         }
 
@@ -199,6 +229,33 @@ namespace TwitterCopy.Pages.Profiles
 
             //return new JsonResult(tweet);
             return result;
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            var filePath = Path.Combine(_hostingEnvironment.WebRootPath, "images\\profile-images", Vm.Avatar.FileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await Vm.Avatar.CopyToAsync(stream);
+            }
+
+            user.Avatar = Vm.Avatar.FileName;
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage("./Index", new { slug = user.Slug });
         }
     }
 }

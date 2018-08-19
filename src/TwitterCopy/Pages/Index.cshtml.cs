@@ -51,7 +51,8 @@ namespace TwitterCopy.Pages
                     Slug = x.Slug,
                     TweetsCount = x.Tweets.Count,
                     FollowingCount = x.Following.Count,
-                    FollowersCount = x.Followers.Count
+                    FollowersCount = x.Followers.Count,
+                    Avatar = x.Avatar
                 })
                 .FirstOrDefaultAsync(u => u.Id.Equals(userId));
             if (CurrentUser == null)

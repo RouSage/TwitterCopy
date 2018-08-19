@@ -5,27 +5,7 @@
 <partial name="_ProfileNav" model="@Model.Profile" view-data="ViewData" />
 <div class="row">
     <div class="col-md-3">
-        <div id="profileInfo">
-            <h4>
-                <a id="profileInfoUserName" asp-page="./Index" asp-route-slug="@Model.Profile.Slug">
-                    @Model.Profile.UserName
-                </a>
-            </h4>
-            <p>
-                <a id="profileInfoSlug" asp-page="./Index" asp-route-slug="@Model.Profile.Slug" data-slug="@Model.Profile.Slug">
-                    @@@Model.Profile.Slug
-                </a>
-            </p>
-            <p>
-                <span id="profileInfoBio">@Model.Profile.Bio</span>
-            </p>
-            <p>
-                <span id="profileInfoLocation">@Model.Profile.Location</span>
-            </p>
-            <p>
-                <span id="profileInfoWebsite">@Model.Profile.Website</span>
-            </p>
-        </div>
+        <partial name="_ProfileHeaderCard" model="Model.Profile" />
         <partial name="_ProfileEditForm" model="Model.Input" />
     </div>
 

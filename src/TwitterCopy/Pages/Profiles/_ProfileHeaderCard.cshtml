@@ -1,0 +1,40 @@
+﻿@model TwitterCopy.Models.ProfileViewModel
+
+
+<div id="profileInfo">
+    <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug"
+       class="profile-header-card-avatar-link d-inline-block mw-100 mb-2 ml-2" title="@Model.UserName"
+       tabindex="-1" aria-hidden="true">
+        <img class="profile-header-card-avatar" id="profileInfoAvatar" 
+             src="~/images/profile-images/@Model.Avatar" />
+    </a>
+    <div class="d-inline-block">
+        <h1 class="profile-header-card-username m-0">
+            <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug"
+               class="profile-header-card-username-link" id="profileInfoUserName">
+                @Model.UserName
+            </a>
+        </h1>
+        <h2 class="profile-header-card-slug mb-2">
+            <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug"
+               class="profile-header-card-slug-link" id="profileInfoSlug">
+                <span class="slug">
+                    @@<b>@Model.Slug</b>
+                </span>
+            </a>
+        </h2>
+    </div>
+    <p class="profile-header-card-bio">
+        <span id="profileInfoBio">@Model.Bio</span>
+    </p>
+    <div class="profile-header-card-location">
+        <span id="profileInfoLocation">@Model.Location</span>
+    </div>
+    <div class="profile-header-card-website">
+        <span id="profileInfoWebsite">@Model.Website</span>
+    </div>
+    <div class="profile-header-card-join">
+        <span>@Model.JoinDate</span>
+    </div>
+</div>
+<!-- /#profileInfo -->

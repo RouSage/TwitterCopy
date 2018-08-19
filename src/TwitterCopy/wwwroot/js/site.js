@@ -260,6 +260,7 @@
             $('#profileInfoBio').text(newData.bio);
             $('#profileInfoLocation').text(newData.location);
             $('#profileInfoWebsite').text(newData.website);
+            $('#profileInfoAvatar').attr('src', newData.avatar);
         },
         saveChangesButtonClick: function () {
             $('#profileEdit').addClass('d-none');
@@ -309,30 +310,42 @@
      */
     $('#saveEditBtn').click(function (e) {
         // Get all values from the form for profile editing
-        var token = $('input:hidden[name="__RequestVerificationToken"]').val();
         var userName = $('input[name="userName"]').val();
         var bio = $('input[name="bio"]').val();
         var location = $('input[name="location"]').val();
         var website = $('input[name="website"]').val();
+        var avatar = $('input[name="Avatar"]')[0].files[0];
 
-        // Create new object which will be posted to the server
+        // Create new FormData object which will be posted to the server
         // with new profile info values
-        var postedValues = {};
-        postedValues['__RequestVerificationToken'] = token;
-        postedValues.UserName = userName;
-        postedValues.Bio = bio;
-        postedValues.Location = location;
-        postedValues.Website = website;
-
-        var postUrl = '/Profiles/Index?handler=EditUser';
+        var postedValues = new FormData();
+        postedValues.append('userName', userName);
+        postedValues.append('bio', bio);
+        postedValues.append('location', location);
+        postedValues.append('website', website);
+        postedValues.append('avatar', avatar);
 
         // Post values to the server
-        $.post(postUrl, postedValues, function (response) {
-            // update profile info
-            ProfileEditor.updateProfileInfo(response);
-            ProfileEditor.saveChangesButtonClick();
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            AlertMessage.showAlertMessage(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
+        $.ajax({
+            url: '/Profiles/Index?handler=EditUser',
+            type: 'POST',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            contentType: false,
+            data: postedValues,
+            dataType: 'json',
+            cache: false,
+            processData: false,
+            success: function (response) {
+                // update profile info
+                ProfileEditor.updateProfileInfo(response);
+                ProfileEditor.saveChangesButtonClick();
+            },
+            failure: function (respones) {
+                AlertMessage.showAlertMessage(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
+            }
         });
     });
 

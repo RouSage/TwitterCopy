@@ -31,6 +31,8 @@ namespace TwitterCopy.Entities
         [DataType(DataType.Url)]
         public string Website { get; set; }
 
+        public string Avatar { get; set; }
+
         public ICollection<Like> Likes { get; set; }
 
         public ICollection<Retweet> Retweets { get; set; }

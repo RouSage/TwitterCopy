@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace TwitterCopy.Models
 {
@@ -16,5 +17,7 @@ namespace TwitterCopy.Models
         [Url(ErrorMessage = "Url is not valid.")]
         [DataType(DataType.Url)]
         public string Website { get; set; }
+
+        public IFormFile Avatar { get; set; }
     }
 }

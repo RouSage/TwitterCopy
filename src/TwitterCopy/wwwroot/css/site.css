@@ -4,10 +4,26 @@ body {
     padding: 0;
     margin: 0;
     background-color: #e6ecf0;
+    font-family: "Segoe UI", Arial, sans-serif;
 }
 
 b {
     font-weight: normal;
+}
+
+img {
+    border: 0;
+}
+
+h1 {
+    font-size: 24px;
+    line-height: .8;
+}
+
+h2 {
+    color: #66757f;
+    font-size: 22px;
+    line-height: 22px;
 }
 
 /* QR code generator */
@@ -154,4 +170,90 @@ b {
     white-space: pre-wrap;
     word-wrap: break-word;
     margin-bottom: 0;
+}
+
+a > img:first-child:last-child {
+    transition: box-shadow .15s ease-in-out;
+}
+
+.main-profile-card-avatar-link,
+.profile-header-card-avatar-link {
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 1px;
+    vertical-align: bottom;
+}
+.main-profile-card-avatar,
+.profile-header-card-avatar {
+    border-radius: 50%;
+    height: 72px;
+    width: 72px;
+    border: 2px solid #fff;
+    box-sizing: border-box;
+    color: #fff;
+}
+.main-profile-card-username {
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 25px;
+}
+.main-profile-card-slug {
+    font-size: 12px;
+    padding-right: 5px;
+    color: #66757f;
+}
+
+.profile-canopy-avatar {
+    position: absolute;
+    z-index: 3;
+}
+.profile-avatar {
+    background-color: #fff;
+    border: 5px solid #fff;
+    border-radius: 50%;
+    height: 200px;
+    width: 200px;
+    position: relative;
+}
+.profile-avatar-image {
+    border-radius: 50%;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.profile-header-card-username {
+    line-height: 1;
+}
+.profile-header-card-username-link {
+    font-size: 21px;
+    font-weight: bold;
+    line-height: 28px;
+    word-wrap: break-word;
+}
+.profile-header-card-slug {
+    font-size: 14px;
+    line-height: 20px;
+}
+.profile-header-card-slug-link {
+    color: #657786;
+}
+.profile-header-card-bio {
+    color: #14171a;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 20px;
+    margin-bottom: 12px;
+    word-wrap: break-word;
+}
+.profile-header-card-location,
+.profile-header-card-website,
+.profile-header-card-join {
+    color: #657786;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 8px;
+    position: relative;
 }
