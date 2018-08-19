@@ -4,35 +4,48 @@
      data-tweet-id="@Model.Id"
      data-user-slug="@Model.AuthorSlug">
     <div class="tweet">
-        <div class="d-flex align-items-center">
-            <a asp-page="/Profiles/Index" asp-route-slug="@Model.AuthorSlug">
-                <span>
-                    <strong class="username">@Model.AuthorName</strong>
-                </span>
-            </a>
-            <a asp-page="/Profiles/Index" asp-route-slug="@Model.AuthorSlug" class="slug ml-1">
-                <span>
-                    @@<b>@Model.AuthorSlug</b>
-                </span>
-            </a>
+        <div class="row p-2">
+            <div class="col-md-1 p-0 pl-1">
+                <a asp-page="/Profiles/Index" asp-route-slug="@Model.AuthorSlug">
+                    <img class="avatar" src="~/images/profile-images/@Model.AuthorAvatar" />
+                </a>
+            </div>
+            <!-- /.col-md-1 -->
+            <div class="col-md-11">
+                <div class="d-flex align-items-center">
+                    <a asp-page="/Profiles/Index" asp-route-slug="@Model.AuthorSlug">
+                        <span>
+                            <strong class="username">@Model.AuthorName</strong>
+                        </span>
+                    </a>
+                    <a asp-page="/Profiles/Index" asp-route-slug="@Model.AuthorSlug" class="slug ml-1">
+                        <span>
+                            @@<b>@Model.AuthorSlug</b>
+                        </span>
+                    </a>
+                </div>
+                <div class="d-block">
+                    <p class="tweet-text">@Model.Text</p>
+                </div>
+                <div class="w-100 mt-2">
+                    @if (Model.AuthorName == User.Identity.Name)
+                    {
+                        <button type="button" class="btn btn-danger" data-toggle="modal"
+                                data-target="#deleteTweetModal" data-tweet-id="@Model.Id">
+                            Delete
+                        </button>
+                    }
+                    <button type="button" class="btn btn-outline-success btn-retweet" data-tweet-id="@Model.Id">
+                        <span>@Model.RetweetCount</span>
+                    </button>
+                    <button type="button" class="btn btn-outline-primary btn-like" data-tweet-id="@Model.Id">
+                        <span>@Model.LikeCount</span>
+                    </button>
+                </div>
+            </div>
+            <!-- /.col-md-11 -->
         </div>
-        <div class="d-block">
-            <p class="tweet-text">@Model.Text</p>
-        </div>
-        <div class="w-100 mt-2">
-            @if (Model.AuthorName == User.Identity.Name)
-            {
-                <button type="button" class="btn btn-danger" data-toggle="modal"
-                        data-target="#deleteTweetModal" data-tweet-id="@Model.Id">
-                    Delete
-                </button>
-            }
-            <button type="button" class="btn btn-outline-success btn-retweet" data-tweet-id="@Model.Id">
-                <span>@Model.RetweetCount</span>
-            </button>
-            <button type="button" class="btn btn-outline-primary btn-like" data-tweet-id="@Model.Id">
-                <span>@Model.LikeCount</span>
-            </button>
-        </div>
+        <!-- /.row -->
     </div>
+    <!-- /.tweet -->
 </div>

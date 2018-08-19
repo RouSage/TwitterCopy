@@ -15,6 +15,8 @@ namespace TwitterCopy.Models
 
         public string AuthorSlug { get; set; }
 
+        public string AuthorAvatar { get; set; }
+
         public int LikeCount { get; set; }
 
         public int RetweetCount { get; set; }

@@ -83,6 +83,7 @@ namespace TwitterCopy.Pages.Profiles
                     Id = x.TweetId,
                     AuthorName = x.Tweet.User.UserName,
                     AuthorSlug = x.Tweet.User.Slug,
+                    AuthorAvatar = x.User.Avatar,
                     LikeCount = x.Tweet.LikeCount,
                     PostedOn = x.Tweet.PostedOn,
                     RetweetCount = x.Tweet.RetweetCount,

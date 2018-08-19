@@ -137,6 +137,12 @@ h2 {
     background: #fff;
 }
 
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
 .tweet {
     border-bottom: 1px solid #e6ecf0;
     cursor: pointer;
@@ -189,6 +195,8 @@ a > img:first-child:last-child {
     height: 72px;
     width: 72px;
     border: 2px solid #fff;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
     color: #fff;
 }

@@ -111,6 +111,7 @@ namespace TwitterCopy.Pages
                     Id = x.Id,
                     AuthorName = x.User.UserName,
                     AuthorSlug = x.User.Slug,
+                    AuthorAvatar = x.User.Avatar,
                     Text = x.Text,
                     PostedOn = x.PostedOn
                 })
@@ -378,6 +379,7 @@ namespace TwitterCopy.Pages
                     Id = x.Id,
                     AuthorName = x.User.UserName,
                     AuthorSlug = x.User.Slug,
+                    AuthorAvatar = x.User.Avatar,
                     LikeCount = x.LikeCount,
                     RetweetCount = x.RetweetCount,
                     PostedOn = x.PostedOn,
@@ -389,6 +391,7 @@ namespace TwitterCopy.Pages
                         Id = x.Tweet.Id,
                         AuthorName = x.Tweet.User.UserName,
                         AuthorSlug = x.Tweet.User.Slug,
+                        AuthorAvatar = x.Tweet.User.Avatar,
                         LikeCount = x.Tweet.LikeCount,
                         PostedOn = x.RetweetDate,
                         RetweetCount = x.Tweet.RetweetCount,
@@ -403,6 +406,7 @@ namespace TwitterCopy.Pages
                         Id = t.Id,
                         AuthorName = t.User.UserName,
                         AuthorSlug = t.User.Slug,
+                        AuthorAvatar = t.User.Avatar,
                         LikeCount = t.LikeCount,
                         RetweetCount = t.RetweetCount,
                         PostedOn = t.PostedOn,
