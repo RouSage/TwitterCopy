@@ -8,15 +8,11 @@
     <environment include="Development">
         <!-- Bootstrap main -->
         <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
-        <!-- Bootstrap grid -->
-        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap-grid.css" />
-        <!-- Bootstrap reboot -->
-        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap-reboot.css" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     </environment>
     <environment exclude="Development">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css"
-              integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous"
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+              integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"
               asp-fallback-href="~/lib/bootstrap/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
@@ -53,11 +49,9 @@
 
     <environment include="Development">
         <!-- jQuery -->
-        <script src="~/lib/jquery/jquery-3.3.1.js"></script>
+        <script src="~/lib/jquery/jquery.js"></script>
         <!-- Bootstrap -->
-        <script src="~/lib/bootstrap/js/bootstrap.js"></script>
-        <!-- Popper -->
-        <script src="~/lib/bootstrap/js/popper.js"></script>
+        <script src="~/lib/bootstrap/js/bootstrap.bundle.js"></script>
         <!-- Site scripts -->
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
@@ -70,13 +64,11 @@
                 integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
         </script>
         <!-- Bootstrap minified -->
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"
-                integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"
-                asp-fallback-src="~/lib/bootstrap/js/bootstrap.min.js"
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"
+                integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"
+                asp-fallback-src="~/lib/bootstrap/js/bootstrap.bundle.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
         </script>
-        <!-- Popper minified -->
-        <script src="https://unpkg.com/popper.js@1.14.3/dist/umd/popper.min.js"></script>
         <!-- Site scripts minified -->
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
