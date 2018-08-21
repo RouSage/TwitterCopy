@@ -22,11 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TwitterCopy.Entities\TwitterCopy.Entities.csproj" />
+    <Folder Include="wwwroot\images\profile-images\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\profile-images\" />
+    <ProjectReference Include="..\TwitterCopy.Core\TwitterCopy.Core.csproj" />
   </ItemGroup>
 
 </Project>
