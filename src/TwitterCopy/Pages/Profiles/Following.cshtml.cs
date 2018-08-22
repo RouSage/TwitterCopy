@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TwitterCopy.Data;
-using TwitterCopy.Entities;
+using TwitterCopy.Core.Entities;
+using TwitterCopy.Infrastructure.Data;
 using TwitterCopy.Models;
 
 namespace TwitterCopy.Pages.Profiles

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using TwitterCopy.Core.Entities;
-using TwitterCopy.Data;
+using TwitterCopy.Infrastructure.Data;
 
 namespace TwitterCopy.Services
 {
@@ -33,7 +33,7 @@ namespace TwitterCopy.Services
 
         public static IServiceCollection AddCustomizedIdentity(this IServiceCollection services)
         {
-            services.AddIdentity<TwitterCopyUser, IdentityRole>(options =>
+            services.AddIdentity<TwitterCopyUser, TwitterCopyRole>(options =>
             {
                 // Password setting
                 options.Password.RequireDigit = true;

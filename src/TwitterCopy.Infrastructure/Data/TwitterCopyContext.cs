@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
-using TwitterCopy.Entities;
+using TwitterCopy.Core.Entities;
+using TwitterCopy.Core.Entities.TweetAggregate;
 
-namespace TwitterCopy.Data
+namespace TwitterCopy.Infrastructure.Data
 {
     public class TwitterCopyContext : IdentityDbContext<TwitterCopyUser, TwitterCopyRole, Guid>
     {
-        public TwitterCopyContext(DbContextOptions<TwitterCopyContext> options)
-            : base(options)
+        public TwitterCopyContext(DbContextOptions options) : base(options)
         {
         }
 
@@ -19,9 +19,7 @@ namespace TwitterCopy.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
+
             builder.Entity<Tweet>().ToTable("Tweet");
 
             builder.Entity<Tweet>()

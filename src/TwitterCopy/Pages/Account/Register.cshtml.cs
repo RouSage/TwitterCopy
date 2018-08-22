@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using TwitterCopy.Entities;
+using TwitterCopy.Core.Entities;
 
 namespace TwitterCopy.Pages.Account
 {

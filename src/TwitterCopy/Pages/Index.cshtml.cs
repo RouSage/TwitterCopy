@@ -3,13 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using TwitterCopy.Data;
-using TwitterCopy.Entities;
+using TwitterCopy.Core.Entities;
+using TwitterCopy.Infrastructure.Data;
 using TwitterCopy.Models;
 
 namespace TwitterCopy.Pages
@@ -69,33 +67,33 @@ namespace TwitterCopy.Pages
         /// Inserts new tweet to the database
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+        //public async Task<IActionResult> OnPostAsync()
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return Page();
+        //    }
 
-            if (await TryUpdateModelAsync<TweetModel>(
-                Tweet,
-                "tweet",
-                t => t.Text, t => t.AuthorName, t => t.PostedOn))
-            {
-                var newTweet = new Tweet
-                {
-                    Text = Tweet.Text,
-                    User = await _userManager.GetUserAsync(User),
-                    PostedOn = Tweet.PostedOn
-                };
+        //    if (await TryUpdateModelAsync<TweetModel>(
+        //        Tweet,
+        //        "tweet",
+        //        t => t.Text, t => t.AuthorName, t => t.PostedOn))
+        //    {
+        //        var newTweet = new Tweet
+        //        {
+        //            Text = Tweet.Text,
+        //            User = await _userManager.GetUserAsync(User),
+        //            PostedOn = Tweet.PostedOn
+        //        };
 
-                _context.Tweets.Add(newTweet);
-                await _context.SaveChangesAsync();
+        //        _context.Tweets.Add(newTweet);
+        //        await _context.SaveChangesAsync();
 
-                return RedirectToPage();
-            }
+        //        return RedirectToPage();
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         /// <summary>
         /// Provides tweet for the modal dialog
@@ -151,210 +149,210 @@ namespace TwitterCopy.Pages
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnGetUpdateLikesAsync(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> OnGetUpdateLikesAsync(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            // Get current authenticated user
-            var user = await _userManager.GetUserAsync(User);
-            if(user == null)
-            {
-                return NotFound();
-            }
-            // Get tweet with the given Id
-            var tweet = await _context.Tweets
-                .Include(l => l.Likes)
-                .FirstOrDefaultAsync(t => t.Id == id);
-            if(tweet == null)
-            {
-                return NotFound();
-            }
+        //    // Get current authenticated user
+        //    var user = await _userManager.GetUserAsync(User);
+        //    if(user == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    // Get tweet with the given Id
+        //    var tweet = await _context.Tweets
+        //        .Include(l => l.Likes)
+        //        .FirstOrDefaultAsync(t => t.Id == id);
+        //    if(tweet == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            // Apply the user and tweet object from above to the new Like
-            var like = new Like
-            {
-                Tweet = tweet,
-                User = user,
-                DateLiked = DateTime.UtcNow
-            };
+        //    // Apply the user and tweet object from above to the new Like
+        //    var like = new Like
+        //    {
+        //        Tweet = tweet,
+        //        User = user,
+        //        DateLiked = DateTime.UtcNow
+        //    };
 
-            // Check if the user already has like on this tweet
-            var dupe = await _context.Likes.FirstOrDefaultAsync(x => x.TweetId == tweet.Id && x.UserId == user.Id);
-            if (dupe == null)
-            {
-                // If no duplicate was found
-                // Add new like to the database
-                _context.Likes.Add(like);
-                tweet.LikeCount++;
-            }
-            else
-            {
-                // If duplicate was found in the Likes table
-                // Delete dupe instead of like because
-                // like doesn't have Id values
-                _context.Likes.Remove(dupe);
-                tweet.LikeCount--;
-            }
+        //    // Check if the user already has like on this tweet
+        //    var dupe = await _context.Likes.FirstOrDefaultAsync(x => x.TweetId == tweet.Id && x.UserId == user.Id);
+        //    if (dupe == null)
+        //    {
+        //        // If no duplicate was found
+        //        // Add new like to the database
+        //        _context.Likes.Add(like);
+        //        tweet.LikeCount++;
+        //    }
+        //    else
+        //    {
+        //        // If duplicate was found in the Likes table
+        //        // Delete dupe instead of like because
+        //        // like doesn't have Id values
+        //        _context.Likes.Remove(dupe);
+        //        tweet.LikeCount--;
+        //    }
 
-            //_context.Update<Tweet>(tweet);
-            await _context.SaveChangesAsync();
+        //    //_context.Update<Tweet>(tweet);
+        //    await _context.SaveChangesAsync();
 
-            return new JsonResult(tweet.LikeCount);
-        }
+        //    return new JsonResult(tweet.LikeCount);
+        //}
 
-        public async Task<IActionResult> OnPostFollowAsync(string userSlug)
-        {
-            if (userSlug == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> OnPostFollowAsync(string userSlug)
+        //{
+        //    if (userSlug == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var userToFollow = await _context.Users
-                .Include(f => f.Followers)
-                .FirstOrDefaultAsync(u => u.Slug == userSlug);
-            if (userToFollow == null)
-            {
-                return NotFound();
-            }
+        //    var userToFollow = await _context.Users
+        //        .Include(f => f.Followers)
+        //        .FirstOrDefaultAsync(u => u.Slug == userSlug);
+        //    if (userToFollow == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (currentUser == null)
-            {
-                return NotFound();
-            }
+        //    var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+        //    if (currentUser == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (userSlug == currentUser.Slug)
-            {
-                Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return new JsonResult(new { Message = "You can't follow yourself." });
-            }
+        //    if (userSlug == currentUser.Slug)
+        //    {
+        //        Response.StatusCode = (int)HttpStatusCode.Forbidden;
+        //        return new JsonResult(new { Message = "You can't follow yourself." });
+        //    }
 
-            bool alreadyFollowing = userToFollow.Followers
-                .Any(f => f.FollowerId.Equals(currentUser.Id));
-            if (alreadyFollowing)
-            {
-                Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return new JsonResult(new { Message = "You can't follow the user you're already following." });
-            }
+        //    bool alreadyFollowing = userToFollow.Followers
+        //        .Any(f => f.FollowerId.Equals(currentUser.Id));
+        //    if (alreadyFollowing)
+        //    {
+        //        Response.StatusCode = (int)HttpStatusCode.Forbidden;
+        //        return new JsonResult(new { Message = "You can't follow the user you're already following." });
+        //    }
 
-            userToFollow.Followers.Add(new UserToUser
-            {
-                User = userToFollow,
-                Follower = currentUser
-            });
+        //    userToFollow.Followers.Add(new UserToUser
+        //    {
+        //        User = userToFollow,
+        //        Follower = currentUser
+        //    });
 
-            _context.Update(userToFollow);
-            await _context.SaveChangesAsync();
+        //    _context.Update(userToFollow);
+        //    await _context.SaveChangesAsync();
 
-            return new JsonResult(new
-            {
-                Count = userToFollow.Followers.Count,
-                Slug = userToFollow.Slug,
-                CurrentUserSlug = currentUser.Slug
-            });
-        }
+        //    return new JsonResult(new
+        //    {
+        //        Count = userToFollow.Followers.Count,
+        //        Slug = userToFollow.Slug,
+        //        CurrentUserSlug = currentUser.Slug
+        //    });
+        //}
 
-        public async Task<IActionResult> OnPostUnfollowAsync(string userSlug)
-        {
-            if (userSlug == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> OnPostUnfollowAsync(string userSlug)
+        //{
+        //    if (userSlug == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var userToUnfollow = await _context.Users
-                .Include(f => f.Followers)
-                .FirstOrDefaultAsync(u => u.Slug == userSlug);
-            if (userToUnfollow == null)
-            {
-                return NotFound();
-            }
+        //    var userToUnfollow = await _context.Users
+        //        .Include(f => f.Followers)
+        //        .FirstOrDefaultAsync(u => u.Slug == userSlug);
+        //    if (userToUnfollow == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (currentUser == null)
-            {
-                return NotFound();
-            }
+        //    var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+        //    if (currentUser == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (userSlug == currentUser.Slug)
-            {
-                Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return new JsonResult(new { Message = "You can't unfollow yourself." });
-            }
+        //    if (userSlug == currentUser.Slug)
+        //    {
+        //        Response.StatusCode = (int)HttpStatusCode.Forbidden;
+        //        return new JsonResult(new { Message = "You can't unfollow yourself." });
+        //    }
 
-            bool alreadyFollowing = await _context.Users
-                .AnyAsync(x => x.Followers
-                    .Any(u => u.FollowerId.Equals(currentUser.Id)));
-            if (!alreadyFollowing)
-            {
-                Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return new JsonResult(new { Message = "You can't unfollow the user you're alredy unfollowing." });
-            }
+        //    bool alreadyFollowing = await _context.Users
+        //        .AnyAsync(x => x.Followers
+        //            .Any(u => u.FollowerId.Equals(currentUser.Id)));
+        //    if (!alreadyFollowing)
+        //    {
+        //        Response.StatusCode = (int)HttpStatusCode.Forbidden;
+        //        return new JsonResult(new { Message = "You can't unfollow the user you're alredy unfollowing." });
+        //    }
 
-            userToUnfollow.Followers.Remove(userToUnfollow.Followers
-                .FirstOrDefault(x => x.FollowerId.Equals(currentUser.Id)));
-            await _context.SaveChangesAsync();
+        //    userToUnfollow.Followers.Remove(userToUnfollow.Followers
+        //        .FirstOrDefault(x => x.FollowerId.Equals(currentUser.Id)));
+        //    await _context.SaveChangesAsync();
 
-            return new JsonResult(new
-            {
-                Count = userToUnfollow.Followers.Count,
-                Slug = userToUnfollow.Slug,
-                CurrentUserSlug = currentUser.Slug
-            });
-        }
+        //    return new JsonResult(new
+        //    {
+        //        Count = userToUnfollow.Followers.Count,
+        //        Slug = userToUnfollow.Slug,
+        //        CurrentUserSlug = currentUser.Slug
+        //    });
+        //}
 
-        public async Task<IActionResult> OnPostRetweetAsync(int? id)
-        {
-            if(id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> OnPostRetweetAsync(int? id)
+        //{
+        //    if(id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var tweet = await _context.Tweets
-                .Include(r => r.Retweets)
-                .FirstOrDefaultAsync(t => t.Id.Equals(id));
-            if(tweet == null)
-            {
-                return NotFound();
-            }
+        //    var tweet = await _context.Tweets
+        //        .Include(r => r.Retweets)
+        //        .FirstOrDefaultAsync(t => t.Id.Equals(id));
+        //    if(tweet == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            if(currentUser == null)
-            {
-                return NotFound();
-            }
+        //    var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+        //    if(currentUser == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var retweet = new Retweet
-            {
-                Tweet = tweet,
-                User = currentUser,
-                RetweetDate = DateTime.UtcNow
-            };
+        //    var retweet = new Retweet
+        //    {
+        //        Tweet = tweet,
+        //        User = currentUser,
+        //        RetweetDate = DateTime.UtcNow
+        //    };
 
-            var dupe = await _context.Retweets.FirstOrDefaultAsync(x => x.TweetId == tweet.Id && x.UserId == currentUser.Id);
-            if (dupe == null)
-            {
-                // If no duplicate was found
-                // Add new retweet to the database
-                _context.Retweets.Add(retweet);
-                tweet.RetweetCount++;
-            }
-            else
-            {
-                // If duplicate was found in the Retweets table
-                // Delete dupe instead of retweer because
-                // retweet doesn't have Id value
-                _context.Retweets.Remove(dupe);
-                tweet.RetweetCount--;
-            }
+        //    var dupe = await _context.Retweets.FirstOrDefaultAsync(x => x.TweetId == tweet.Id && x.UserId == currentUser.Id);
+        //    if (dupe == null)
+        //    {
+        //        // If no duplicate was found
+        //        // Add new retweet to the database
+        //        _context.Retweets.Add(retweet);
+        //        tweet.RetweetCount++;
+        //    }
+        //    else
+        //    {
+        //        // If duplicate was found in the Retweets table
+        //        // Delete dupe instead of retweer because
+        //        // retweet doesn't have Id value
+        //        _context.Retweets.Remove(dupe);
+        //        tweet.RetweetCount--;
+        //    }
 
-            //_context.Update<Tweet>(tweet);
-            await _context.SaveChangesAsync();
+        //    //_context.Update<Tweet>(tweet);
+        //    await _context.SaveChangesAsync();
 
-            return new JsonResult(tweet.RetweetCount);
-        }
+        //    return new JsonResult(tweet.RetweetCount);
+        //}
 
         /// <summary>
         /// Returns all the user's tweets

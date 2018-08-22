@@ -7,13 +7,12 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using TwitterCopy.Data;
-using TwitterCopy.Entities;
+using TwitterCopy.Core.Entities;
+using TwitterCopy.Infrastructure.Data;
 using TwitterCopy.Models;
 
 namespace TwitterCopy.Pages.Profiles

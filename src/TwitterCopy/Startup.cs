@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TwitterCopy.Data;
+using TwitterCopy.Infrastructure.Data;
 using TwitterCopy.Services;
 
 namespace TwitterCopy

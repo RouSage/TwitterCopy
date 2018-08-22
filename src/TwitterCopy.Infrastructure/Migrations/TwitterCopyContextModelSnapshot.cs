@@ -3,21 +3,19 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TwitterCopy.Data;
+using TwitterCopy.Infrastructure.Data;
 
-namespace TwitterCopy.Migrations
+namespace TwitterCopy.Infrastructure.Migrations
 {
     [DbContext(typeof(TwitterCopyContext))]
-    [Migration("20180818154042_UserAvatar")]
-    partial class UserAvatar
+    partial class TwitterCopyContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("ProductVersion", "2.1.2-rtm-30932")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -104,7 +102,7 @@ namespace TwitterCopy.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("TwitterCopy.Entities.Like", b =>
+            modelBuilder.Entity("TwitterCopy.Core.Entities.TweetAggregate.Like", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -125,7 +123,7 @@ namespace TwitterCopy.Migrations
                     b.ToTable("Likes");
                 });
 
-            modelBuilder.Entity("TwitterCopy.Entities.Retweet", b =>
+            modelBuilder.Entity("TwitterCopy.Core.Entities.TweetAggregate.Retweet", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -146,7 +144,7 @@ namespace TwitterCopy.Migrations
                     b.ToTable("Retweets");
                 });
 
-            modelBuilder.Entity("TwitterCopy.Entities.Tweet", b =>
+            modelBuilder.Entity("TwitterCopy.Core.Entities.TweetAggregate.Tweet", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -159,7 +157,6 @@ namespace TwitterCopy.Migrations
                     b.Property<int>("RetweetCount");
 
                     b.Property<string>("Text")
-                        .IsRequired()
                         .HasMaxLength(280);
 
                     b.Property<Guid>("UserId");
@@ -171,7 +168,7 @@ namespace TwitterCopy.Migrations
                     b.ToTable("Tweet");
                 });
 
-            modelBuilder.Entity("TwitterCopy.Entities.TwitterCopyRole", b =>
+            modelBuilder.Entity("TwitterCopy.Core.Entities.TwitterCopyRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -195,7 +192,7 @@ namespace TwitterCopy.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
-            modelBuilder.Entity("TwitterCopy.Entities.TwitterCopyUser", b =>
+            modelBuilder.Entity("TwitterCopy.Core.Entities.TwitterCopyUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -261,7 +258,7 @@ namespace TwitterCopy.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("TwitterCopy.Entities.UserToUser", b =>
+            modelBuilder.Entity("TwitterCopy.Core.Entities.UserToUser", b =>
                 {
                     b.Property<Guid>("UserId");
 
@@ -276,7 +273,7 @@ namespace TwitterCopy.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("TwitterCopy.Entities.TwitterCopyRole")
+                    b.HasOne("TwitterCopy.Core.Entities.TwitterCopyRole")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -284,7 +281,7 @@ namespace TwitterCopy.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("TwitterCopy.Entities.TwitterCopyUser")
+                    b.HasOne("TwitterCopy.Core.Entities.TwitterCopyUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -292,7 +289,7 @@ namespace TwitterCopy.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("TwitterCopy.Entities.TwitterCopyUser")
+                    b.HasOne("TwitterCopy.Core.Entities.TwitterCopyUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -300,12 +297,12 @@ namespace TwitterCopy.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("TwitterCopy.Entities.TwitterCopyRole")
+                    b.HasOne("TwitterCopy.Core.Entities.TwitterCopyRole")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("TwitterCopy.Entities.TwitterCopyUser")
+                    b.HasOne("TwitterCopy.Core.Entities.TwitterCopyUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -313,54 +310,54 @@ namespace TwitterCopy.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("TwitterCopy.Entities.TwitterCopyUser")
+                    b.HasOne("TwitterCopy.Core.Entities.TwitterCopyUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("TwitterCopy.Entities.Like", b =>
+            modelBuilder.Entity("TwitterCopy.Core.Entities.TweetAggregate.Like", b =>
                 {
-                    b.HasOne("TwitterCopy.Entities.Tweet", "Tweet")
+                    b.HasOne("TwitterCopy.Core.Entities.TweetAggregate.Tweet", "Tweet")
                         .WithMany("Likes")
                         .HasForeignKey("TweetId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("TwitterCopy.Entities.TwitterCopyUser", "User")
+                    b.HasOne("TwitterCopy.Core.Entities.TwitterCopyUser", "User")
                         .WithMany("Likes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("TwitterCopy.Entities.Retweet", b =>
+            modelBuilder.Entity("TwitterCopy.Core.Entities.TweetAggregate.Retweet", b =>
                 {
-                    b.HasOne("TwitterCopy.Entities.Tweet", "Tweet")
+                    b.HasOne("TwitterCopy.Core.Entities.TweetAggregate.Tweet", "Tweet")
                         .WithMany("Retweets")
                         .HasForeignKey("TweetId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("TwitterCopy.Entities.TwitterCopyUser", "User")
+                    b.HasOne("TwitterCopy.Core.Entities.TwitterCopyUser", "User")
                         .WithMany("Retweets")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("TwitterCopy.Entities.Tweet", b =>
+            modelBuilder.Entity("TwitterCopy.Core.Entities.TweetAggregate.Tweet", b =>
                 {
-                    b.HasOne("TwitterCopy.Entities.TwitterCopyUser", "User")
+                    b.HasOne("TwitterCopy.Core.Entities.TwitterCopyUser", "User")
                         .WithMany("Tweets")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("TwitterCopy.Entities.UserToUser", b =>
+            modelBuilder.Entity("TwitterCopy.Core.Entities.UserToUser", b =>
                 {
-                    b.HasOne("TwitterCopy.Entities.TwitterCopyUser", "Follower")
+                    b.HasOne("TwitterCopy.Core.Entities.TwitterCopyUser", "Follower")
                         .WithMany("Following")
                         .HasForeignKey("FollowerId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("TwitterCopy.Entities.TwitterCopyUser", "User")
+                    b.HasOne("TwitterCopy.Core.Entities.TwitterCopyUser", "User")
                         .WithMany("Followers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

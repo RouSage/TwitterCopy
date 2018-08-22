@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using TwitterCopy.Entities;
+using TwitterCopy.Core.Entities;
 
 namespace TwitterCopy.Pages.Account.Settings
 {
