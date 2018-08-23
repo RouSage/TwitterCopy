@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace TwitterCopy.Core.Entities.TweetAggregate
 {
@@ -52,6 +53,34 @@ namespace TwitterCopy.Core.Entities.TweetAggregate
             RetweetCount = 0;
             _likes = new List<Like>();
             _retweets = new List<Retweet>();
+        }
+
+        // Methods
+
+        public void AddLike(Like like)
+        {
+            if(!Likes.Any(x => x.TweetId == like.TweetId && x.UserId == like.UserId))
+            {
+                _likes.Add(like);
+                LikeCount++;
+                return;
+            }
+
+            _likes.Remove(like);
+            LikeCount--;
+        }
+
+        public void AddRetweet(Retweet retweet)
+        {
+            if(!Retweets.Any(x => x.TweetId == retweet.TweetId && x.UserId == retweet.UserId))
+            {
+                _retweets.Add(retweet);
+                RetweetCount++;
+                return;
+            }
+
+            _retweets.Remove(retweet);
+            RetweetCount--;
         }
     }
 }

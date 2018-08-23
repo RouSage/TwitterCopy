@@ -4,7 +4,7 @@ using SendGrid;
 using SendGrid.Helpers.Mail;
 using System.Threading.Tasks;
 
-namespace TwitterCopy.Services
+namespace TwitterCopy.Core.Services
 {
     public class EmailSender : IEmailSender
     {
