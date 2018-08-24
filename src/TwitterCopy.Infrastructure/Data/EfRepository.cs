@@ -6,7 +6,7 @@ using TwitterCopy.Core.Interfaces;
 
 namespace TwitterCopy.Infrastructure.Data
 {
-    public class EfRepository<T> : IRepository<T> where T : BaseEntity
+    public class EfRepository<T> : IRepository<T> where T : class
     {
         protected readonly TwitterCopyContext _context;
 

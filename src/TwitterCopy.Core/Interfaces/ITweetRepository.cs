@@ -6,6 +6,6 @@ namespace TwitterCopy.Core.Interfaces
 {
     public interface ITweetRepository : IRepository<Tweet>
     {
-        Task<IEnumerable<Tweet>> GetTweetsByUserId(string userId);
+        Task<IEnumerable<Tweet>> GetTweetsByUserIdAsync(string userId);
     }
 }

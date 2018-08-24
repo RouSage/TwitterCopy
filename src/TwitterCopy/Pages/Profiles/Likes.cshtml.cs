@@ -25,7 +25,7 @@ namespace TwitterCopy.Pages.Profiles
 
         public ProfileViewModel ProfileUser { get; set; }
 
-        public IList<TweetModel> LikedTweets { get; set; }
+        public IList<TweetViewModel> LikedTweets { get; set; }
 
         [BindProperty]
         public ProfileInputModel Input { get; set; }
@@ -78,7 +78,7 @@ namespace TwitterCopy.Pages.Profiles
 
             LikedTweets = profileOwner.Likes
                 .OrderByDescending(d => d.DateLiked)
-                .Select(x => new TweetModel
+                .Select(x => new TweetViewModel
                 {
                     Id = x.TweetId,
                     AuthorName = x.Tweet.User.UserName,

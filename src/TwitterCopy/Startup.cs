@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TwitterCopy.Core.Services;
 using TwitterCopy.Infrastructure.Data;
 using TwitterCopy.Services;
 
@@ -37,8 +38,9 @@ namespace TwitterCopy
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
             services.AddRouting(options => options.LowercaseUrls = true);
             services.CustomizedApplicationCookie();
-            services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
+            services.AddRepositoriesAndServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

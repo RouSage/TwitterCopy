@@ -31,7 +31,7 @@ namespace TwitterCopy.Pages.Profiles
             _hostingEnvironment = hostingEnvironment;
         }
 
-        public IList<TweetModel> Tweets { get; set; }
+        public IList<TweetViewModel> Tweets { get; set; }
 
         public ProfileViewModel Profile { get; set; }
 
@@ -72,7 +72,7 @@ namespace TwitterCopy.Pages.Profiles
             Tweets = await _context.Tweets
                 .AsNoTracking()
                 .Where(t => t.UserId.Equals(profileOwner.Id))
-                .Select(x => new TweetModel
+                .Select(x => new TweetViewModel
                 {
                     Id = x.Id,
                     AuthorName = x.User.UserName,
@@ -196,7 +196,7 @@ namespace TwitterCopy.Pages.Profiles
 
             var tweet = await _context.Tweets
                 .AsNoTracking()
-                .Select(t => new TweetModel
+                .Select(t => new TweetViewModel
                 {
                     Id = t.Id,
                     AuthorName = t.User.UserName,

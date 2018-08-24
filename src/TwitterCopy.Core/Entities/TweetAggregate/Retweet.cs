@@ -4,8 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TwitterCopy.Core.Entities.TweetAggregate
 {
-    public class Retweet : BaseEntity
+    public class Retweet
     {
+        public int Id { get; private set; }
+
         public int TweetId { get; private set; }
 
         public Guid UserId { get; private set; }

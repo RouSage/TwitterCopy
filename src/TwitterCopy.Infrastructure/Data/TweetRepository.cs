@@ -1,5 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopy.Core.Entities.TweetAggregate;
 using TwitterCopy.Core.Interfaces;
@@ -12,9 +13,12 @@ namespace TwitterCopy.Infrastructure.Data
         {
         }
 
-        public Task<IEnumerable<Tweet>> GetTweetsByUserId(string userId)
+        public async Task<IEnumerable<Tweet>> GetTweetsByUserIdAsync(string userId)
         {
-            throw new NotImplementedException();
+            return await _context.Tweets
+                .AsNoTracking()
+                .Where(x => x.UserId.ToString().Equals(userId))
+                .ToListAsync();
         }
     }
 }

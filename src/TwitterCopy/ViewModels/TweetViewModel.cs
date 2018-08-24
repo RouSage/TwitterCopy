@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TwitterCopy.Models
 {
-    public class TweetModel
+    public class TweetViewModel
     {
         public int Id { get; set; }
 

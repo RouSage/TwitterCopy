@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
+using TwitterCopy.Core.Interfaces;
 using TwitterCopy.Infrastructure.Data;
+using TwitterCopy.Interfaces;
 using TwitterCopy.Models;
 
 namespace TwitterCopy.Pages
@@ -17,19 +19,21 @@ namespace TwitterCopy.Pages
     {
         private readonly TwitterCopyContext _context;
         private readonly UserManager<TwitterCopyUser> _userManager;
+        private readonly ITweetViewModelService _tweetViewModelService;
 
-        public IndexModel(UserManager<TwitterCopyUser> userManager, TwitterCopyContext context)
+        public IndexModel(ITweetViewModelService tweetViewModelService, UserManager<TwitterCopyUser> userManager, TwitterCopyContext context)
         {
+            _tweetViewModelService = tweetViewModelService;
             _context = context;
             _userManager = userManager;
         }
 
         [BindProperty]
-        public TweetModel Tweet { get; set; }
+        public TweetViewModel Tweet { get; set; }
 
         public ProfileViewModel CurrentUser { get; set; }
 
-        public IList<TweetModel> FeedTweets { get; set; }
+        public IEnumerable<TweetViewModel> FeedTweets { get; set; }
 
         /// <summary>
         /// Provides data for the view
@@ -53,12 +57,13 @@ namespace TwitterCopy.Pages
                     Avatar = x.Avatar
                 })
                 .FirstOrDefaultAsync(u => u.Id.Equals(userId));
+
             if (CurrentUser == null)
             {
                 return NotFound();
             }
 
-            FeedTweets = GetTweets(CurrentUser.Id);
+            FeedTweets = await _tweetViewModelService.GetFeedForUser(CurrentUser.Id);
 
             return Page();
         }
@@ -104,7 +109,7 @@ namespace TwitterCopy.Pages
         {
             var tweetToDelete = await _context.Tweets
                 .AsNoTracking()
-                .Select(x => new TweetModel
+                .Select(x => new TweetViewModel
                 {
                     Id = x.Id,
                     AuthorName = x.User.UserName,
@@ -359,7 +364,7 @@ namespace TwitterCopy.Pages
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        private IList<TweetModel> GetTweets(string userId)
+        private IList<TweetViewModel> GetTweets(string userId)
         {
             var user = _context.Users
                 .AsNoTracking()
@@ -372,7 +377,7 @@ namespace TwitterCopy.Pages
                 .FirstOrDefault(x => x.Id.ToString().Equals(userId));
 
             var currentUserTweets = user.Tweets
-                .Select(x => new TweetModel
+                .Select(x => new TweetViewModel
                 {
                     Id = x.Id,
                     AuthorName = x.User.UserName,
@@ -384,7 +389,7 @@ namespace TwitterCopy.Pages
                     Text = x.Text
                 })
                 .Union(user.Retweets
-                    .Select(x => new TweetModel
+                    .Select(x => new TweetViewModel
                     {
                         Id = x.Tweet.Id,
                         AuthorName = x.Tweet.User.UserName,
@@ -399,7 +404,7 @@ namespace TwitterCopy.Pages
 
             var followingTweets = user.Following
                 .SelectMany(x => x.User.Tweets
-                    .Select(t => new TweetModel
+                    .Select(t => new TweetViewModel
                     {
                         Id = t.Id,
                         AuthorName = t.User.UserName,

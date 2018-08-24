@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using TwitterCopy.Core.Entities;
+using TwitterCopy.Core.Interfaces;
+using TwitterCopy.Core.Services;
 using TwitterCopy.Infrastructure.Data;
+using TwitterCopy.Interfaces;
 
 namespace TwitterCopy.Services
 {
@@ -72,6 +75,15 @@ namespace TwitterCopy.Services
                 options.LogoutPath = $"/Account/Logout";
                 options.AccessDeniedPath = $"/Account/AccessDenied";
             });
+
+            return services;
+        }
+
+        public static IServiceCollection AddRepositoriesAndServices(this IServiceCollection services)
+        {
+            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+            services.AddScoped<ITweetRepository, TweetRepository>();
+            services.AddScoped<ITweetViewModelService, TweetViewModelService>();
 
             return services;
         }

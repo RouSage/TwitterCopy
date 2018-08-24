@@ -6,8 +6,10 @@ using System.Linq;
 
 namespace TwitterCopy.Core.Entities.TweetAggregate
 {
-    public class Tweet : BaseEntity
+    public class Tweet
     {
+        public int Id { get; private set; }
+
         [StringLength(280)]
         public string Text { get; private set; }
 

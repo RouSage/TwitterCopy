@@ -4,7 +4,7 @@ using TwitterCopy.Core.Entities;
 
 namespace TwitterCopy.Core.Interfaces
 {
-    public interface IRepository<T> where T : BaseEntity
+    public interface IRepository<T> where T : class
     {
         Task<T> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
