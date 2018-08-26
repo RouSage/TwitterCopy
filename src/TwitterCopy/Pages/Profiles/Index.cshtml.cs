@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -160,6 +159,10 @@ namespace TwitterCopy.Pages.Profiles
 
                 userToUpdate.Avatar = avatarFileName;
             }
+            else
+            {
+                userToUpdate.Avatar = Globals.DefaultAvatar;
+            }
 
             await _context.SaveChangesAsync();
 
@@ -169,6 +172,34 @@ namespace TwitterCopy.Pages.Profiles
                 Bio = userToUpdate.Bio,
                 Location = userToUpdate.Location,
                 Website = userToUpdate.Website,
+                Avatar = string.Concat("/images/profile-images/", userToUpdate.Avatar)
+            });
+        }
+
+        public async Task<IActionResult> OnPostRemoveAvatarAsync(string avatar)
+        {
+            if (string.Equals(avatar, Globals.DefaultAvatar))
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new { Message = "You cannot remove the default avatar." });
+            }
+
+            var userToUpdate = await _userManager.GetUserAsync(User);
+            if (userToUpdate == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var avatarFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "images\\profile-images", avatar);
+            System.IO.File.Delete(avatarFilePath);
+
+            userToUpdate.Avatar = Globals.DefaultAvatar;
+
+            await _context.SaveChangesAsync();
+
+            return new JsonResult(new
+            {
+                Message = "Avatar removed successfully",
                 Avatar = string.Concat("/images/profile-images/", userToUpdate.Avatar)
             });
         }
@@ -229,35 +260,7 @@ namespace TwitterCopy.Pages.Profiles
                 ViewData = viewData,
             };
 
-            //return new JsonResult(tweet);
             return result;
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            var user = await _userManager.GetUserAsync(User);
-            if(user == null)
-            {
-                return NotFound();
-            }
-
-            var filePath = Path.Combine(_hostingEnvironment.WebRootPath, "images\\profile-images", Vm.Avatar.FileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await Vm.Avatar.CopyToAsync(stream);
-            }
-
-            user.Avatar = Vm.Avatar.FileName;
-            _context.Update(user);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index", new { slug = user.Slug });
         }
     }
 }

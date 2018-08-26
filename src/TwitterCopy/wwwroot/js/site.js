@@ -282,6 +282,9 @@
             $('#saveEditBtn').removeClass('d-none');
             $('#profileInfo').addClass('d-none');
             $('#profileEdit').removeClass('d-none');
+        },
+        updateProfileAvatar: function (newAvatar) {
+            $('#profileInfoAvatar').attr('src', newAvatar);
         }
     };
 
@@ -349,50 +352,73 @@
         });
     });
 
-    $('.tweet-actionable').click(function (e) {
-        var tweet = $(this);
-        var tweetId = tweet.data('tweet-id');
-        var userSlug = tweet.data('user-slug');
-
-        if (e.target.localName !== 'button'
-            && e.target.localName !== 'span'
-            && e.target.localName !== 'a'
-            && e.target.localName !== 'strong'
-            && e.target.localName !== 'b') {
-            $.ajax({
-                type: 'GET',
-                url: `/Profiles/Index/${userSlug}`,
-                data: {
-                    handler: 'Status',
-                    tweetId: tweetId
-                },
-                contentType: 'application/json; charset=utf-8',
-                success: function (response) {
-                    var tweetModal = $('#tweetModal');
-                    var tweetContainer = tweetModal.find('.modal-body');
-                    tweetContainer.html(response);
-                    tweetModal.modal('show');
-                },
-                failure: function (response) {
-                    AlertMessage.showAlertMessage(response);
-                }
-            });
-
-        }
+    $('#removeAvatarBtn').click(function (e) {
+        var avatar = $('#profileInfoAvatar').data('avatar');
+        $.ajax({
+            url: '/Profiles/Index?handler=RemoveAvatar',
+            type: 'POST',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            data: {
+                avatar: avatar
+            },
+            dataType: 'json',
+            success: function (response) {
+                AlertMessage.showAlertMessage(response.message);
+                ProfileEditor.updateProfileAvatar(response.avatar);
+            },
+            error: function (response) {
+                AlertMessage.showAlertMessage(JSON.parse(JSON.stringify(response.responseJSON)).message);
+            }
+        });
     });
 
-    var AlertMessage = {
-        showAlertMessage: function (message) {
-            var alert = $('#alertMessage');
-            alert.removeClass('d-none');
-            var messageText = alert.find('.message-text');
-            messageText.text(message);
-        },
-        hideAlertMessage: function () {
-            $('#alertMessage').addClass('d-none');
-        }
-    };
+$('.tweet-actionable').click(function (e) {
+    var tweet = $(this);
+    var tweetId = tweet.data('tweet-id');
+    var userSlug = tweet.data('user-slug');
 
-    $('#alertMessage .close').on('click', AlertMessage.hideAlertMessage);
+    if (e.target.localName !== 'button'
+        && e.target.localName !== 'span'
+        && e.target.localName !== 'a'
+        && e.target.localName !== 'strong'
+        && e.target.localName !== 'b') {
+        $.ajax({
+            type: 'GET',
+            url: `/Profiles/Index/${userSlug}`,
+            data: {
+                handler: 'Status',
+                tweetId: tweetId
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                var tweetModal = $('#tweetModal');
+                var tweetContainer = tweetModal.find('.modal-body');
+                tweetContainer.html(response);
+                tweetModal.modal('show');
+            },
+            failure: function (response) {
+                AlertMessage.showAlertMessage(response);
+            }
+        });
+
+    }
+});
+
+var AlertMessage = {
+    showAlertMessage: function (message) {
+        var alert = $('#alertMessage');
+        alert.removeClass('d-none');
+        var messageText = alert.find('.message-text');
+        messageText.text(message);
+    },
+    hideAlertMessage: function () {
+        $('#alertMessage').addClass('d-none');
+    }
+};
+
+$('#alertMessage .close').on('click', AlertMessage.hideAlertMessage);
 
 });
