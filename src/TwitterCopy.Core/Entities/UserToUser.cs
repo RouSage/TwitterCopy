@@ -4,24 +4,14 @@ namespace TwitterCopy.Core.Entities
 {
     public class UserToUser
     {
-        public Guid UserId { get; private set; }
+        public Guid UserId { get; set; }
 
-        public Guid FollowerId { get; private set; }
+        public Guid FollowerId { get; set; }
 
         // Relationships
 
-        public TwitterCopyUser User { get; private set; }
+        public TwitterCopyUser User { get; set; }
 
-        public TwitterCopyUser Follower { get; private set; }
-
-        // Ctors
-
-        private UserToUser() { }
-
-        public UserToUser(TwitterCopyUser user, TwitterCopyUser follower)
-        {
-            User = user;
-            Follower = follower;
-        }
+        public TwitterCopyUser Follower { get; set; }
     }
 }

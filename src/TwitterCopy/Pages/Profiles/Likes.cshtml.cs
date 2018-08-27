@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
+using TwitterCopy.Core.Interfaces;
 using TwitterCopy.Infrastructure.Data;
 using TwitterCopy.Models;
 
@@ -14,12 +15,13 @@ namespace TwitterCopy.Pages.Profiles
 {
     public class LikesModel : PageModel
     {
-        private readonly TwitterCopyContext _context;
+        private readonly IUserService _userService;
         private readonly UserManager<TwitterCopyUser> _userManager;
 
-        public LikesModel(TwitterCopyContext context, UserManager<TwitterCopyUser> userManager)
+        public LikesModel(IUserService userService,
+            UserManager<TwitterCopyUser> userManager)
         {
-            _context = context;
+            _userService = userService;
             _userManager = userManager;
         }
 
@@ -37,15 +39,7 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound();
             }
 
-            var profileOwner = await _context.Users
-                .AsNoTracking()
-                .Include(f => f.Following)
-                .Include(f => f.Followers)
-                .Include(t => t.Tweets)
-                .Include(l => l.Likes)
-                    .ThenInclude(t => t.Tweet)
-                        .ThenInclude(u => u.User)
-                .FirstOrDefaultAsync(u => u.Slug.Equals(slug));
+            var profileOwner = await _userService.GetProfileOwnerAsync(slug);
             if (profileOwner == null)
             {
                 return NotFound();

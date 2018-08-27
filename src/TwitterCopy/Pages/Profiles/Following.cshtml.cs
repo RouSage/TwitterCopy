@@ -1,24 +1,24 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
-using TwitterCopy.Infrastructure.Data;
+using TwitterCopy.Core.Interfaces;
 using TwitterCopy.Models;
 
 namespace TwitterCopy.Pages.Profiles
 {
     public class FollowingModel : PageModel
     {
-        private readonly TwitterCopyContext _context;
+        private readonly IUserService _userService;
         private readonly UserManager<TwitterCopyUser> _userManager;
 
-        public FollowingModel(TwitterCopyContext context, UserManager<TwitterCopyUser> userManager)
+        public FollowingModel(IUserService userService,
+            UserManager<TwitterCopyUser> userManager)
         {
-            _context = context;
+            _userService = userService;
             _userManager = userManager;
         }
 
@@ -31,19 +31,12 @@ namespace TwitterCopy.Pages.Profiles
 
         public async Task<IActionResult> OnGetAsync(string slug)
         {
-            if(slug == null)
+            if(string.IsNullOrEmpty(slug))
             {
                 return NotFound();
             }
 
-            var profileOwner = await _context.Users
-                .AsNoTracking()
-                .Include(f => f.Following)
-                    .ThenInclude(u => u.User)
-                .Include(f => f.Followers)
-                .Include(t => t.Tweets)
-                .Include(l => l.Likes)
-                .FirstOrDefaultAsync(u => u.Slug.Equals(slug));
+            var profileOwner = await _userService.GetProfileOwnerAsync(slug);
             if(profileOwner == null)
             {
                 return NotFound();
@@ -71,7 +64,9 @@ namespace TwitterCopy.Pages.Profiles
                 FollowersCount = profileOwner.Followers.Count,
                 FollowingCount = profileOwner.Following.Count,
                 LikesCount = profileOwner.Likes.Count,
-                TweetsCount = profileOwner.Tweets.Count
+                TweetsCount = profileOwner.Tweets.Count,
+                Avatar = profileOwner.Avatar,
+                JoinDate = profileOwner.RegisterDate.ToString("MMMM yyyy")
             };
 
             Following = profileOwner.Following

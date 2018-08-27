@@ -6,7 +6,6 @@ using TwitterCopy.Core.Entities;
 using TwitterCopy.Core.Interfaces;
 using TwitterCopy.Core.Services;
 using TwitterCopy.Infrastructure.Data;
-using TwitterCopy.Interfaces;
 
 namespace TwitterCopy.Services
 {
@@ -83,7 +82,9 @@ namespace TwitterCopy.Services
         {
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<ITweetRepository, TweetRepository>();
-            services.AddScoped<ITweetViewModelService, TweetViewModelService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITweetService, TweetService>();
 
             return services;
         }

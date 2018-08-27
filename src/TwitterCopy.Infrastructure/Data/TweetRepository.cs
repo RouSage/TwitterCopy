@@ -13,12 +13,20 @@ namespace TwitterCopy.Infrastructure.Data
         {
         }
 
-        public async Task<IEnumerable<Tweet>> GetTweetsByUserIdAsync(string userId)
+        public async Task<List<Tweet>> GetTweetsByUserIdAsync(string userId)
         {
             return await _context.Tweets
                 .AsNoTracking()
-                .Where(x => x.UserId.ToString().Equals(userId))
+                .Where(x => x.UserId.ToString() == userId)
+                .OrderByDescending(x => x.PostedOn)
                 .ToListAsync();
+        }
+
+        public async Task<Tweet> GetTweetWithUserAsync(int tweetId)
+        {
+            return await _context.Tweets
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.Id == tweetId);
         }
     }
 }

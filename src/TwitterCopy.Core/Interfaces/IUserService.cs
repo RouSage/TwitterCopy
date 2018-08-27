@@ -1,0 +1,13 @@
+﻿using System.Threading.Tasks;
+using TwitterCopy.Core.Entities;
+
+namespace TwitterCopy.Core.Interfaces
+{
+    public interface IUserService
+    {
+        Task<TwitterCopyUser> GetProfileOwnerAsync(string slug);
+        Task<TwitterCopyUser> GetProfileOwnerWithFollowersAsync(string slug);
+        Task<TwitterCopyUser> GetUserAndFeedMainInfoAsync(string userId);
+        Task UpdateUserAsync(TwitterCopyUser user);
+    }
+}

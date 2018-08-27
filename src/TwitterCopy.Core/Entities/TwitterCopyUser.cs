@@ -34,25 +34,15 @@ namespace TwitterCopy.Core.Entities
 
         // Relationships
 
-        private readonly List<Like> _likes = new List<Like>();
+        public ICollection<Like> Likes { get; set; }
 
-        public IReadOnlyCollection<Like> Likes => _likes.AsReadOnly();
+        public ICollection<Retweet> Retweets { get; set; }
 
-        private readonly List<Retweet> _retweets = new List<Retweet>();
+        public ICollection<UserToUser> Following { get; set; }
 
-        public IReadOnlyCollection<Retweet> Retweets => _retweets.AsReadOnly();
+        public ICollection<UserToUser> Followers { get; set; }
 
-        private readonly List<UserToUser> _following = new List<UserToUser>();
-
-        public IReadOnlyCollection<UserToUser> Following => _following.AsReadOnly();
-
-        private readonly List<UserToUser> _followers = new List<UserToUser>();
-
-        public IReadOnlyCollection<UserToUser> Followers => _followers.AsReadOnly();
-
-        private readonly List<Tweet> _tweets = new List<Tweet>();
-
-        public IReadOnlyCollection<Tweet> Tweets => _tweets.AsReadOnly();
+        public ICollection<Tweet> Tweets { get; set; }
 
     }
 }
