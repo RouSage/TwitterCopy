@@ -2,15 +2,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
-using TwitterCopy.Core.Entities.TweetAggregate;
 using TwitterCopy.Core.Interfaces;
-using TwitterCopy.Infrastructure.Data;
 using TwitterCopy.Models;
 
 namespace TwitterCopy.Pages
@@ -344,68 +341,6 @@ namespace TwitterCopy.Pages
         //    await _context.SaveChangesAsync();
 
         //    return new JsonResult(tweet.RetweetCount);
-        //}
-
-        /// <summary>
-        /// Returns all the user's tweets
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        //private IList<TweetViewModel> GetTweets(string userId)
-        //{
-        //    var user = _context.Users
-        //        .AsNoTracking()
-        //        .Include(t => t.Tweets)
-        //        .Include(r => r.Retweets)
-        //            .ThenInclude(t => t.Tweet)
-        //        .Include(f => f.Following)
-        //            .ThenInclude(u => u.User)
-        //                .ThenInclude(t => t.Tweets)
-        //        .FirstOrDefault(x => x.Id.ToString().Equals(userId));
-
-        //    var currentUserTweets = user.Tweets
-        //        .Select(x => new TweetViewModel
-        //        {
-        //            Id = x.Id,
-        //            AuthorName = x.User.UserName,
-        //            AuthorSlug = x.User.Slug,
-        //            AuthorAvatar = x.User.Avatar,
-        //            LikeCount = x.LikeCount,
-        //            RetweetCount = x.RetweetCount,
-        //            PostedOn = x.PostedOn,
-        //            Text = x.Text
-        //        })
-        //        .Union(user.Retweets
-        //            .Select(x => new TweetViewModel
-        //            {
-        //                Id = x.Tweet.Id,
-        //                AuthorName = x.Tweet.User.UserName,
-        //                AuthorSlug = x.Tweet.User.Slug,
-        //                AuthorAvatar = x.Tweet.User.Avatar,
-        //                LikeCount = x.Tweet.LikeCount,
-        //                PostedOn = x.RetweetDate,
-        //                RetweetCount = x.Tweet.RetweetCount,
-        //                Text = x.Tweet.Text
-        //            })
-        //        );
-
-        //    var followingTweets = user.Following
-        //        .SelectMany(x => x.User.Tweets
-        //            .Select(t => new TweetViewModel
-        //            {
-        //                Id = t.Id,
-        //                AuthorName = t.User.UserName,
-        //                AuthorSlug = t.User.Slug,
-        //                AuthorAvatar = t.User.Avatar,
-        //                LikeCount = t.LikeCount,
-        //                RetweetCount = t.RetweetCount,
-        //                PostedOn = t.PostedOn,
-        //                Text = t.Text
-        //            }));
-
-        //    return currentUserTweets.Concat(followingTweets)
-        //            .OrderByDescending(t => t.PostedOn)
-        //            .ToList();
         //}
     }
 }

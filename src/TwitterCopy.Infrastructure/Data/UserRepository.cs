@@ -23,7 +23,9 @@ namespace TwitterCopy.Infrastructure.Data
             return await _context.Users
                 .AsNoTracking()
                 .Include(fs => fs.Followers)
+                    .ThenInclude(u => u.Follower)
                 .Include(fg => fg.Following)
+                    .ThenInclude(u => u.User)
                 .Include(l => l.Likes)
                 .Include(t => t.Tweets)
                 .FirstOrDefaultAsync(u => u.Slug.Equals(slug));
