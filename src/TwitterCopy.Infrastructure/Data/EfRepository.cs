@@ -15,12 +15,10 @@ namespace TwitterCopy.Infrastructure.Data
             _context = context;
         }
 
-        public async Task<T> AddAsync(T entity)
+        public async Task AddAsync(T entity)
         {
             _context.Set<T>().Add(entity);
             await _context.SaveChangesAsync();
-
-            return entity;
         }
 
         public async Task DeleteAsync(T entity)

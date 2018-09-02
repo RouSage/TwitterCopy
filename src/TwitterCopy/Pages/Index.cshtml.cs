@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
+using TwitterCopy.Core.Entities.TweetAggregate;
 using TwitterCopy.Core.Interfaces;
 using TwitterCopy.Infrastructure.Data;
 using TwitterCopy.Models;
@@ -61,6 +62,7 @@ namespace TwitterCopy.Pages
                 UserName = user.UserName
             };
 
+            // TODO: Add Retweets to the Feed too
             FeedTweets = user.Tweets
                 .Select(x => new TweetViewModel
                 {
@@ -97,33 +99,23 @@ namespace TwitterCopy.Pages
         /// Inserts new tweet to the database
         /// </summary>
         /// <returns></returns>
-        //public async Task<IActionResult> OnPostAsync()
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return Page();
-        //    }
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
-        //    if (await TryUpdateModelAsync<TweetModel>(
-        //        Tweet,
-        //        "tweet",
-        //        t => t.Text, t => t.AuthorName, t => t.PostedOn))
-        //    {
-        //        var newTweet = new Tweet
-        //        {
-        //            Text = Tweet.Text,
-        //            User = await _userManager.GetUserAsync(User),
-        //            PostedOn = Tweet.PostedOn
-        //        };
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound();
+            }
 
-        //        _context.Tweets.Add(newTweet);
-        //        await _context.SaveChangesAsync();
+            await _tweetService.AddTweet(Tweet.Text, user);
 
-        //        return RedirectToPage();
-        //    }
-
-        //    return null;
-        //}
+            return RedirectToPage();
+        }
 
         /// <summary>
         /// Provides tweet for the modal dialog
