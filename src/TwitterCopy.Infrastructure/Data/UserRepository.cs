@@ -48,5 +48,12 @@ namespace TwitterCopy.Infrastructure.Data
                 .Include(t => t.Tweets)
                 .FirstOrDefaultAsync(x => x.Id.ToString().Equals(userId));
         }
+
+        public async Task<TwitterCopyUser> GetUserWithFollowersForEditAsync(string userSlug)
+        {
+            return await _context.Users
+                .Include(fs => fs.Followers)
+                .FirstOrDefaultAsync(s => s.Slug.Equals(userSlug));
+        }
     }
 }

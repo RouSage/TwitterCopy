@@ -33,5 +33,10 @@ namespace TwitterCopy.Core.Services
             _userRepository.Update(user);
             await _userRepository.SaveAsync();
         }
+
+        public async Task<TwitterCopyUser> GetProfileOwnerWithFollowersForEditAsync(string userSlug)
+        {
+            return await _userRepository.GetUserWithFollowersForEditAsync(userSlug);
+        }
     }
 }

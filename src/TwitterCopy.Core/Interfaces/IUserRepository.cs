@@ -8,6 +8,7 @@ namespace TwitterCopy.Core.Interfaces
         Task<TwitterCopyUser> GetUserWithTweetsAsync(string userId);
         Task<TwitterCopyUser> GetUserWithAllInfoAsync(string slug);
         Task<TwitterCopyUser> GetUserWithFollowersAsync(string slug);
+        Task<TwitterCopyUser> GetUserWithFollowersForEditAsync(string userSlug);
         Task<TwitterCopyUser> GetUserMainInfoWithFollowingTweetsAsync(string userId);
     }
 }

@@ -7,6 +7,7 @@ namespace TwitterCopy.Core.Interfaces
     {
         Task<TwitterCopyUser> GetProfileOwnerAsync(string slug);
         Task<TwitterCopyUser> GetProfileOwnerWithFollowersAsync(string slug);
+        Task<TwitterCopyUser> GetProfileOwnerWithFollowersForEditAsync(string userSlug);
         Task<TwitterCopyUser> GetUserAndFeedMainInfoAsync(string userId);
         Task UpdateUserAsync(TwitterCopyUser user);
     }

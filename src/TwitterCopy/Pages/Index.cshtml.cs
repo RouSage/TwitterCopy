@@ -201,57 +201,54 @@ namespace TwitterCopy.Pages
             return new JsonResult(updatedLikeCount);
         }
 
-        //public async Task<IActionResult> OnPostFollowAsync(string userSlug)
-        //{
-        //    if (userSlug == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> OnPostFollowAsync(string userSlug)
+        {
+            if (userSlug == null)
+            {
+                return NotFound();
+            }
 
-        //    var userToFollow = await _context.Users
-        //        .Include(f => f.Followers)
-        //        .FirstOrDefaultAsync(u => u.Slug == userSlug);
-        //    if (userToFollow == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var userToFollow = await _userService.GetProfileOwnerWithFollowersForEditAsync(userSlug);
+            if (userToFollow == null)
+            {
+                return NotFound();
+            }
 
-        //    var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
-        //    if (currentUser == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
 
-        //    if (userSlug == currentUser.Slug)
-        //    {
-        //        Response.StatusCode = (int)HttpStatusCode.Forbidden;
-        //        return new JsonResult(new { Message = "You can't follow yourself." });
-        //    }
+            if (userSlug == currentUser.Slug)
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new { Message = "You can't follow yourself." });
+            }
 
-        //    bool alreadyFollowing = userToFollow.Followers
-        //        .Any(f => f.FollowerId.Equals(currentUser.Id));
-        //    if (alreadyFollowing)
-        //    {
-        //        Response.StatusCode = (int)HttpStatusCode.Forbidden;
-        //        return new JsonResult(new { Message = "You can't follow the user you're already following." });
-        //    }
+            bool alreadyFollowing = userToFollow.Followers
+                .Any(f => f.FollowerId.Equals(currentUser.Id));
+            if (alreadyFollowing)
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new { Message = "You can't follow the user you're already following." });
+            }
 
-        //    userToFollow.Followers.Add(new UserToUser
-        //    {
-        //        User = userToFollow,
-        //        Follower = currentUser
-        //    });
+            userToFollow.Followers.Add(new UserToUser
+            {
+                User = userToFollow,
+                Follower = currentUser
+            });
 
-        //    _context.Update(userToFollow);
-        //    await _context.SaveChangesAsync();
+            await _userService.UpdateUserAsync(userToFollow);
 
-        //    return new JsonResult(new
-        //    {
-        //        Count = userToFollow.Followers.Count,
-        //        Slug = userToFollow.Slug,
-        //        CurrentUserSlug = currentUser.Slug
-        //    });
-        //}
+            return new JsonResult(new
+            {
+                Count = userToFollow.Followers.Count,
+                Slug = userToFollow.Slug,
+                CurrentUserSlug = currentUser.Slug
+            });
+        }
 
         //public async Task<IActionResult> OnPostUnfollowAsync(string userSlug)
         //{
