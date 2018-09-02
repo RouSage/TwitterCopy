@@ -250,53 +250,50 @@ namespace TwitterCopy.Pages
             });
         }
 
-        //public async Task<IActionResult> OnPostUnfollowAsync(string userSlug)
-        //{
-        //    if (userSlug == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> OnPostUnfollowAsync(string userSlug)
+        {
+            if (userSlug == null)
+            {
+                return NotFound();
+            }
 
-        //    var userToUnfollow = await _context.Users
-        //        .Include(f => f.Followers)
-        //        .FirstOrDefaultAsync(u => u.Slug == userSlug);
-        //    if (userToUnfollow == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var userToUnfollow = await _userService.GetProfileOwnerWithFollowersForEditAsync(userSlug);
+            if (userToUnfollow == null)
+            {
+                return NotFound();
+            }
 
-        //    var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
-        //    if (currentUser == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
 
-        //    if (userSlug == currentUser.Slug)
-        //    {
-        //        Response.StatusCode = (int)HttpStatusCode.Forbidden;
-        //        return new JsonResult(new { Message = "You can't unfollow yourself." });
-        //    }
+            if (userSlug == currentUser.Slug)
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new { Message = "You can't unfollow yourself." });
+            }
 
-        //    bool alreadyFollowing = await _context.Users
-        //        .AnyAsync(x => x.Followers
-        //            .Any(u => u.FollowerId.Equals(currentUser.Id)));
-        //    if (!alreadyFollowing)
-        //    {
-        //        Response.StatusCode = (int)HttpStatusCode.Forbidden;
-        //        return new JsonResult(new { Message = "You can't unfollow the user you're alredy unfollowing." });
-        //    }
+            bool alreadyFollowing = userToUnfollow.Followers
+                .Any(f => f.FollowerId.Equals(currentUser.Id));
+            if (!alreadyFollowing)
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new { Message = "You can't unfollow the user you're alredy unfollowing." });
+            }
 
-        //    userToUnfollow.Followers.Remove(userToUnfollow.Followers
-        //        .FirstOrDefault(x => x.FollowerId.Equals(currentUser.Id)));
-        //    await _context.SaveChangesAsync();
+            userToUnfollow.Followers.Remove(userToUnfollow.Followers
+                .FirstOrDefault(x => x.FollowerId.Equals(currentUser.Id)));
+            await _userService.UpdateUserAsync(userToUnfollow);
 
-        //    return new JsonResult(new
-        //    {
-        //        Count = userToUnfollow.Followers.Count,
-        //        Slug = userToUnfollow.Slug,
-        //        CurrentUserSlug = currentUser.Slug
-        //    });
-        //}
+            return new JsonResult(new
+            {
+                Count = userToUnfollow.Followers.Count,
+                Slug = userToUnfollow.Slug,
+                CurrentUserSlug = currentUser.Slug
+            });
+        }
 
         //public async Task<IActionResult> OnPostRetweetAsync(int? id)
         //{
