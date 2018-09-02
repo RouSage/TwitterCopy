@@ -26,6 +26,7 @@ namespace TwitterCopy.Infrastructure.Data
         {
             return await _context.Tweets
                 .AsNoTracking()
+                .Include(u => u.User)
                 .FirstOrDefaultAsync(t => t.Id == tweetId);
         }
     }

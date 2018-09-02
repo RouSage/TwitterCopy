@@ -25,12 +25,22 @@ namespace TwitterCopy.Core.Services
             await _tweetRepository.AddAsync(tweet);
         }
 
+        public async Task DeleteTweet(Tweet tweetToDelete)
+        {
+            await _tweetRepository.DeleteAsync(tweetToDelete);
+        }
+
+        public async Task<Tweet> GetTweetAsync(int tweetId)
+        {
+            return await _tweetRepository.GetByIdAsync(tweetId);
+        }
+
         /// <summary>
         /// Always returns Tweet with the User
         /// </summary>
         /// <param name="tweetId"></param>
         /// <returns></returns>
-        public async Task<Tweet> GetTweet(int tweetId)
+        public async Task<Tweet> GetTweetWithAuthor(int tweetId)
         {
             return await _tweetRepository.GetTweetWithUserAsync(tweetId);
         }

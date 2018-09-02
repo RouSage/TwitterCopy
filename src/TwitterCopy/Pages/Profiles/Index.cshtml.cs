@@ -183,7 +183,7 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound();
             }
 
-            var tweet = await _tweetSevice.GetTweet(tweetId.Value);
+            var tweet = await _tweetSevice.GetTweetWithAuthor(tweetId.Value);
             if (tweet == null)
             {
                 return NotFound();

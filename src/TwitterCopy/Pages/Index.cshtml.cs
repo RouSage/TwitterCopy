@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
 using TwitterCopy.Core.Entities.TweetAggregate;
@@ -122,54 +123,64 @@ namespace TwitterCopy.Pages
         /// </summary>
         /// <param name="id">Tweet's id</param>
         /// <returns>Tweet info in JSON</returns>
-        //public async Task<IActionResult> OnGetTweetAsync(int? id)
-        //{
-        //    var tweetToDelete = await _context.Tweets
-        //        .AsNoTracking()
-        //        .Select(x => new TweetViewModel
-        //        {
-        //            Id = x.Id,
-        //            AuthorName = x.User.UserName,
-        //            AuthorSlug = x.User.Slug,
-        //            AuthorAvatar = x.User.Avatar,
-        //            Text = x.Text,
-        //            PostedOn = x.PostedOn
-        //        })
-        //        .FirstOrDefaultAsync(t => t.Id == id);
+        public async Task<IActionResult> OnGetTweetAsync(int? id)
+        {
+            var tweetToDelete = await _tweetService.GetTweetWithAuthor(id.Value);
+            if (tweetToDelete == null)
+            {
+                return NotFound("Tweet to delete not found.");
+            }
 
-        //    if(tweetToDelete == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return NotFound("User id not found. Please log in to the website.");
+            }
 
-        //    return new JsonResult(tweetToDelete);
-        //}
+            if (!tweetToDelete.UserId.ToString().Equals(userId))
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new
+                {
+                    Message = "You cannot delete Tweet which doesn't belong to you."
+                });
+            }
+
+            var tweetVM = new TweetViewModel
+            {
+                Id = tweetToDelete.Id,
+                AuthorName = tweetToDelete.User.UserName,
+                AuthorSlug = tweetToDelete.User.Slug,
+                AuthorAvatar = tweetToDelete.User.Avatar,
+                Text = tweetToDelete.Text,
+                PostedOn = tweetToDelete.PostedOn
+            };
+
+            return new JsonResult(tweetVM);
+        }
 
         /// <summary>
         /// Deletes tweet from the database
         /// </summary>
         /// <param name="id">Tweet's id</param>
         /// <returns></returns>
-        //public async Task<IActionResult> OnPostDeleteAsync(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> OnPostDeleteAsync(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    TODO: check owner with authorization
-        //    var tweetToDelete = await _context.Tweets
-        //        .FirstOrDefaultAsync(t => t.Id == id);
-        //    if (tweetToDelete == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var tweetToDelete = await _tweetService.GetTweetAsync(id.Value);
+            if (tweetToDelete == null)
+            {
+                return NotFound("Tweet to delete not found.");
+            }
 
-        //    _context.Tweets.Remove(tweetToDelete);
-        //    await _context.SaveChangesAsync();
+            await _tweetService.DeleteTweet(tweetToDelete);
 
-        //    return RedirectToPage();
-        //}
+            return RedirectToPage();
+        }
 
         //public async Task<IActionResult> OnGetUpdateLikesAsync(int? id)
         //{
