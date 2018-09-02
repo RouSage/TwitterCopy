@@ -22,6 +22,13 @@ namespace TwitterCopy.Infrastructure.Data
                 .ToListAsync();
         }
 
+        public async Task<Tweet> GetTweetWithLikes(int tweetId)
+        {
+            return await _context.Tweets
+                .Include(l => l.Likes)
+                .FirstOrDefaultAsync(x => x.Id == tweetId);
+        }
+
         public async Task<Tweet> GetTweetWithUserAsync(int tweetId)
         {
             return await _context.Tweets

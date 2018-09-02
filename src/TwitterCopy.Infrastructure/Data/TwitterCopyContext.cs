@@ -44,7 +44,7 @@ namespace TwitterCopy.Infrastructure.Data
                 .HasOne(t => t.Tweet)
                 .WithMany(l => l.Likes)
                 .HasForeignKey("TweetId")
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Like>()
                 .HasOne(u => u.User)

@@ -30,7 +30,8 @@ namespace TwitterCopy.Core.Services
 
         public async Task UpdateUserAsync(TwitterCopyUser user)
         {
-            await _userRepository.UpdateAsync(user);
+            _userRepository.Update(user);
+            await _userRepository.SaveAsync();
         }
     }
 }

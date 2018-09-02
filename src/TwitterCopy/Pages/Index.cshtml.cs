@@ -182,59 +182,24 @@ namespace TwitterCopy.Pages
             return RedirectToPage();
         }
 
-        //public async Task<IActionResult> OnGetUpdateLikesAsync(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> OnGetUpdateLikesAsync(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    // Get current authenticated user
-        //    var user = await _userManager.GetUserAsync(User);
-        //    if(user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    // Get tweet with the given Id
-        //    var tweet = await _context.Tweets
-        //        .Include(l => l.Likes)
-        //        .FirstOrDefaultAsync(t => t.Id == id);
-        //    if(tweet == null)
-        //    {
-        //        return NotFound();
-        //    }
+            // Get current authenticated user
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound();
+            }
 
-        //    // Apply the user and tweet object from above to the new Like
-        //    var like = new Like
-        //    {
-        //        Tweet = tweet,
-        //        User = user,
-        //        DateLiked = DateTime.UtcNow
-        //    };
-
-        //    // Check if the user already has like on this tweet
-        //    var dupe = await _context.Likes.FirstOrDefaultAsync(x => x.TweetId == tweet.Id && x.UserId == user.Id);
-        //    if (dupe == null)
-        //    {
-        //        // If no duplicate was found
-        //        // Add new like to the database
-        //        _context.Likes.Add(like);
-        //        tweet.LikeCount++;
-        //    }
-        //    else
-        //    {
-        //        // If duplicate was found in the Likes table
-        //        // Delete dupe instead of like because
-        //        // like doesn't have Id values
-        //        _context.Likes.Remove(dupe);
-        //        tweet.LikeCount--;
-        //    }
-
-        //    //_context.Update<Tweet>(tweet);
-        //    await _context.SaveChangesAsync();
-
-        //    return new JsonResult(tweet.LikeCount);
-        //}
+            var updatedLikeCount = await _tweetService.UpdateLikes(id.Value, user);
+            
+            return new JsonResult(updatedLikeCount);
+        }
 
         //public async Task<IActionResult> OnPostFollowAsync(string userSlug)
         //{
