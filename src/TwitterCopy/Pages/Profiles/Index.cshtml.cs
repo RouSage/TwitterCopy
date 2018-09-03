@@ -4,34 +4,35 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using TwitterCopy.Data;
-using TwitterCopy.Entities;
+using TwitterCopy.Core.Entities;
+using TwitterCopy.Core.Interfaces;
 using TwitterCopy.Models;
 
 namespace TwitterCopy.Pages.Profiles
 {
     public class IndexModel : PageModel
     {
-        private readonly TwitterCopyContext _context;
-        private readonly UserManager<TwitterCopyUser> _userManager;
+        private readonly ITweetService _tweetSevice;
+        private readonly IUserService _userService;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly UserManager<TwitterCopyUser> _userManager;
 
-        public IndexModel(UserManager<TwitterCopyUser> userManager, TwitterCopyContext context,
-            IHostingEnvironment hostingEnvironment)
+        public IndexModel(ITweetService tweetService, IUserService userService,
+            IHostingEnvironment hostingEnvironment, UserManager<TwitterCopyUser> userManager)
         {
-            _context = context;
-            _userManager = userManager;
+            _tweetSevice = tweetService;
+            _userService = userService;
             _hostingEnvironment = hostingEnvironment;
+            _userManager = userManager;
         }
 
-        public IList<TweetModel> Tweets { get; set; }
+        public List<TweetViewModel> Tweets { get; set; } = new List<TweetViewModel>();
 
         public ProfileViewModel Profile { get; set; }
 
@@ -52,12 +53,7 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound();
             }
 
-            var profileOwner = await _context.Users
-                .AsNoTracking()
-                .Include(f => f.Followers)
-                .Include(f => f.Following)
-                .Include(l => l.Likes)
-                .FirstOrDefaultAsync(u => u.Slug.Equals(slug));
+            var profileOwner = await _userService.GetProfileOwnerAsync(slug);
             if (profileOwner == null)
             {
                 return NotFound();
@@ -69,22 +65,18 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound();
             }
 
-            Tweets = await _context.Tweets
-                .AsNoTracking()
-                .Where(t => t.UserId.Equals(profileOwner.Id))
-                .Select(x => new TweetModel
-                {
-                    Id = x.Id,
-                    AuthorName = x.User.UserName,
-                    AuthorSlug = x.User.Slug,
-                    AuthorAvatar = x.User.Avatar,
-                    PostedOn = x.PostedOn,
-                    Text = x.Text,
-                    LikeCount = x.LikeCount,
-                    RetweetCount = x.RetweetCount
-                })
-                .OrderByDescending(p => p.PostedOn)
-                .ToListAsync();
+            Tweets = profileOwner.Tweets
+                .Select(x => new TweetViewModel
+            {
+                AuthorAvatar = profileOwner.Avatar,
+                AuthorName = profileOwner.UserName,
+                AuthorSlug = profileOwner.Slug,
+                Id = x.Id,
+                LikeCount = x.LikeCount,
+                PostedOn = x.PostedOn,
+                RetweetCount = x.RetweetCount,
+                Text = x.Text
+            }).ToList();
 
             ViewData["IsYourself"] = profileOwner.Slug == currentUser.Slug;
             ViewData["IsFollowed"] = profileOwner.Followers
@@ -101,7 +93,7 @@ namespace TwitterCopy.Pages.Profiles
                 FollowersCount = profileOwner.Followers.Count,
                 FollowingCount = profileOwner.Following.Count,
                 LikesCount = profileOwner.Likes.Count,
-                TweetsCount = Tweets.Count,
+                TweetsCount = profileOwner.Tweets.Count,
                 Avatar = profileOwner.Avatar,
                 JoinDate = profileOwner.RegisterDate.ToString("MMMM yyyy")
             };
@@ -123,7 +115,7 @@ namespace TwitterCopy.Pages.Profiles
             {
                 foreach (var modelError in ModelState)
                 {
-                    if(modelError.Value.Errors.Count > 0)
+                    if (modelError.Value.Errors.Count > 0)
                     {
                         Response.StatusCode = (int)HttpStatusCode.Forbidden;
                         return new JsonResult(new { Message = modelError.Value.Errors[0].ErrorMessage });
@@ -131,13 +123,13 @@ namespace TwitterCopy.Pages.Profiles
                 }
             }
 
-            if(postedData == null)
+            if (postedData == null)
             {
                 return NotFound("No data posted.");
             }
 
             var userToUpdate = await _userManager.GetUserAsync(User);
-            if(userToUpdate == null)
+            if (userToUpdate == null)
             {
                 return NotFound("User not found.");
             }
@@ -147,10 +139,10 @@ namespace TwitterCopy.Pages.Profiles
             userToUpdate.Location = postedData.Location;
             userToUpdate.Website = postedData.Website;
 
-            if(postedData.Avatar?.Length > 0)
+            if (postedData.Avatar?.Length > 0)
             {
                 var avatarFileName = Guid.NewGuid().ToString().Replace("-", "") + Path.GetExtension(postedData.Avatar.FileName);
-
+                
                 var avatarFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "images\\profile-images", avatarFileName);
                 using (var stream = new FileStream(avatarFilePath, FileMode.Create))
                 {
@@ -164,7 +156,7 @@ namespace TwitterCopy.Pages.Profiles
                 userToUpdate.Avatar = Globals.DefaultAvatar;
             }
 
-            await _context.SaveChangesAsync();
+            await _userService.UpdateUserAsync(userToUpdate);
 
             return new JsonResult(new
             {
@@ -211,44 +203,40 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound();
             }
 
-            var profileOwner = await _context.Users
-                .AsNoTracking()
-                .Include(f => f.Followers)
-                .FirstOrDefaultAsync(u => u.Slug == slug);
-            if(profileOwner == null)
+            var profileOwner = await _userService.GetProfileOwnerWithFollowersAsync(slug);
+            if (profileOwner == null)
             {
                 return NotFound();
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
-            if(currentUser == null)
+            if (currentUser == null)
             {
                 return NotFound();
             }
 
-            var tweet = await _context.Tweets
-                .AsNoTracking()
-                .Select(t => new TweetModel
-                {
-                    Id = t.Id,
-                    AuthorName = t.User.UserName,
-                    AuthorSlug = t.User.Slug,
-                    AuthorAvatar = t.User.Avatar,
-                    LikeCount = t.LikeCount,
-                    PostedOn = t.PostedOn,
-                    RetweetCount = t.RetweetCount,
-                    Text = t.Text
-                })
-                .FirstOrDefaultAsync(t => t.Id == tweetId);
-            if(tweet == null)
+            var tweet = await _tweetSevice.GetTweetWithAuthor(tweetId.Value);
+            if (tweet == null)
             {
                 return NotFound();
             }
+
+            var tweetVM = new TweetViewModel
+            {
+                AuthorAvatar = tweet.User.Avatar,
+                AuthorName = tweet.User.UserName,
+                AuthorSlug = tweet.User.Slug,
+                Id = tweet.Id,
+                LikeCount = tweet.LikeCount,
+                PostedOn = tweet.PostedOn,
+                RetweetCount = tweet.RetweetCount,
+                Text = tweet.Text
+            };
 
             var viewData = new ViewDataDictionary(
                 new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(),
-                new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary()) { { "TweetModel", tweet } };
-            viewData.Model = tweet;
+                new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary()) { { "TweetViewModel", tweetVM } };
+            viewData.Model = tweetVM;
 
             viewData["IsYourself"] = profileOwner.Slug == currentUser.Slug;
             viewData["IsFollowed"] = profileOwner.Followers

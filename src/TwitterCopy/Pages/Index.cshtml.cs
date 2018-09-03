@@ -2,14 +2,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using TwitterCopy.Data;
-using TwitterCopy.Entities;
+using TwitterCopy.Core.Entities;
+using TwitterCopy.Core.Interfaces;
 using TwitterCopy.Models;
 
 namespace TwitterCopy.Pages
@@ -17,21 +15,24 @@ namespace TwitterCopy.Pages
     [Authorize]
     public class IndexModel : PageModel
     {
-        private readonly TwitterCopyContext _context;
+        private readonly IUserService _userService;
+        private readonly ITweetService _tweetService;
         private readonly UserManager<TwitterCopyUser> _userManager;
 
-        public IndexModel(UserManager<TwitterCopyUser> userManager, TwitterCopyContext context)
+        public IndexModel(IUserService userService, ITweetService tweetService,
+            UserManager<TwitterCopyUser> userManager)
         {
-            _context = context;
+            _userService = userService;
+            _tweetService = tweetService;
             _userManager = userManager;
         }
 
         [BindProperty]
-        public TweetModel Tweet { get; set; }
+        public TweetViewModel Tweet { get; set; }
 
         public ProfileViewModel CurrentUser { get; set; }
 
-        public IList<TweetModel> FeedTweets { get; set; }
+        public List<TweetViewModel> FeedTweets { get; set; } = new List<TweetViewModel>();
 
         /// <summary>
         /// Provides data for the view
@@ -42,25 +43,52 @@ namespace TwitterCopy.Pages
         public async Task<IActionResult> OnGet()
         {
             var userId = _userManager.GetUserId(User);
-            CurrentUser = await _context.Users
-                .AsNoTracking()
-                .Select(x => new ProfileViewModel
-                {
-                    Id = x.Id.ToString(),
-                    UserName = x.UserName,
-                    Slug = x.Slug,
-                    TweetsCount = x.Tweets.Count,
-                    FollowingCount = x.Following.Count,
-                    FollowersCount = x.Followers.Count,
-                    Avatar = x.Avatar
-                })
-                .FirstOrDefaultAsync(u => u.Id.Equals(userId));
-            if (CurrentUser == null)
+            var user = await _userService.GetUserAndFeedMainInfoAsync(userId);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            FeedTweets = GetTweets(CurrentUser.Id);
+            CurrentUser = new ProfileViewModel
+            {
+                Avatar = user.Avatar,
+                FollowersCount = user.Followers.Count,
+                FollowingCount = user.Following.Count,
+                Id = user.Id.ToString(),
+                Slug = user.Slug,
+                TweetsCount = user.Tweets.Count,
+                UserName = user.UserName
+            };
+
+            // TODO: Add Retweets to the Feed too
+            FeedTweets = user.Tweets
+                .Select(x => new TweetViewModel
+                {
+                    AuthorAvatar = user.Avatar,
+                    AuthorName = user.UserName,
+                    AuthorSlug = user.Slug,
+                    Id = x.Id,
+                    LikeCount = x.LikeCount,
+                    PostedOn = x.PostedOn,
+                    RetweetCount = x.RetweetCount,
+                    Text = x.Text
+                })
+                .Union(user.Following
+                    .SelectMany(x => x.User.Tweets
+                        .Select(t => new TweetViewModel
+                        {
+                            AuthorAvatar = t.User.Avatar,
+                            AuthorName = t.User.UserName,
+                            AuthorSlug = t.User.Slug,
+                            Id = t.Id,
+                            LikeCount = t.LikeCount,
+                            PostedOn = t.PostedOn,
+                            RetweetCount = t.RetweetCount,
+                            Text = t.Text
+                        }))
+                )
+                .OrderByDescending(t => t.PostedOn)
+                .ToList();
 
             return Page();
         }
@@ -76,25 +104,15 @@ namespace TwitterCopy.Pages
                 return Page();
             }
 
-            if (await TryUpdateModelAsync<TweetModel>(
-                Tweet,
-                "tweet",
-                t => t.Text, t => t.AuthorName, t => t.PostedOn))
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
             {
-                var newTweet = new Tweet
-                {
-                    Text = Tweet.Text,
-                    User = await _userManager.GetUserAsync(User),
-                    PostedOn = Tweet.PostedOn
-                };
-
-                _context.Tweets.Add(newTweet);
-                await _context.SaveChangesAsync();
-
-                return RedirectToPage();
+                return NotFound();
             }
 
-            return null;
+            await _tweetService.AddTweet(Tweet.Text, user);
+
+            return RedirectToPage();
         }
 
         /// <summary>
@@ -104,25 +122,38 @@ namespace TwitterCopy.Pages
         /// <returns>Tweet info in JSON</returns>
         public async Task<IActionResult> OnGetTweetAsync(int? id)
         {
-            var tweetToDelete = await _context.Tweets
-                .AsNoTracking()
-                .Select(x => new TweetModel
-                {
-                    Id = x.Id,
-                    AuthorName = x.User.UserName,
-                    AuthorSlug = x.User.Slug,
-                    AuthorAvatar = x.User.Avatar,
-                    Text = x.Text,
-                    PostedOn = x.PostedOn
-                })
-                .FirstOrDefaultAsync(t => t.Id == id);
-
-            if(tweetToDelete == null)
+            var tweetToDelete = await _tweetService.GetTweetWithAuthor(id.Value);
+            if (tweetToDelete == null)
             {
-                return NotFound();
+                return NotFound("Tweet to delete not found.");
             }
 
-            return new JsonResult(tweetToDelete);
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return NotFound("User id not found. Please log in to the website.");
+            }
+
+            if (!tweetToDelete.UserId.ToString().Equals(userId))
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new
+                {
+                    Message = "You cannot delete Tweet which doesn't belong to you."
+                });
+            }
+
+            var tweetVM = new TweetViewModel
+            {
+                Id = tweetToDelete.Id,
+                AuthorName = tweetToDelete.User.UserName,
+                AuthorSlug = tweetToDelete.User.Slug,
+                AuthorAvatar = tweetToDelete.User.Avatar,
+                Text = tweetToDelete.Text,
+                PostedOn = tweetToDelete.PostedOn
+            };
+
+            return new JsonResult(tweetVM);
         }
 
         /// <summary>
@@ -132,21 +163,18 @@ namespace TwitterCopy.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnPostDeleteAsync(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            // TODO: check owner with authorization
-            var tweetToDelete = await _context.Tweets
-                .FirstOrDefaultAsync(t => t.Id == id);
-            if(tweetToDelete == null)
+            var tweetToDelete = await _tweetService.GetTweetAsync(id.Value);
+            if (tweetToDelete == null)
             {
-                return NotFound();
+                return NotFound("Tweet to delete not found.");
             }
 
-            _context.Tweets.Remove(tweetToDelete);
-            await _context.SaveChangesAsync();
+            await _tweetService.DeleteTweet(tweetToDelete);
 
             return RedirectToPage();
         }
@@ -160,49 +188,14 @@ namespace TwitterCopy.Pages
 
             // Get current authenticated user
             var user = await _userManager.GetUserAsync(User);
-            if(user == null)
-            {
-                return NotFound();
-            }
-            // Get tweet with the given Id
-            var tweet = await _context.Tweets
-                .Include(l => l.Likes)
-                .FirstOrDefaultAsync(t => t.Id == id);
-            if(tweet == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            // Apply the user and tweet object from above to the new Like
-            var like = new Like
-            {
-                Tweet = tweet,
-                User = user,
-                DateLiked = DateTime.UtcNow
-            };
-
-            // Check if the user already has like on this tweet
-            var dupe = await _context.Likes.FirstOrDefaultAsync(x => x.TweetId == tweet.Id && x.UserId == user.Id);
-            if (dupe == null)
-            {
-                // If no duplicate was found
-                // Add new like to the database
-                _context.Likes.Add(like);
-                tweet.LikeCount++;
-            }
-            else
-            {
-                // If duplicate was found in the Likes table
-                // Delete dupe instead of like because
-                // like doesn't have Id values
-                _context.Likes.Remove(dupe);
-                tweet.LikeCount--;
-            }
-
-            //_context.Update<Tweet>(tweet);
-            await _context.SaveChangesAsync();
-
-            return new JsonResult(tweet.LikeCount);
+            var updatedLikeCount = await _tweetService.UpdateLikes(id.Value, user);
+            
+            return new JsonResult(updatedLikeCount);
         }
 
         public async Task<IActionResult> OnPostFollowAsync(string userSlug)
@@ -212,15 +205,13 @@ namespace TwitterCopy.Pages
                 return NotFound();
             }
 
-            var userToFollow = await _context.Users
-                .Include(f => f.Followers)
-                .FirstOrDefaultAsync(u => u.Slug == userSlug);
+            var userToFollow = await _userService.GetProfileOwnerWithFollowersForEditAsync(userSlug);
             if (userToFollow == null)
             {
                 return NotFound();
             }
 
-            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null)
             {
                 return NotFound();
@@ -246,8 +237,7 @@ namespace TwitterCopy.Pages
                 Follower = currentUser
             });
 
-            _context.Update(userToFollow);
-            await _context.SaveChangesAsync();
+            await _userService.UpdateUserAsync(userToFollow);
 
             return new JsonResult(new
             {
@@ -264,15 +254,13 @@ namespace TwitterCopy.Pages
                 return NotFound();
             }
 
-            var userToUnfollow = await _context.Users
-                .Include(f => f.Followers)
-                .FirstOrDefaultAsync(u => u.Slug == userSlug);
+            var userToUnfollow = await _userService.GetProfileOwnerWithFollowersForEditAsync(userSlug);
             if (userToUnfollow == null)
             {
                 return NotFound();
             }
 
-            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null)
             {
                 return NotFound();
@@ -284,9 +272,8 @@ namespace TwitterCopy.Pages
                 return new JsonResult(new { Message = "You can't unfollow yourself." });
             }
 
-            bool alreadyFollowing = await _context.Users
-                .AnyAsync(x => x.Followers
-                    .Any(u => u.FollowerId.Equals(currentUser.Id)));
+            bool alreadyFollowing = userToUnfollow.Followers
+                .Any(f => f.FollowerId.Equals(currentUser.Id));
             if (!alreadyFollowing)
             {
                 Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -295,7 +282,7 @@ namespace TwitterCopy.Pages
 
             userToUnfollow.Followers.Remove(userToUnfollow.Followers
                 .FirstOrDefault(x => x.FollowerId.Equals(currentUser.Id)));
-            await _context.SaveChangesAsync();
+            await _userService.UpdateUserAsync(userToUnfollow);
 
             return new JsonResult(new
             {
@@ -305,117 +292,55 @@ namespace TwitterCopy.Pages
             });
         }
 
-        public async Task<IActionResult> OnPostRetweetAsync(int? id)
-        {
-            if(id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> OnPostRetweetAsync(int? id)
+        //{
+        //    if(id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var tweet = await _context.Tweets
-                .Include(r => r.Retweets)
-                .FirstOrDefaultAsync(t => t.Id.Equals(id));
-            if(tweet == null)
-            {
-                return NotFound();
-            }
+        //    var tweet = await _context.Tweets
+        //        .Include(r => r.Retweets)
+        //        .FirstOrDefaultAsync(t => t.Id.Equals(id));
+        //    if(tweet == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            if(currentUser == null)
-            {
-                return NotFound();
-            }
+        //    var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+        //    if(currentUser == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var retweet = new Retweet
-            {
-                Tweet = tweet,
-                User = currentUser,
-                RetweetDate = DateTime.UtcNow
-            };
+        //    var retweet = new Retweet
+        //    {
+        //        Tweet = tweet,
+        //        User = currentUser,
+        //        RetweetDate = DateTime.UtcNow
+        //    };
 
-            var dupe = await _context.Retweets.FirstOrDefaultAsync(x => x.TweetId == tweet.Id && x.UserId == currentUser.Id);
-            if (dupe == null)
-            {
-                // If no duplicate was found
-                // Add new retweet to the database
-                _context.Retweets.Add(retweet);
-                tweet.RetweetCount++;
-            }
-            else
-            {
-                // If duplicate was found in the Retweets table
-                // Delete dupe instead of retweer because
-                // retweet doesn't have Id value
-                _context.Retweets.Remove(dupe);
-                tweet.RetweetCount--;
-            }
+        //    var dupe = await _context.Retweets.FirstOrDefaultAsync(x => x.TweetId == tweet.Id && x.UserId == currentUser.Id);
+        //    if (dupe == null)
+        //    {
+        //        // If no duplicate was found
+        //        // Add new retweet to the database
+        //        _context.Retweets.Add(retweet);
+        //        tweet.RetweetCount++;
+        //    }
+        //    else
+        //    {
+        //        // If duplicate was found in the Retweets table
+        //        // Delete dupe instead of retweer because
+        //        // retweet doesn't have Id value
+        //        _context.Retweets.Remove(dupe);
+        //        tweet.RetweetCount--;
+        //    }
 
-            //_context.Update<Tweet>(tweet);
-            await _context.SaveChangesAsync();
+        //    //_context.Update<Tweet>(tweet);
+        //    await _context.SaveChangesAsync();
 
-            return new JsonResult(tweet.RetweetCount);
-        }
-
-        /// <summary>
-        /// Returns all the user's tweets
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        private IList<TweetModel> GetTweets(string userId)
-        {
-            var user = _context.Users
-                .AsNoTracking()
-                .Include(t => t.Tweets)
-                .Include(r => r.Retweets)
-                    .ThenInclude(t => t.Tweet)
-                .Include(f => f.Following)
-                    .ThenInclude(u => u.User)
-                        .ThenInclude(t => t.Tweets)
-                .FirstOrDefault(x => x.Id.ToString().Equals(userId));
-
-            var currentUserTweets = user.Tweets
-                .Select(x => new TweetModel
-                {
-                    Id = x.Id,
-                    AuthorName = x.User.UserName,
-                    AuthorSlug = x.User.Slug,
-                    AuthorAvatar = x.User.Avatar,
-                    LikeCount = x.LikeCount,
-                    RetweetCount = x.RetweetCount,
-                    PostedOn = x.PostedOn,
-                    Text = x.Text
-                })
-                .Union(user.Retweets
-                    .Select(x => new TweetModel
-                    {
-                        Id = x.Tweet.Id,
-                        AuthorName = x.Tweet.User.UserName,
-                        AuthorSlug = x.Tweet.User.Slug,
-                        AuthorAvatar = x.Tweet.User.Avatar,
-                        LikeCount = x.Tweet.LikeCount,
-                        PostedOn = x.RetweetDate,
-                        RetweetCount = x.Tweet.RetweetCount,
-                        Text = x.Tweet.Text
-                    })
-                );
-
-            var followingTweets = user.Following
-                .SelectMany(x => x.User.Tweets
-                    .Select(t => new TweetModel
-                    {
-                        Id = t.Id,
-                        AuthorName = t.User.UserName,
-                        AuthorSlug = t.User.Slug,
-                        AuthorAvatar = t.User.Avatar,
-                        LikeCount = t.LikeCount,
-                        RetweetCount = t.RetweetCount,
-                        PostedOn = t.PostedOn,
-                        Text = t.Text
-                    }));
-
-            return currentUserTweets.Concat(followingTweets)
-                    .OrderByDescending(t => t.PostedOn)
-                    .ToList();
-        }
+        //    return new JsonResult(tweet.RetweetCount);
+        //}
     }
 }
