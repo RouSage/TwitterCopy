@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TwitterCopy.Core.Services;
 using TwitterCopy.Infrastructure.Data;
-using TwitterCopy.Services;
+using TwitterCopy.Services.Startup;
 
 namespace TwitterCopy
 {
@@ -33,14 +33,14 @@ namespace TwitterCopy
             services.AddDbContext<TwitterCopyContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("TwitterCopyContextConnection")));
 
-            services.AddCustomizedIdentity();
-            services.AddCustomizedMvc();
+            services.ConfigureIdentity();
+            services.ConfigureRouting();
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
             services.AddRouting(options => options.LowercaseUrls = true);
-            services.CustomizedApplicationCookie();
+            services.ConfigureCookie();
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
-            services.AddRepositoriesAndServices();
+            services.ConfigureScopedServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
