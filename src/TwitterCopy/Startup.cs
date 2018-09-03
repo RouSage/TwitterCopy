@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -33,6 +34,7 @@ namespace TwitterCopy
             services.AddDbContext<TwitterCopyContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("TwitterCopyContextConnection")));
 
+            services.AddAutoMapper();
             services.ConfigureIdentity();
             services.ConfigureRouting();
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");

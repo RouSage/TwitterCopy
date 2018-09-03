@@ -2,25 +2,25 @@
 
 <div class="tweet-actionable"
      data-tweet-id="@Model.Id"
-     data-user-slug="@Model.AuthorSlug">
+     data-user-slug="@Model.Slug">
     <div class="tweet">
         <div class="row p-2">
             <div class="col-md-1 p-0 pl-1">
-                <a asp-page="/Profiles/Index" asp-route-slug="@Model.AuthorSlug">
-                    <img class="avatar" src="~/images/profile-images/@Model.AuthorAvatar" />
+                <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">
+                    <img class="avatar" src="~/images/profile-images/@Model.Avatar" />
                 </a>
             </div>
             <!-- /.col-md-1 -->
             <div class="col-md-11">
                 <div class="d-flex align-items-center">
-                    <a asp-page="/Profiles/Index" asp-route-slug="@Model.AuthorSlug">
+                    <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">
                         <span>
-                            <strong class="username">@Model.AuthorName</strong>
+                            <strong class="username">@Model.UserName</strong>
                         </span>
                     </a>
-                    <a asp-page="/Profiles/Index" asp-route-slug="@Model.AuthorSlug" class="slug ml-1">
+                    <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug" class="slug ml-1">
                         <span>
-                            @@<b>@Model.AuthorSlug</b>
+                            @@<b>@Model.Slug</b>
                         </span>
                     </a>
                 </div>
@@ -28,7 +28,7 @@
                     <p class="tweet-text">@Model.Text</p>
                 </div>
                 <div class="w-100 mt-2">
-                    @if (Model.AuthorName == User.Identity.Name)
+                    @if (Model.UserName == User.Identity.Name)
                     {
                         <button type="button" class="btn btn-danger" data-toggle="modal"
                                 data-target="#deleteTweetModal" data-tweet-id="@Model.Id">

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -18,13 +19,18 @@ namespace TwitterCopy.Pages
         private readonly IUserService _userService;
         private readonly ITweetService _tweetService;
         private readonly UserManager<TwitterCopyUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public IndexModel(IUserService userService, ITweetService tweetService,
-            UserManager<TwitterCopyUser> userManager)
+        public IndexModel(
+            IUserService userService,
+            ITweetService tweetService,
+            UserManager<TwitterCopyUser> userManager,
+            IMapper mapper)
         {
             _userService = userService;
             _tweetService = tweetService;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         [BindProperty]
@@ -49,46 +55,16 @@ namespace TwitterCopy.Pages
                 return NotFound();
             }
 
-            CurrentUser = new ProfileViewModel
-            {
-                Avatar = user.Avatar,
-                FollowersCount = user.Followers.Count,
-                FollowingCount = user.Following.Count,
-                Id = user.Id.ToString(),
-                Slug = user.Slug,
-                TweetsCount = user.Tweets.Count,
-                UserName = user.UserName
-            };
-
             // TODO: Add Retweets to the Feed too
-            FeedTweets = user.Tweets
-                .Select(x => new TweetViewModel
-                {
-                    AuthorAvatar = user.Avatar,
-                    AuthorName = user.UserName,
-                    AuthorSlug = user.Slug,
-                    Id = x.Id,
-                    LikeCount = x.LikeCount,
-                    PostedOn = x.PostedOn,
-                    RetweetCount = x.RetweetCount,
-                    Text = x.Text
-                })
+            var feedTweets = user.Tweets
                 .Union(user.Following
-                    .SelectMany(x => x.User.Tweets
-                        .Select(t => new TweetViewModel
-                        {
-                            AuthorAvatar = t.User.Avatar,
-                            AuthorName = t.User.UserName,
-                            AuthorSlug = t.User.Slug,
-                            Id = t.Id,
-                            LikeCount = t.LikeCount,
-                            PostedOn = t.PostedOn,
-                            RetweetCount = t.RetweetCount,
-                            Text = t.Text
-                        }))
+                    .SelectMany(x => x.User.Tweets)
                 )
                 .OrderByDescending(t => t.PostedOn)
                 .ToList();
+
+            FeedTweets = _mapper.Map<List<TweetViewModel>>(feedTweets);
+            CurrentUser = _mapper.Map<ProfileViewModel>(user);
 
             return Page();
         }
@@ -143,15 +119,7 @@ namespace TwitterCopy.Pages
                 });
             }
 
-            var tweetVM = new TweetViewModel
-            {
-                Id = tweetToDelete.Id,
-                AuthorName = tweetToDelete.User.UserName,
-                AuthorSlug = tweetToDelete.User.Slug,
-                AuthorAvatar = tweetToDelete.User.Avatar,
-                Text = tweetToDelete.Text,
-                PostedOn = tweetToDelete.PostedOn
-            };
+            var tweetVM = _mapper.Map<TweetViewModel>(tweetToDelete);
 
             return new JsonResult(tweetVM);
         }

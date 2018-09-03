@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
@@ -14,12 +15,16 @@ namespace TwitterCopy.Pages.Profiles
     {
         private readonly IUserService _userService;
         private readonly UserManager<TwitterCopyUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public FollowingModel(IUserService userService,
-            UserManager<TwitterCopyUser> userManager)
+        public FollowingModel(
+            IUserService userService,
+            UserManager<TwitterCopyUser> userManager,
+            IMapper mapper)
         {
             _userService = userService;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         public ProfileViewModel ProfileUser { get; set; }
@@ -53,32 +58,11 @@ namespace TwitterCopy.Pages.Profiles
             ViewData["IsFollowed"] = profileOwner.Followers
                 .Any(x => x.FollowerId.Equals(currentUser.Id));
 
-            ProfileUser = new ProfileViewModel
-            {
-                Id = profileOwner.Id.ToString(),
-                UserName = profileOwner.UserName,
-                Slug = profileOwner.Slug,
-                Bio = profileOwner.Bio,
-                Location = profileOwner.Location,
-                Website = profileOwner.Website,
-                FollowersCount = profileOwner.Followers.Count,
-                FollowingCount = profileOwner.Following.Count,
-                LikesCount = profileOwner.Likes.Count,
-                TweetsCount = profileOwner.Tweets.Count,
-                Avatar = profileOwner.Avatar,
-                JoinDate = profileOwner.RegisterDate.ToString("MMMM yyyy")
-            };
-
+            ProfileUser = _mapper.Map<ProfileViewModel>(profileOwner);
+            Input = _mapper.Map<ProfileInputModel>(profileOwner);
             Following = profileOwner.Following
                 .ToList();
 
-            Input = new ProfileInputModel
-            {
-                UserName = profileOwner.UserName,
-                Bio = profileOwner.Bio,
-                Location = profileOwner.Location,
-                Website = profileOwner.Website
-            };
 
             return Page();
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,14 +23,20 @@ namespace TwitterCopy.Pages.Profiles
         private readonly IUserService _userService;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly UserManager<TwitterCopyUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public IndexModel(ITweetService tweetService, IUserService userService,
-            IHostingEnvironment hostingEnvironment, UserManager<TwitterCopyUser> userManager)
+        public IndexModel(
+            ITweetService tweetService,
+            IUserService userService,
+            IHostingEnvironment hostingEnvironment,
+            UserManager<TwitterCopyUser> userManager,
+            IMapper mapper)
         {
             _tweetSevice = tweetService;
             _userService = userService;
             _hostingEnvironment = hostingEnvironment;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         public List<TweetViewModel> Tweets { get; set; } = new List<TweetViewModel>();
@@ -37,14 +44,6 @@ namespace TwitterCopy.Pages.Profiles
         public ProfileViewModel Profile { get; set; }
 
         public ProfileInputModel Input { get; set; }
-
-        public class AvatarVm
-        {
-            public IFormFile Avatar { get; set; }
-        }
-
-        [BindProperty]
-        public AvatarVm Vm { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string slug)
         {
@@ -65,46 +64,13 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound();
             }
 
-            Tweets = profileOwner.Tweets
-                .Select(x => new TweetViewModel
-            {
-                AuthorAvatar = profileOwner.Avatar,
-                AuthorName = profileOwner.UserName,
-                AuthorSlug = profileOwner.Slug,
-                Id = x.Id,
-                LikeCount = x.LikeCount,
-                PostedOn = x.PostedOn,
-                RetweetCount = x.RetweetCount,
-                Text = x.Text
-            }).ToList();
-
             ViewData["IsYourself"] = profileOwner.Slug == currentUser.Slug;
             ViewData["IsFollowed"] = profileOwner.Followers
                 .Any(x => x.FollowerId.Equals(currentUser.Id));
 
-            Profile = new ProfileViewModel
-            {
-                Id = profileOwner.Id.ToString(),
-                UserName = profileOwner.UserName,
-                Slug = profileOwner.Slug,
-                Bio = profileOwner.Bio,
-                Location = profileOwner.Location,
-                Website = profileOwner.Website,
-                FollowersCount = profileOwner.Followers.Count,
-                FollowingCount = profileOwner.Following.Count,
-                LikesCount = profileOwner.Likes.Count,
-                TweetsCount = profileOwner.Tweets.Count,
-                Avatar = profileOwner.Avatar,
-                JoinDate = profileOwner.RegisterDate.ToString("MMMM yyyy")
-            };
-
-            Input = new ProfileInputModel
-            {
-                UserName = profileOwner.UserName,
-                Bio = profileOwner.Bio,
-                Location = profileOwner.Location,
-                Website = profileOwner.Website,
-            };
+            Tweets = _mapper.Map<List<TweetViewModel>>(profileOwner.Tweets);
+            Profile = _mapper.Map<ProfileViewModel>(profileOwner);
+            Input = _mapper.Map<ProfileInputModel>(profileOwner);
 
             return Page();
         }
@@ -187,7 +153,7 @@ namespace TwitterCopy.Pages.Profiles
 
             userToUpdate.Avatar = Globals.DefaultAvatar;
 
-            await _context.SaveChangesAsync();
+            await _userService.UpdateUserAsync(userToUpdate);
 
             return new JsonResult(new
             {
@@ -221,17 +187,7 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound();
             }
 
-            var tweetVM = new TweetViewModel
-            {
-                AuthorAvatar = tweet.User.Avatar,
-                AuthorName = tweet.User.UserName,
-                AuthorSlug = tweet.User.Slug,
-                Id = tweet.Id,
-                LikeCount = tweet.LikeCount,
-                PostedOn = tweet.PostedOn,
-                RetweetCount = tweet.RetweetCount,
-                Text = tweet.Text
-            };
+            var tweetVM = _mapper.Map<TweetViewModel>(tweet);
 
             var viewData = new ViewDataDictionary(
                 new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(),

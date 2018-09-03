@@ -1,12 +1,12 @@
 ﻿@model TwitterCopy.Models.TweetViewModel
 
 <div class="d-flex justify-content-between align-items-center mb-2">
-    <a asp-page="/Profiles/Index" asp-route-slug="@Model.AuthorSlug">
+    <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">
         <span class="d-block">
-            <strong>@Model.AuthorName</strong>
+            <strong>@Model.UserName</strong>
         </span>
         <span>
-            <small class="text-muted">@@@Model.AuthorSlug</small>
+            <small class="text-muted">@@@Model.Slug</small>
         </span>
     </a>
     <div class="profile-actions">
@@ -14,13 +14,13 @@
         {
             <div class="profile-follow-actions">
                 <button type="button" class="btn btn-outline-primary btn-follow-main @((bool)ViewData["IsFollowed"] ? "d-none" : "")">
-                    <span data-userslug="@Model.AuthorSlug">Follow</span>
+                    <span data-userslug="@Model.Slug">Follow</span>
                 </button>
                 <button type="button" class="btn btn-primary btn-following-main @((bool)ViewData["IsFollowed"] ? "" : "d-none")">
-                    <span data-userslug="@Model.AuthorSlug">Following</span>
+                    <span data-userslug="@Model.Slug">Following</span>
                 </button>
                 <button type="button" class="btn btn-danger btn-unfollow-main d-none">
-                    <span data-userslug="@Model.AuthorSlug">Unfollow</span>
+                    <span data-userslug="@Model.Slug">Unfollow</span>
                 </button>
             </div>
         }
@@ -35,7 +35,7 @@
     </span>
 </div>
 <div class="w-100">
-    @if (Model.AuthorName == User.Identity.Name)
+    @if (Model.UserName == User.Identity.Name)
     {
         <button type="button" class="btn btn-danger" data-toggle="modal"
                 data-target="#deleteTweetModal" data-tweet-id="@Model.Id">

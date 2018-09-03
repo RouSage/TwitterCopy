@@ -11,11 +11,11 @@ namespace TwitterCopy.Models
         [StringLength(280)]
         public string Text { get; set; }
 
-        public string AuthorName { get; set; }
+        public string UserName { get; set; }
 
-        public string AuthorSlug { get; set; }
+        public string Slug { get; set; }
 
-        public string AuthorAvatar { get; set; }
+        public string Avatar { get; set; }
 
         public int LikeCount { get; set; }
 

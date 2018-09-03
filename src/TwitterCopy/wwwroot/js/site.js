@@ -28,10 +28,10 @@
                 var $ul = $('<ul class="list-inline">');
                 // Username as link to the profile
                 var $userName = $('<li class="list-inline-item">')
-                    .append(`<a href="/${response.authorSlug}">${response.authorName}</a>`);
+                    .append(`<a href="/${response.Slug}">${response.UserName}</a>`);
                 // User's slug as unclickable text
                 var $userSlug = $('<li class="list-inline-item">')
-                    .append(`<span class="text-muted">@${response.authorSlug}</span>`);
+                    .append(`<span class="text-muted">@${response.Slug}</span>`);
                 // Appent two <li> tags to the <ul> and the whole list to the <div>
                 $ul.append($userName, $userSlug).appendTo(tweetInfoBody);
                 // Tweet's text. Appens to the <div>
