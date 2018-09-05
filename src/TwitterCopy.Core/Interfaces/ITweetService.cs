@@ -13,5 +13,7 @@ namespace TwitterCopy.Core.Interfaces
         Task<Tweet> GetTweetAsync(int tweetId);
         Task DeleteTweet(Tweet tweetToDelete);
         Task<int> UpdateLikes(int tweetId, TwitterCopyUser user);
+        Task<int> UpdateRetweets(int tweetId, TwitterCopyUser user);
+        List<Tweet> GetFeed(TwitterCopyUser user);
     }
 }

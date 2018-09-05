@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
 using TwitterCopy.Core.Interfaces;
 
@@ -37,6 +39,11 @@ namespace TwitterCopy.Core.Services
         public async Task<TwitterCopyUser> GetProfileOwnerWithFollowersForEditAsync(string userSlug)
         {
             return await _userRepository.GetUserWithFollowersForEditAsync(userSlug);
+        }
+
+        public bool CheckFollower(TwitterCopyUser user, Guid followerId)
+        {
+            return user.Followers.Any(f => f.FollowerId.Equals(followerId));
         }
     }
 }

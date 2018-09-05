@@ -9,5 +9,6 @@ namespace TwitterCopy.Core.Interfaces
         Task<List<Tweet>> GetTweetsByUserIdAsync(string userId);
         Task<Tweet> GetTweetWithUserAsync(int tweetId);
         Task<Tweet> GetTweetWithLikes(int tweetId);
+        Task<Tweet> GetTweetWithRetweets(int tweetId);
     }
 }

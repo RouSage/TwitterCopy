@@ -46,6 +46,8 @@ namespace TwitterCopy.Infrastructure.Data
                 .Include(fg => fg.Following)
                     .ThenInclude(fu => fu.User)
                         .ThenInclude(ft => ft.Tweets)
+                .Include(rt => rt.Retweets)
+                    .ThenInclude(rtt => rtt.Tweet)
                 .Include(fs => fs.Followers)
                 .Include(t => t.Tweets)
                 .FirstOrDefaultAsync(x => x.Id.ToString().Equals(userId));

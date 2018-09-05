@@ -29,6 +29,13 @@ namespace TwitterCopy.Infrastructure.Data
                 .FirstOrDefaultAsync(x => x.Id == tweetId);
         }
 
+        public async Task<Tweet> GetTweetWithRetweets(int tweetId)
+        {
+            return await _context.Tweets
+                .Include(r => r.Retweets)
+                .FirstOrDefaultAsync(x => x.Id == tweetId);
+        }
+
         public async Task<Tweet> GetTweetWithUserAsync(int tweetId)
         {
             return await _context.Tweets
