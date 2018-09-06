@@ -18,13 +18,33 @@
             <input asp-for="Website" name="website" class="form-control" placeholder="Website" />
             <span asp-validation-for="Website" class="text-danger"></span>
         </div>
-        <div class="form-group">
-            <label asp-for="Avatar" class="control-label"></label>
-            <input asp-for="Avatar" type="file" name="Avatar"
-                accept="image/png,image/jpeg,image/gif,image/jpg" class="form-control-file" />
+        <button class="btn btn-primary d-block mb-2" type="button" data-toggle="collapse" data-target="#avatarEditing"
+                aria-expanded="false" aria-controls="avatarEditing">
+            Edit Avatar
+        </button>
+        <div id="avatarEditing" class="collapse mb-2">
+            <div class="form-group">
+                <label asp-for="Avatar" class="control-label"></label>
+                <input asp-for="Avatar" type="file" name="Avatar"
+                       accept="image/png,image/jpeg,image/gif,image/jpg" class="form-control-file" />
+            </div>
+            <button class="btn btn-danger" type="button" id="removeAvatarBtn">
+                <span>Remove avatar</span>
+            </button>
+        </div>
+        <button class="btn btn-primary mb-2" type="button" data-toggle="collapse" data-target="#bannerEditing"
+                aria-expanded="false" aria-controls="bannerEditing">
+            Edit Banner
+        </button>
+        <div id="bannerEditing" class="collapse">
+            <div class="form-group">
+                <label asp-for="Banner" class="control-label"></label>
+                <input asp-for="Banner" type="file" name="Banner"
+                       accept="image/png,image/jpeg,image/gif,image/jpg" class="form-control-file" />
+            </div>
+            <button class="btn btn-danger" type="button" id="removeBannerBtn">
+                <span>Remove banner</span>
+            </button>
         </div>
     </form>
-        <button class="btn btn-secondary" id="removeAvatarBtn">
-            <span>Remove avatar</span>
-        </button>
 </div>

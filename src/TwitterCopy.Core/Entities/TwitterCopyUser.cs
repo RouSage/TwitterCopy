@@ -32,6 +32,8 @@ namespace TwitterCopy.Core.Entities
 
         public string Avatar { get; set; }
 
+        public string Banner { get; set; }
+
         // Relationships
 
         public ICollection<Like> Likes { get; set; }

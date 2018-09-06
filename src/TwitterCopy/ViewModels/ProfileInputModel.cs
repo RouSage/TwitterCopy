@@ -19,5 +19,7 @@ namespace TwitterCopy.Models
         public string Website { get; set; }
 
         public IFormFile Avatar { get; set; }
+
+        public IFormFile Banner { get; set; }
     }
 }
