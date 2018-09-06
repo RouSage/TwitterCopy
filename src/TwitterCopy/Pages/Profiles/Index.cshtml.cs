@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -62,7 +61,16 @@ namespace TwitterCopy.Pages.Profiles
             ViewData["IsFollowed"] = profileOwner.Followers
                 .Any(x => x.FollowerId.Equals(currentUser.Id));
 
-            Tweets = _mapper.Map<List<TweetViewModel>>(profileOwner.Tweets);
+            var userTweets = _mapper.Map<IEnumerable<TweetViewModel>>(profileOwner.Tweets);
+            var followingTweets = _mapper.Map<IEnumerable<TweetViewModel>>(profileOwner.Following.SelectMany(ut => ut.User.Tweets));
+            var userRetweets = _mapper.Map<IEnumerable<TweetViewModel>>(profileOwner.Retweets);
+
+            Tweets = userTweets
+                .Concat(followingTweets)
+                .Concat(userRetweets)
+                .OrderByDescending(rt => rt.RetweetDate)
+                //.ThenByDescending(p=>p.PostedOn)
+                .ToList();
             Profile = _mapper.Map<ProfileViewModel>(profileOwner);
             Input = _mapper.Map<ProfileInputModel>(profileOwner);
 

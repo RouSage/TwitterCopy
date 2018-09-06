@@ -55,9 +55,16 @@ namespace TwitterCopy.Pages
                 return NotFound(user);
             }
 
-            var feedTweets = _tweetService.GetFeed(user);
+            var userTweets = _mapper.Map<IEnumerable<TweetViewModel>>(user.Tweets);
+            var followingTweets = _mapper.Map<IEnumerable<TweetViewModel>>(user.Following.SelectMany(ut => ut.User.Tweets));
+            var userRetweets = _mapper.Map<IEnumerable<TweetViewModel>>(user.Retweets);
 
-            FeedTweets = _mapper.Map<List<TweetViewModel>>(feedTweets);
+            FeedTweets = userTweets
+                .Concat(followingTweets)
+                .Concat(userRetweets)
+                .OrderByDescending(rt => rt.RetweetDate)
+                //.ThenByDescending(p=>p.PostedOn)
+                .ToList();
             CurrentUser = _mapper.Map<ProfileViewModel>(user);
 
             return Page();

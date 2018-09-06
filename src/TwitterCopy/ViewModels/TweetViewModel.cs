@@ -21,6 +21,10 @@ namespace TwitterCopy.Models
 
         public int RetweetCount { get; set; }
 
+        public bool IsRetweet { get; set; }
+
+        public DateTime RetweetDate { get; set; }
+
         [DataType(DataType.DateTime)]
         public DateTime PostedOn { get; set; } = DateTime.Now;
     }

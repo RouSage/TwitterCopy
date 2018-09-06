@@ -43,12 +43,10 @@ namespace TwitterCopy.Core.Services
         public List<Tweet> GetFeed(TwitterCopyUser user)
         {
             return user.Tweets
-                .Union(user.Following
+                .Concat(user.Following
                     .SelectMany(ft => ft.User.Tweets))
                 .Concat(user.Retweets
-                    .OrderByDescending(rd => rd.RetweetDate)
                     .Select(rt => rt.Tweet))
-                .Reverse()
                 .ToList();
         }
 
