@@ -122,15 +122,33 @@ namespace TwitterCopy.Pages.Profiles
                 userToUpdate.Avatar = Globals.DefaultAvatar;
             }
 
+            if (postedData.Banner?.Length > 0)
+            {
+                var bannerFileName = Guid.NewGuid().ToString().Replace("-", "") + Path.GetExtension(postedData.Banner.FileName);
+
+                var bannerFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "images\\profile-banners", bannerFileName);
+                using (var stream = new FileStream(bannerFilePath, FileMode.Create))
+                {
+                    await postedData.Banner.CopyToAsync(stream);
+                }
+
+                userToUpdate.Banner = bannerFileName;
+            }
+            else
+            {
+                userToUpdate.Banner = Globals.DefaultBanner;
+            }
+
             await _userService.UpdateUserAsync(userToUpdate);
 
             return new JsonResult(new
             {
-                UserName = userToUpdate.UserName,
-                Bio = userToUpdate.Bio,
-                Location = userToUpdate.Location,
-                Website = userToUpdate.Website,
-                Avatar = string.Concat("/images/profile-images/", userToUpdate.Avatar)
+                userToUpdate.UserName,
+                userToUpdate.Bio,
+                userToUpdate.Location,
+                userToUpdate.Website,
+                Avatar = string.Concat("/images/profile-images/", userToUpdate.Avatar),
+                Banner = string.Concat("/images/profile-banners/", userToUpdate.Banner)
             });
         }
 
@@ -159,6 +177,34 @@ namespace TwitterCopy.Pages.Profiles
             {
                 Message = "Avatar removed successfully",
                 Avatar = string.Concat("/images/profile-images/", userToUpdate.Avatar)
+            });
+        }
+
+        public async Task<IActionResult> OnPostRemoveBannerAsync(string banner)
+        {
+            if (string.Equals(banner, Globals.DefaultBanner))
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new { Message = "You cannot remove the default banner." });
+            }
+
+            var userToUpdate = await _userManager.GetUserAsync(User);
+            if (userToUpdate == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var bannerFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "images\\profile-images", banner);
+            System.IO.File.Delete(bannerFilePath);
+
+            userToUpdate.Banner = Globals.DefaultBanner;
+
+            await _userService.UpdateUserAsync(userToUpdate);
+
+            return new JsonResult(new
+            {
+                Message = "Avatar removed successfully",
+                Banner = string.Concat("/images/profile-banners/", userToUpdate.Banner)
             });
         }
 

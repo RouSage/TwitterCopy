@@ -4,7 +4,7 @@
     <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug"
         class="main-profile-card-bg d-block"
         tabindex="-1" aria-hidden="true">
-        <img src="~/images/profile-banners/" />
+        <img src="~/images/profile-banners/@Model.Banner" class="main-profile-card-banner" />
     </a>
     <div class="main-profile-card-content">
         <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug"

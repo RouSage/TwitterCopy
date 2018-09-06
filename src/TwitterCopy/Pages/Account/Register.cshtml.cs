@@ -75,7 +75,8 @@ namespace TwitterCopy.Pages.Account
                     UserName = Input.UserName,
                     Email = Input.Email,
                     Slug = Input.UserName,
-                    Avatar = Globals.DefaultAvatar
+                    Avatar = Globals.DefaultAvatar,
+                    Banner = Globals.DefaultBanner
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)

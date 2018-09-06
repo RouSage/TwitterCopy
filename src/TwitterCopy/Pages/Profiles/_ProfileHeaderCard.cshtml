@@ -3,9 +3,10 @@
 
 <div id="profileInfo">
     <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug"
-       class="profile-header-card-bg d-block"
+       class="profile-header-card-bg d-block mb-1"
        tabindex="-1" aria-hidden="true">
-        <img src="~/images/profile-banners/" />
+        <img src="~/images/profile-banners/@Model.Banner" id="profileInfoBanner"
+             class="profile-header-card-banner" data-banner="@Model.Banner" />
     </a>
     <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug"
        class="profile-header-card-avatar-link d-inline-block mw-100 mb-2 ml-2" title="@Model.UserName"

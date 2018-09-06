@@ -261,6 +261,7 @@
             $('#profileInfoLocation').text(newData.location);
             $('#profileInfoWebsite').text(newData.website);
             $('#profileInfoAvatar').attr('src', newData.avatar);
+            $('#profileInfoBanner').attr('src', newData.banner);
         },
         saveChangesButtonClick: function () {
             $('#profileEdit').addClass('d-none');
@@ -285,6 +286,9 @@
         },
         updateProfileAvatar: function (newAvatar) {
             $('#profileInfoAvatar').attr('src', newAvatar);
+        },
+        updateProfileBanner: function (newBanner) {
+            $('#profileInfoBanner').attr('src', newBanner);
         }
     };
 
@@ -318,6 +322,7 @@
         var location = $('input[name="location"]').val();
         var website = $('input[name="website"]').val();
         var avatar = $('input[name="Avatar"]')[0].files[0];
+        var banner = $('input[name="Banner"]')[0].files[0];
 
         // Create new FormData object which will be posted to the server
         // with new profile info values
@@ -327,6 +332,7 @@
         postedValues.append('location', location);
         postedValues.append('website', website);
         postedValues.append('avatar', avatar);
+        postedValues.append('banner', banner);
 
         // Post values to the server
         $.ajax({
@@ -368,6 +374,29 @@
             success: function (response) {
                 AlertMessage.showAlertMessage(response.message);
                 ProfileEditor.updateProfileAvatar(response.avatar);
+            },
+            error: function (response) {
+                AlertMessage.showAlertMessage(JSON.parse(JSON.stringify(response.responseJSON)).message);
+            }
+        });
+    });
+
+    $('#removeBannerBtn').click(function (e) {
+        var banner = $('#profileInfoBanner').data('banner');
+        $.ajax({
+            url: '/Profiles/Index?handler=RemoveBanner',
+            type: 'POST',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            data: {
+                banner: banner
+            },
+            dataType: 'json',
+            success: function (response) {
+                AlertMessage.showAlertMessage(response.message);
+                ProfileEditor.updateProfileBanner(response.banner);
             },
             error: function (response) {
                 AlertMessage.showAlertMessage(JSON.parse(JSON.stringify(response.responseJSON)).message);

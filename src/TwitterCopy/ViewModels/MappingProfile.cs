@@ -20,8 +20,7 @@ namespace TwitterCopy.Models
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
                 .ForMember(dest => dest.JoinDate, opt => opt.MapFrom(src => src.RegisterDate.ToString("MMMM yyyy")));
             CreateMap<TwitterCopyUser, ProfileInputModel>()
-                .ForMember(dest => dest.Avatar, opt => opt.Ignore());
-            CreateMap<TwitterCopyUser, ProfileInputModel>()
+                .ForMember(dest => dest.Avatar, opt => opt.Ignore())
                 .ForMember(dest => dest.Banner, opt => opt.Ignore());
         }
     }

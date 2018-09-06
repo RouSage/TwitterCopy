@@ -220,6 +220,11 @@ a > img:first-child:last-child {
     width: 100%;
     padding: 0;
 }
+.main-profile-card-banner {
+    width: 100%;
+    height: 110px;
+    box-sizing: border-box;
+}
 
 .profile-canopy-avatar {
     position: absolute;
@@ -244,7 +249,7 @@ a > img:first-child:last-child {
 .profile-header-card-bg {
     background-color: #fff;
     background-size: 100%;
-    height: 95px;
+    height: 110px;
     border-top-left-radius: inherit;
     border-top-right-radius: inherit;
     background-position: 0 50%;
@@ -254,6 +259,11 @@ a > img:first-child:last-child {
 
 .profile-header-card-username {
     line-height: 1;
+}
+.profile-header-card-banner {
+    width: 100%;
+    height: 110px;
+    box-sizing: border-box;
 }
 .profile-header-card-username-link {
     font-size: 21px;
