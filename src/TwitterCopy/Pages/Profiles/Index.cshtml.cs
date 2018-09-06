@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -21,20 +18,17 @@ namespace TwitterCopy.Pages.Profiles
     {
         private readonly ITweetService _tweetSevice;
         private readonly IUserService _userService;
-        private readonly IHostingEnvironment _hostingEnvironment;
         private readonly UserManager<TwitterCopyUser> _userManager;
         private readonly IMapper _mapper;
 
         public IndexModel(
             ITweetService tweetService,
             IUserService userService,
-            IHostingEnvironment hostingEnvironment,
             UserManager<TwitterCopyUser> userManager,
             IMapper mapper)
         {
             _tweetSevice = tweetService;
             _userService = userService;
-            _hostingEnvironment = hostingEnvironment;
             _userManager = userManager;
             _mapper = mapper;
         }
@@ -107,15 +101,7 @@ namespace TwitterCopy.Pages.Profiles
 
             if (postedData.Avatar?.Length > 0)
             {
-                var avatarFileName = Guid.NewGuid().ToString().Replace("-", "") + Path.GetExtension(postedData.Avatar.FileName);
-                
-                var avatarFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "images\\profile-images", avatarFileName);
-                using (var stream = new FileStream(avatarFilePath, FileMode.Create))
-                {
-                    await postedData.Avatar.CopyToAsync(stream);
-                }
-
-                userToUpdate.Avatar = avatarFileName;
+                userToUpdate.Avatar = await _userService.UploadImage(postedData.Avatar, Globals.AvatarsFolder);
             }
             else
             {
@@ -124,15 +110,7 @@ namespace TwitterCopy.Pages.Profiles
 
             if (postedData.Banner?.Length > 0)
             {
-                var bannerFileName = Guid.NewGuid().ToString().Replace("-", "") + Path.GetExtension(postedData.Banner.FileName);
-
-                var bannerFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "images\\profile-banners", bannerFileName);
-                using (var stream = new FileStream(bannerFilePath, FileMode.Create))
-                {
-                    await postedData.Banner.CopyToAsync(stream);
-                }
-
-                userToUpdate.Banner = bannerFileName;
+                userToUpdate.Banner = await _userService.UploadImage(postedData.Banner, Globals.BannersFolder);
             }
             else
             {
@@ -166,9 +144,7 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound("User not found.");
             }
 
-            var avatarFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "images\\profile-images", avatar);
-            System.IO.File.Delete(avatarFilePath);
-
+            _userService.RemoveImage(avatar, Globals.AvatarsFolder);
             userToUpdate.Avatar = Globals.DefaultAvatar;
 
             await _userService.UpdateUserAsync(userToUpdate);
@@ -194,9 +170,7 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound("User not found.");
             }
 
-            var bannerFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "images\\profile-images", banner);
-            System.IO.File.Delete(bannerFilePath);
-
+            _userService.RemoveImage(banner, Globals.BannersFolder);
             userToUpdate.Banner = Globals.DefaultBanner;
 
             await _userService.UpdateUserAsync(userToUpdate);

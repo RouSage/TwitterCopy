@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
 
@@ -12,5 +13,7 @@ namespace TwitterCopy.Core.Interfaces
         Task<TwitterCopyUser> GetUserAndFeedMainInfoAsync(string userId);
         Task UpdateUserAsync(TwitterCopyUser user);
         bool CheckFollower(TwitterCopyUser user, Guid followerId);
+        Task<string> UploadImage(IFormFile image, string folder);
+        void RemoveImage(string imageName, string folder);
     }
 }
