@@ -2,46 +2,53 @@
 
 <div class="main-profile-card">
     <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug"
-        class="main-profile-card-avatar-link d-inline-block mw-100 mb-2 ml-2" title="@Model.UserName"
+        class="main-profile-card-bg d-block"
         tabindex="-1" aria-hidden="true">
-        <img class="main-profile-card-avatar" src="~/images/profile-images/@Model.Avatar" />
+        <img src="~/images/profile-banners/" />
     </a>
-    <div class="d-inline-block ml-2">
-        <div class="main-profile-card-username text-truncate">
-            <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">
-                @Model.UserName
-            </a>
+    <div class="main-profile-card-content">
+        <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug"
+           class="main-profile-card-avatar-link d-inline-block mw-100 mb-2 ml-2" title="@Model.UserName"
+           tabindex="-1" aria-hidden="true">
+            <img class="main-profile-card-avatar" src="~/images/profile-images/@Model.Avatar" />
+        </a>
+        <div class="d-inline-block ml-2">
+            <div class="main-profile-card-username text-truncate">
+                <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">
+                    @Model.UserName
+                </a>
+            </div>
+            <span class="d-inline-block">
+                <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug"
+                   class="main-profile-card-slug">
+                    <span class="slug">
+                        @@<b>@Model.Slug</b>
+                    </span>
+                </a>
+            </span>
         </div>
-        <span class="d-inline-block">
-            <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug"
-               class="main-profile-card-slug">
-                <span class="slug">
-                    @@<b>@Model.Slug</b>
-                </span>
-            </a>
-        </span>
-    </div>
-    <div class="d-flex align-items-center">
-        <ul class="nav text-center">
-            <li class="nav-item">
-                <a class="nav-link" asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">
-                    <small class="profile-card-label">Tweets</small>
-                    <span id="tweetsCount" class="profile-card-value">@Model.TweetsCount</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-page="/Profiles/Following" asp-route-slug="@Model.Slug">
-                    <small class="profile-card-label">Following</small>
-                    <span id="followingsCount" class="profile-card-value">@Model.FollowingCount</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-page="/Profiles/Followers" asp-route-slug="@Model.Slug">
-                    <small class="profile-card-label">Followers</small>
-                    <span id="followersCount" class="profile-card-value">@Model.FollowersCount</span>
-                </a>
-            </li>
-        </ul>
+        <div class="d-flex align-items-center">
+            <ul class="nav text-center">
+                <li class="nav-item">
+                    <a class="nav-link" asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">
+                        <small class="profile-card-label">Tweets</small>
+                        <span id="tweetsCount" class="profile-card-value">@Model.TweetsCount</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-page="/Profiles/Following" asp-route-slug="@Model.Slug">
+                        <small class="profile-card-label">Following</small>
+                        <span id="followingsCount" class="profile-card-value">@Model.FollowingCount</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-page="/Profiles/Followers" asp-route-slug="@Model.Slug">
+                        <small class="profile-card-label">Followers</small>
+                        <span id="followersCount" class="profile-card-value">@Model.FollowersCount</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 <!-- ./main-profile-card -->

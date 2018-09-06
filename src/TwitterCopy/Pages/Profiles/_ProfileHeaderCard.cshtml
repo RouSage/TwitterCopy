@@ -3,9 +3,14 @@
 
 <div id="profileInfo">
     <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug"
+       class="profile-header-card-bg d-block"
+       tabindex="-1" aria-hidden="true">
+        <img src="~/images/profile-banners/" />
+    </a>
+    <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug"
        class="profile-header-card-avatar-link d-inline-block mw-100 mb-2 ml-2" title="@Model.UserName"
        tabindex="-1" aria-hidden="true">
-        <img class="profile-header-card-avatar" id="profileInfoAvatar" 
+        <img class="profile-header-card-avatar" id="profileInfoAvatar"
              src="~/images/profile-images/@Model.Avatar" data-avatar="@Model.Avatar" />
     </a>
     <div class="d-inline-block">
