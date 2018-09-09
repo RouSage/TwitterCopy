@@ -18,6 +18,7 @@ namespace TwitterCopy.Models
                 .ForMember(dest => dest.LikeCount, opt => opt.MapFrom(src => src.Tweet.LikeCount))
                 .ForMember(dest => dest.PostedOn, opt => opt.MapFrom(src => src.Tweet.PostedOn))
                 .ForMember(dest => dest.RetweetCount, opt => opt.MapFrom(src => src.Tweet.RetweetCount))
+                .ForMember(dest => dest.ReplyCount, opt => opt.MapFrom(src => src.Tweet.ReplyCount))
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Tweet.Text))
                 .ForMember(dest => dest.Slug, opt => opt.MapFrom(src => src.Tweet.User.Slug))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Tweet.User.UserName))

@@ -42,10 +42,28 @@
             Delete
         </button>
     }
+    <button type="button" class="btn btn-outline-secondary btn-reply" data-tweet-id="@Model.Id">
+        <span>@Model.ReplyCount</span>
+    </button>
     <button type="button" class="btn btn-outline-success btn-retweet" data-tweet-id="@Model.Id">
         <span>@Model.RetweetCount</span>
     </button>
     <button type="button" class="btn btn-outline-primary btn-like" data-tweet-id="@Model.Id">
         <span>@Model.LikeCount</span>
     </button>
+</div>
+<div class="reply-container mt-2">
+    <div class="reply-tweetbox p-2">
+        <form method="post" id="sendReplyForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input asp-for="Text" id="replyTextInput" value=""
+                       class="form-control" placeholder="Tweet your reply" />
+                <span asp-validation-for="Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="button" id="sendReplyBtn" value="Reply" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
 </div>

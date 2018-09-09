@@ -295,3 +295,13 @@ a > img:first-child:last-child {
     margin-bottom: 8px;
     position: relative;
 }
+
+.reply-container {
+    border-radius: 0;
+}
+.reply-tweetbox {
+    border-bottom: 1px solid #e6ecf0;
+    border-radius: 0;
+    background-color: #f5f8fa;
+    border-top: 1px solid #e6ecf0;
+}

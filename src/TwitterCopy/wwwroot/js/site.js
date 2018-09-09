@@ -404,50 +404,85 @@
         });
     });
 
-$('.tweet-actionable').click(function (e) {
-    var tweet = $(this);
-    var tweetId = tweet.data('tweet-id');
-    var userSlug = tweet.data('user-slug');
+    $('.tweet-actionable').click(function (e) {
+        var tweet = $(this);
+        var tweetId = tweet.data('tweet-id');
+        var userSlug = tweet.data('user-slug');
 
-    if (e.target.localName !== 'button'
-        && e.target.localName !== 'span'
-        && e.target.localName !== 'a'
-        && e.target.localName !== 'strong'
-        && e.target.localName !== 'b') {
-        $.ajax({
-            type: 'GET',
-            url: `/Profiles/Index/${userSlug}`,
-            data: {
-                handler: 'Status',
-                tweetId: tweetId
-            },
-            contentType: 'application/json; charset=utf-8',
-            success: function (response) {
-                var tweetModal = $('#tweetModal');
-                var tweetContainer = tweetModal.find('.modal-body');
-                tweetContainer.html(response);
-                tweetModal.modal('show');
-            },
-            failure: function (response) {
-                AlertMessage.showAlertMessage(response);
-            }
+        if (e.target.localName !== 'button'
+            && e.target.localName !== 'span'
+            && e.target.localName !== 'a'
+            && e.target.localName !== 'strong'
+            && e.target.localName !== 'b') {
+            $.ajax({
+                type: 'GET',
+                url: `/Profiles/Index/${userSlug}`,
+                data: {
+                    handler: 'Status',
+                    tweetId: tweetId
+                },
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    var tweetModal = $('#tweetModal');
+                    var tweetContainer = tweetModal.find('.modal-body');
+                    tweetContainer.html(response);
+                    tweetModal.modal('show');
+                },
+                failure: function (response) {
+                    AlertMessage.showAlertMessage(response);
+                }
+            });
+
+        }
+    });
+
+    var AlertMessage = {
+        showAlertMessage: function (message) {
+            var alert = $('#alertMessage');
+            alert.removeClass('d-none');
+            var messageText = alert.find('.message-text');
+            messageText.text(message);
+        },
+        hideAlertMessage: function () {
+            $('#alertMessage').addClass('d-none');
+        }
+    };
+
+    $('#alertMessage .close').on('click', AlertMessage.hideAlertMessage);
+
+    $('#tweetModal').on('shown.bs.modal', function () {
+        /*
+     * Send Reply button disabled and hidden by default
+     */
+        $('#sendReplyForm #sendReplyBtn').prop('disabled', true);
+        $('#sendReplyForm #sendReplyBtn').hide();
+
+        /*
+         * Show Send Reply button when any element inside form is focused
+         */
+        $('#sendReplyForm').on('focusin', function () {
+            $('#sendReplyForm #sendReplyBtn').show();
         });
 
-    }
-});
+        /*
+         * Hide Send Reply button when any element inside form loses
+         * focus or text box doesn't have any value
+         */
+        $('#sendReplyForm').on('focusout', function () {
+            if (!$(this).find('input[type=text]').val().trim())
+                $('#sendReplyForm #sendReplyBtn').hide();
+        });
 
-var AlertMessage = {
-    showAlertMessage: function (message) {
-        var alert = $('#alertMessage');
-        alert.removeClass('d-none');
-        var messageText = alert.find('.message-text');
-        messageText.text(message);
-    },
-    hideAlertMessage: function () {
-        $('#alertMessage').addClass('d-none');
-    }
-};
+        /*
+         * Enable Send Reply button only if text box has value
+         */
+        $('#sendReplyForm input[type=text]').on('keyup', function () {
+            var sendTweetBtn = $('#sendReplyForm #sendReplyBtn');
 
-$('#alertMessage .close').on('click', AlertMessage.hideAlertMessage);
-
+            if ($(this).val().trim())
+                sendTweetBtn.prop('disabled', false);
+            else
+                sendTweetBtn.prop('disabled', true);
+        });
+    });
 });

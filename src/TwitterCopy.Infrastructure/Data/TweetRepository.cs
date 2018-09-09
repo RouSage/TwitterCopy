@@ -22,17 +22,26 @@ namespace TwitterCopy.Infrastructure.Data
                 .ToListAsync();
         }
 
-        public async Task<Tweet> GetTweetWithLikes(int tweetId)
+        public async Task<Tweet> GetTweetWithLikesAsync(int tweetId)
         {
             return await _context.Tweets
                 .Include(l => l.Likes)
                 .FirstOrDefaultAsync(x => x.Id == tweetId);
         }
 
-        public async Task<Tweet> GetTweetWithRetweets(int tweetId)
+        public async Task<Tweet> GetTweetWithRetweetsAsync(int tweetId)
         {
             return await _context.Tweets
                 .Include(r => r.Retweets)
+                .FirstOrDefaultAsync(x => x.Id == tweetId);
+        }
+
+        public async Task<Tweet> GetTweetWithUserAndRepliesAsync(int tweetId)
+        {
+            return await _context.Tweets
+                .AsNoTracking()
+                .Include(u => u.User)
+                .Include(r => r.Replies)
                 .FirstOrDefaultAsync(x => x.Id == tweetId);
         }
 

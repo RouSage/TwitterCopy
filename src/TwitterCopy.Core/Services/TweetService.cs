@@ -64,6 +64,11 @@ namespace TwitterCopy.Core.Services
             return await _tweetRepository.GetTweetWithUserAsync(tweetId);
         }
 
+        public async Task<Tweet> GetTweetWithAuthorAndRepliesAsync(int tweetId)
+        {
+            return await _tweetRepository.GetTweetWithUserAndRepliesAsync(tweetId);
+        }
+
         public async Task<List<Tweet>> GetUserTweetsAsync(string userId)
         {
             return await _tweetRepository.GetTweetsByUserIdAsync(userId);
@@ -71,7 +76,7 @@ namespace TwitterCopy.Core.Services
 
         public async Task<int> UpdateLikes(int tweetId, TwitterCopyUser user)
         {
-            var tweet = await _tweetRepository.GetTweetWithLikes(tweetId);
+            var tweet = await _tweetRepository.GetTweetWithLikesAsync(tweetId);
 
             // Apply the user and tweet object from above to the new Like
             var like = new Like
@@ -107,7 +112,7 @@ namespace TwitterCopy.Core.Services
 
         public async Task<int> UpdateRetweets(int tweetId, TwitterCopyUser user)
         {
-            var tweet = await _tweetRepository.GetTweetWithRetweets(tweetId);
+            var tweet = await _tweetRepository.GetTweetWithRetweetsAsync(tweetId);
 
             var retweet = new Retweet
             {

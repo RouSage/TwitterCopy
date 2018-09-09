@@ -21,6 +21,8 @@ namespace TwitterCopy.Models
 
         public int RetweetCount { get; set; }
 
+        public int ReplyCount { get; set; }
+
         public bool IsRetweet { get; set; }
 
         public DateTime RetweetDate { get; set; }
