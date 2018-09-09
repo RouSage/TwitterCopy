@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TwitterCopy.Core.Entities.TweetAggregate;
+using TwitterCopy.Core.Entities;
 using TwitterCopy.Core.Interfaces;
 
 namespace TwitterCopy.Infrastructure.Data

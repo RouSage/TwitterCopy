@@ -44,6 +44,5 @@ namespace TwitterCopy.Core.Entities
         public ICollection<UserToUser> Followers { get; set; }
 
         public ICollection<Tweet> Tweets { get; set; }
-
     }
 }

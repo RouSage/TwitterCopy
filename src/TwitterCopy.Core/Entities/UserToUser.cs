@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TwitterCopy.Core.Entities
 {
@@ -10,8 +11,10 @@ namespace TwitterCopy.Core.Entities
 
         // Relationships
 
+        [ForeignKey(nameof(UserId))]
         public TwitterCopyUser User { get; set; }
 
+        [ForeignKey(nameof(FollowerId))]
         public TwitterCopyUser Follower { get; set; }
     }
 }

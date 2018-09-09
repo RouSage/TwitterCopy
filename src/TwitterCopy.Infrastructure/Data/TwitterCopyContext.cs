@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using TwitterCopy.Core.Entities;
-using TwitterCopy.Core.Entities.TweetAggregate;
 
 namespace TwitterCopy.Infrastructure.Data
 {
@@ -62,6 +61,20 @@ namespace TwitterCopy.Infrastructure.Data
                 .HasOne(u => u.User)
                 .WithMany(r => r.Retweets)
                 .HasForeignKey("UserId")
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<TweetToTweet>()
+                .HasKey(k => new { k.ReplyTweetId, k.ReplyToId });
+
+            builder.Entity<TweetToTweet>()
+                .HasOne(rt => rt.ReplyTweet)
+                .WithMany(r => r.Replies)
+                .HasForeignKey(fk => fk.ReplyTweetId);
+
+            builder.Entity<TweetToTweet>()
+                .HasOne(rto => rto.ReplyTo)
+                .WithMany()
+                .HasForeignKey(fk => fk.ReplyToId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

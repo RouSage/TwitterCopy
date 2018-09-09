@@ -29,5 +29,7 @@ namespace TwitterCopy.Core.Entities
         public ICollection<Like> Likes { get; set; }
 
         public ICollection<Retweet> Retweets { get; set; }
+
+        public ICollection<TweetToTweet> Replies { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using TwitterCopy.Core.Entities;
-using TwitterCopy.Core.Entities.TweetAggregate;
 
 namespace TwitterCopy.Models
 {
