@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TwitterCopy.Core.Entities.TweetAggregate;
+using TwitterCopy.Core.Entities;
 
 namespace TwitterCopy.Core.Interfaces
 {
