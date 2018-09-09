@@ -1,4 +1,4 @@
-﻿namespace TwitterCopy.Core.Services
+﻿namespace TwitterCopy.Services
 {
     public class AuthMessageSenderOptions
     {
