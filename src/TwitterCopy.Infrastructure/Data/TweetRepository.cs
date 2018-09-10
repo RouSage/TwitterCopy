@@ -45,6 +45,8 @@ namespace TwitterCopy.Infrastructure.Data
                     .ThenInclude(rf => rf.ReplyFrom)
                         .ThenInclude(tu => tu.User)
                 .Include(r => r.RepliesTo)
+                    .ThenInclude(rt => rt.ReplyTo)
+                        .ThenInclude(tu => tu.User)
                 .FirstOrDefaultAsync(x => x.Id == tweetId);
         }
 

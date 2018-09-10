@@ -4,6 +4,20 @@
      data-tweet-id="@Model.Id"
      data-user-slug="@Model.Slug">
     <div class="tweet">
+        @if (Model.IsRetweet)
+        {
+            <div class="row context">
+                <div class="col-md tweet-context">
+                    <span>
+                        <a asp-page="/Profile/Index" asp-route-slug="@Model.RetweetSlug">
+                            <b>@Model.RetweetUserName</b>
+                        </a>
+                         Retweeted
+                    </span>
+                </div>
+            </div>
+            <!-- /.row -->
+        }
         <div class="row p-2">
             <div class="col-md-1 p-0 pl-1">
                 <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">

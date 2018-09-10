@@ -28,9 +28,15 @@ namespace TwitterCopy.Models
 
         public DateTime RetweetDate { get; set; }
 
+        public string RetweetUserName { get; set; }
+
+        public string RetweetSlug { get; set; }
+
         [DataType(DataType.DateTime)]
         public DateTime PostedOn { get; set; } = DateTime.Now;
 
         public List<TweetViewModel> RepliesFrom { get; set; } = new List<TweetViewModel>();
+
+        public List<TweetViewModel> RepliesTo { get; set; } = new List<TweetViewModel>();
     }
 }

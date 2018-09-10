@@ -1,5 +1,13 @@
 ﻿@model TwitterCopy.Models.TweetViewModel
 
+
+@if (Model.RepliesTo.Count > 0)
+{
+    foreach (var tweet in Model.RepliesTo)
+    {
+        <partial name="_Tweet" model="tweet" />
+    }
+}
 <div class="d-flex justify-content-between align-items-center mb-2">
     <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">
         <span class="d-block">
@@ -68,7 +76,10 @@
         </form>
     </div>
 </div>
-@foreach (var tweet in Model.RepliesFrom)
+@if (Model.RepliesFrom.Count > 0)
 {
-    <partial name="_Tweet" model="tweet" />
+    foreach (var tweet in Model.RepliesFrom)
+    {
+        <partial name="_Tweet" model="tweet" />
+    }
 }

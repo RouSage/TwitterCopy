@@ -404,10 +404,15 @@
         });
     });
 
-    $('.tweet-actionable').click(function (e) {
+    $(document.body).on('click', '.tweet-actionable', function (e) {
         var tweet = $(this);
         var tweetId = tweet.data('tweet-id');
         var userSlug = tweet.data('user-slug');
+
+        var tweetModal = $('#tweetModal');
+        if (tweetModal.css('display') !== 'none') {
+            tweetModal.modal('hide');
+        }
 
         if (e.target.localName !== 'button'
             && e.target.localName !== 'span'
@@ -423,7 +428,6 @@
                 },
                 contentType: 'application/json; charset=utf-8',
                 success: function (response) {
-                    var tweetModal = $('#tweetModal');
                     var tweetContainer = tweetModal.find('.modal-body');
                     tweetContainer.html(response);
                     tweetModal.modal('show');
@@ -432,7 +436,6 @@
                     AlertMessage.showAlertMessage(response);
                 }
             });
-
         }
     });
 
@@ -450,53 +453,49 @@
 
     $('#alertMessage .close').on('click', AlertMessage.hideAlertMessage);
 
-    $('#tweetModal').on('shown.bs.modal', function () {
+    $('#tweetModal').on('show.bs.modal', function () {
+        var sendReplyForm = $('#sendReplyForm');
+        var sendReplyBtn = sendReplyForm.find('#sendReplyBtn'); 
+
         /*
-     * Send Reply button disabled and hidden by default
-     */
-        $('#sendReplyForm #sendReplyBtn').prop('disabled', true);
-        $('#sendReplyForm #sendReplyBtn').hide();
+         * Send Reply button disabled and hidden by default
+         */
+        sendReplyBtn.prop('disabled', true);
+        sendReplyBtn.hide();
 
         /*
          * Show Send Reply button when any element inside form is focused
          */
-        $('#sendReplyForm').on('focusin', function () {
-            $('#sendReplyForm #sendReplyBtn').show();
+        sendReplyForm.on('focusin', function () {
+            sendReplyBtn.show();
         });
 
         /*
          * Hide Send Reply button when any element inside form loses
          * focus or text box doesn't have any value
          */
-        $('#sendReplyForm').on('focusout', function () {
+        sendReplyForm.on('focusout', function () {
             if (!$(this).find('input[type=text]').val().trim())
-                $('#sendReplyForm #sendReplyBtn').hide();
+                sendReplyBtn.hide();
         });
 
         /*
          * Enable Send Reply button only if text box has value
          */
-        $('#sendReplyForm input[type=text]').on('keyup', function () {
-            var sendTweetBtn = $('#sendReplyForm #sendReplyBtn');
-
+        sendReplyForm.find('input[type=text]').on('keyup', function () {
             if ($(this).val().trim())
-                sendTweetBtn.prop('disabled', false);
+                sendReplyBtn.prop('disabled', false);
             else
-                sendTweetBtn.prop('disabled', true);
+                sendReplyBtn.prop('disabled', true);
         });
 
-        $('#sendReplyBtn').on('click', function (e) {
-            var replyText = $('#replyTextInput').val();
+        sendReplyBtn.on('click', function (e) {
+            var replyText = sendReplyForm.find('input[type=text]').val();
             var tweetId = $(this).data('tweet-id');
 
             $.ajax({
                 type: 'POST',
                 url: `/Profiles/Index?handler=Reply&replyText=${replyText}&tweetId=${tweetId}`,
-                //data: {
-                //    handler: 'Reply',
-                //    replyText: replyText,
-                //    tweetId: tweetId
-                //},
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("XSRF-TOKEN",
                         $('input:hidden[name="__RequestVerificationToken"]').val());
