@@ -64,16 +64,16 @@ namespace TwitterCopy.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<TweetToTweet>()
-                .HasKey(k => new { k.ReplyTweetId, k.ReplyToId });
+                .HasKey(k => new { k.ReplyToId, k.ReplyFromId });
 
             builder.Entity<TweetToTweet>()
-                .HasOne(rt => rt.ReplyTweet)
-                .WithMany(r => r.Replies)
-                .HasForeignKey(fk => fk.ReplyTweetId);
+                .HasOne(rt => rt.ReplyFrom)
+                .WithMany(r => r.RepliesTo)
+                .HasForeignKey(fk => fk.ReplyFromId);
 
             builder.Entity<TweetToTweet>()
                 .HasOne(rto => rto.ReplyTo)
-                .WithMany()
+                .WithMany(r => r.RepliesFrom)
                 .HasForeignKey(fk => fk.ReplyToId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

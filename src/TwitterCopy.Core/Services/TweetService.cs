@@ -22,6 +22,28 @@ namespace TwitterCopy.Core.Services
             _retweetRepository = retweetRepository;
         }
 
+        public async Task AddReply(string replyText, TwitterCopyUser user, Tweet replyTo)
+        {
+            var replyFrom = new Tweet
+            {
+                Text = replyText,
+                User = user
+            };
+            _tweetRepository.Add(replyFrom);
+
+            var reply = new TweetToTweet
+            {
+                ReplyTo = replyTo,
+                ReplyFrom = replyFrom
+            };
+
+            replyTo.RepliesFrom.Add(reply);
+            replyTo.ReplyCount++;
+
+            _tweetRepository.Update(replyTo);
+            await _tweetRepository.SaveAsync();
+        }
+
         public async Task AddTweet(string text, TwitterCopyUser user)
         {
             var tweet = new Tweet
@@ -67,6 +89,11 @@ namespace TwitterCopy.Core.Services
         public async Task<Tweet> GetTweetWithAuthorAndRepliesAsync(int tweetId)
         {
             return await _tweetRepository.GetTweetWithUserAndRepliesAsync(tweetId);
+        }
+
+        public async Task<Tweet> GetTweetWithUserAndRepliesForEditingAsync(int tweetId)
+        {
+            return await _tweetRepository.GetTweetWithUserAndRepliesForEditingAsync(tweetId);
         }
 
         public async Task<List<Tweet>> GetUserTweetsAsync(string userId)

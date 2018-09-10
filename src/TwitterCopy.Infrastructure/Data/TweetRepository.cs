@@ -41,7 +41,17 @@ namespace TwitterCopy.Infrastructure.Data
             return await _context.Tweets
                 .AsNoTracking()
                 .Include(u => u.User)
-                .Include(r => r.Replies)
+                .Include(r => r.RepliesFrom)
+                .Include(r => r.RepliesTo)
+                .FirstOrDefaultAsync(x => x.Id == tweetId);
+        }
+
+        public async Task<Tweet> GetTweetWithUserAndRepliesForEditingAsync(int tweetId)
+        {
+            return await _context.Tweets
+                .Include(u => u.User)
+                .Include(r => r.RepliesFrom)
+                .Include(r => r.RepliesTo)
                 .FirstOrDefaultAsync(x => x.Id == tweetId);
         }
 

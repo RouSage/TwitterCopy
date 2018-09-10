@@ -32,6 +32,8 @@ namespace TwitterCopy.Core.Entities
 
         public ICollection<Retweet> Retweets { get; set; }
 
-        public ICollection<TweetToTweet> Replies { get; set; }
+        public ICollection<TweetToTweet> RepliesTo { get; set; }
+
+        public ICollection<TweetToTweet> RepliesFrom { get; set; }
     }
 }
