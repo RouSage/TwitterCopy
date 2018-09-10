@@ -21,8 +21,6 @@ namespace TwitterCopy.Core.Entities
 
         public int RetweetCount { get; set; }
 
-        public int ReplyCount { get; set; }
-
         // Relationships
 
         [ForeignKey("UserId")]

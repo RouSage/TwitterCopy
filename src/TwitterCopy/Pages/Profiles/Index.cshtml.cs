@@ -256,7 +256,7 @@ namespace TwitterCopy.Pages.Profiles
 
             await _tweetSevice.AddReply(replyText, user, replyTo);
 
-            return new JsonResult(replyTo.ReplyCount);
+            return new JsonResult(replyTo.RepliesFrom.Count);
         }
     }
 }
