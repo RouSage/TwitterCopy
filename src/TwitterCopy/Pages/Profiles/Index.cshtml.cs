@@ -234,5 +234,29 @@ namespace TwitterCopy.Pages.Profiles
 
             return result;
         }
+
+        public async Task<IActionResult> OnPostReplyAsync(string replyText, int? tweetId)
+        {
+            if(tweetId == null)
+            {
+                return NotFound();
+            }
+
+            var replyTo = await _tweetSevice.GetTweetWithUserAndRepliesForEditingAsync(tweetId.Value);
+            if(replyTo == null)
+            {
+                return NotFound(replyTo);
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if(user == null)
+            {
+                return NotFound(user);
+            }
+
+            await _tweetSevice.AddReply(replyText, user, replyTo);
+
+            return new JsonResult(replyTo.ReplyCount);
+        }
     }
 }

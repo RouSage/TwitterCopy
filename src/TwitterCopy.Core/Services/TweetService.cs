@@ -37,6 +37,7 @@ namespace TwitterCopy.Core.Services
                 ReplyFrom = replyFrom
             };
 
+            // Automatically adds new TweetToTweet entity to the replyFrom's property RepliesTo
             replyTo.RepliesFrom.Add(reply);
             replyTo.ReplyCount++;
 

@@ -42,6 +42,8 @@ namespace TwitterCopy.Infrastructure.Data
                 .AsNoTracking()
                 .Include(u => u.User)
                 .Include(r => r.RepliesFrom)
+                    .ThenInclude(rf => rf.ReplyFrom)
+                        .ThenInclude(tu => tu.User)
                 .Include(r => r.RepliesTo)
                 .FirstOrDefaultAsync(x => x.Id == tweetId);
         }
