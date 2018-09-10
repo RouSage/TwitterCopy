@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.Linq;
 using TwitterCopy.Core.Entities;
 
 namespace TwitterCopy.Models
@@ -12,7 +13,8 @@ namespace TwitterCopy.Models
                 .ForMember(dest => dest.Slug, opt => opt.MapFrom(src => src.User.Slug))
                 .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.User.Avatar))
                 .ForMember(dest => dest.IsRetweet, opt => opt.UseValue(false))
-                .ForMember(dest => dest.RetweetDate, opt => opt.MapFrom(src => src.PostedOn));
+                .ForMember(dest => dest.RetweetDate, opt => opt.MapFrom(src => src.PostedOn))
+                .ForMember(dest => dest.RepliesFrom, opt => opt.MapFrom(src => src.RepliesFrom.Select(t => t.ReplyFrom)));
             CreateMap<Retweet, TweetViewModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Tweet.Id))
                 .ForMember(dest => dest.LikeCount, opt => opt.MapFrom(src => src.Tweet.LikeCount))

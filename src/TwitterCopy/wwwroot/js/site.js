@@ -484,5 +484,31 @@
             else
                 sendTweetBtn.prop('disabled', true);
         });
+
+        $('#sendReplyBtn').on('click', function (e) {
+            var replyText = $('#replyTextInput').val();
+            var tweetId = $(this).data('tweet-id');
+
+            $.ajax({
+                type: 'POST',
+                url: `/Profiles/Index?handler=Reply&replyText=${replyText}&tweetId=${tweetId}`,
+                //data: {
+                //    handler: 'Reply',
+                //    replyText: replyText,
+                //    tweetId: tweetId
+                //},
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    console.log(response);
+                },
+                failure: function (response) {
+                    console.log(response);
+                }
+            });
+        });
     });
 });

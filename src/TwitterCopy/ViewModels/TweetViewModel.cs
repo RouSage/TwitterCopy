@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace TwitterCopy.Models
@@ -29,5 +30,7 @@ namespace TwitterCopy.Models
 
         [DataType(DataType.DateTime)]
         public DateTime PostedOn { get; set; } = DateTime.Now;
+
+        public List<TweetViewModel> RepliesFrom { get; set; } = new List<TweetViewModel>();
     }
 }
