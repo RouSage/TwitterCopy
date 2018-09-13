@@ -92,80 +92,6 @@ namespace TwitterCopy.Pages
             return RedirectToPage();
         }
 
-        /// <summary>
-        /// Provides tweet for the modal dialog
-        /// </summary>
-        /// <param name="id">Tweet's id</param>
-        /// <returns>Tweet info in JSON</returns>
-        public async Task<IActionResult> OnGetTweetAsync(int? id)
-        {
-            var tweetToDelete = await _tweetService.GetTweetWithAuthor(id.Value);
-            if (tweetToDelete == null)
-            {
-                return NotFound("Tweet to delete not found.");
-            }
-
-            var userId = _userManager.GetUserId(User);
-            if (string.IsNullOrEmpty(userId))
-            {
-                return NotFound("User id not found. Please log in to the website.");
-            }
-
-            if (!tweetToDelete.UserId.ToString().Equals(userId))
-            {
-                Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return new JsonResult(new
-                {
-                    Message = "You cannot delete Tweet which doesn't belong to you."
-                });
-            }
-
-            var tweetVM = _mapper.Map<TweetViewModel>(tweetToDelete);
-
-            return new JsonResult(tweetVM);
-        }
-
-        /// <summary>
-        /// Deletes tweet from the database
-        /// </summary>
-        /// <param name="id">Tweet's id</param>
-        /// <returns></returns>
-        public async Task<IActionResult> OnPostDeleteAsync(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tweetToDelete = await _tweetService.GetTweetAsync(id.Value);
-            if (tweetToDelete == null)
-            {
-                return NotFound("Tweet to delete not found.");
-            }
-
-            await _tweetService.DeleteTweet(tweetToDelete);
-
-            return RedirectToPage();
-        }
-
-        public async Task<IActionResult> OnGetUpdateLikesAsync(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound(user);
-            }
-
-            var updatedLikeCount = await _tweetService.UpdateLikes(id.Value, user);
-            
-            return new JsonResult(updatedLikeCount);
-        }
-
         public async Task<IActionResult> OnPostFollowAsync(string userSlug)
         {
             if (string.IsNullOrEmpty(userSlug))
@@ -254,24 +180,6 @@ namespace TwitterCopy.Pages
                 userToUnfollow.Slug,
                 CurrentUserSlug = currentUser.Slug
             });
-        }
-
-        public async Task<IActionResult> OnPostRetweetAsync(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser == null)
-            {
-                return NotFound(currentUser);
-            }
-
-            var updatedRetweetCount = await _tweetService.UpdateRetweets(id.Value, currentUser);
-
-            return new JsonResult(updatedRetweetCount);
         }
     }
 }

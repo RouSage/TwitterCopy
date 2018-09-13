@@ -64,6 +64,7 @@ namespace TwitterCopy
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseMvc();
+            app.UseMvcWithDefaultRoute();
         }
     }
 }

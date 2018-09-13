@@ -12,12 +12,15 @@
         // Add 'action' attribute to the form with url to the delete action
         var deleteForm = $('#deleteTweetForm');
         // Provide 'page-handler' OnPostDeleteAsync and the tweet's id in the url
-        deleteForm.attr('action', `/Index?handler=delete&id=${tweetId}`);
+        deleteForm.attr('action', `/Tweets/Delete?id=${tweetId}`);
 
         // AJAX request to get tweet from database
         $.ajax({
             type: 'GET',
-            url: `/Index?handler=Tweet&id=${tweetId}`,
+            url: 'Tweets/GetTweet/',
+            data: {
+                id: tweetId
+            },
             contentType: 'application/json',
             dataType: 'json',
             success: function (response) {
@@ -68,7 +71,10 @@
 
         $.ajax({
             type: 'GET',
-            url: `/Index?handler=UpdateLikes&id=${tweetId}`,
+            url: '/Tweets/UpdateLikes/',
+            data: {
+                id: tweetId
+            },
             contentType: 'application/json',
             dataType: 'json',
             success: function (response) {
@@ -233,12 +239,14 @@
 
         $.ajax({
             type: 'POST',
-            url: `/Index?handler=Retweet&id=${tweetId}`,
+            url: '/Tweets/Retweet/',
+            data: {
+                id: tweetId
+            },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $('input:hidden[name="__RequestVerificationToken"]').val());
             },
-            contentType: 'application/json',
             dataType: 'json',
             success: function (response) {
                 // find a span on the clicked button
