@@ -31,7 +31,6 @@ namespace TwitterCopy.Pages.Profiles
 
         public List<TweetViewModel> LikedTweets { get; set; } = new List<TweetViewModel>();
 
-        [BindProperty]
         public ProfileInputModel Input { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string slug)

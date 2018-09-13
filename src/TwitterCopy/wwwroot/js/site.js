@@ -153,7 +153,6 @@
         var profileUserSlug = $('#profileInfoSlug').data('slug');
         var userToFollow = pressedBtn.find('span').data('userslug');
         var followingBtn = pressedBtn.next('.btn-following-main');
-        var unfollowBtn = followingBtn.next('.btn-unfollow-main');
 
         $.ajax({
             type: 'POST',
