@@ -17,7 +17,7 @@ namespace TwitterCopy.Models
         public string Website { get; set; }
 
         [Display(Name = "Tweets")]
-        public int TweetsCount { get; set; }
+        public int TweetCount { get; set; }
 
         [Display(Name = "Following")]
         public int FollowingCount { get; set; }

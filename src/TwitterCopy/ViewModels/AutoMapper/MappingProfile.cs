@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System.Linq;
 using TwitterCopy.Core.Entities;
+using TwitterCopy.ViewModels.AutoMapper;
 
 namespace TwitterCopy.Models.AutoMapper
 {
@@ -33,7 +34,7 @@ namespace TwitterCopy.Models.AutoMapper
             CreateMap<TwitterCopyUser, ProfileViewModel>()
                 .ForMember(dest => dest.FollowersCount, opt => opt.MapFrom(src => src.Followers.Count))
                 .ForMember(dest => dest.FollowingCount, opt => opt.MapFrom(src => src.Following.Count))
-                .ForMember(dest => dest.TweetsCount, opt => opt.MapFrom(src => src.Tweets.Count))
+                .ForMember(dest => dest.TweetCount, opt => opt.ResolveUsing<TweetCountResolver>())
                 .ForMember(dest => dest.LikesCount, opt => opt.MapFrom(src => src.Likes.Count))
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
                 .ForMember(dest => dest.JoinDate, opt => opt.MapFrom(src => src.RegisterDate.ToString("MMMM yyyy")));
