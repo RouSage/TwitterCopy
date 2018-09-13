@@ -24,6 +24,7 @@ namespace TwitterCopy.Infrastructure.Data
                 .AsNoTracking()
                 .Include(t => t.Tweets)
                 .Include(l => l.Likes)
+                    .ThenInclude(lt => lt.Tweet)
                 .Include(fs => fs.Followers)
                     .ThenInclude(u => u.Follower)
                 .Include(fg => fg.Following)
