@@ -21,9 +21,8 @@
                         <div class="border mt-3">
                             <div class="profile-follow-actions d-flex justify-content-end p-1">
                                 <button type="button" class="btn btn-sm btn-outline-primary btn-follow-main
-                                        @(follower.UserId.ToString() == ViewData["CurrentUserId"].ToString()
-                                            || follower.FollowerId.ToString() == ViewData["CurrentUserId"].ToString()
-                                            ? "d-none" : "")">
+                                        @((follower.UserId.ToString() == ViewData["CurrentUserId"].ToString()
+                                            || !(bool)ViewData["IsYourself"]) ? "d-none" : "")">
                                     <span data-userslug="@follower.Follower.Slug">Follow</span>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-primary btn-following-main

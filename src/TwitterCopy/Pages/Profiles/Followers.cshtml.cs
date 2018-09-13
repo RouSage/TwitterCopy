@@ -31,7 +31,6 @@ namespace TwitterCopy.Pages.Profiles
 
         public List<UserToUser> Followers { get; set; } = new List<UserToUser>();
 
-        [BindProperty]
         public ProfileInputModel Input { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string slug)
@@ -61,7 +60,6 @@ namespace TwitterCopy.Pages.Profiles
             ProfileUser = _mapper.Map<ProfileViewModel>(profileOwner);
             Followers = profileOwner.Followers.ToList();
             Input = _mapper.Map<ProfileInputModel>(profileOwner);
-
 
             return Page();
         }
