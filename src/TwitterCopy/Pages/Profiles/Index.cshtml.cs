@@ -62,11 +62,9 @@ namespace TwitterCopy.Pages.Profiles
                 .Any(x => x.FollowerId.Equals(currentUser.Id));
 
             var userTweets = _mapper.Map<IEnumerable<TweetViewModel>>(profileOwner.Tweets);
-            var followingTweets = _mapper.Map<IEnumerable<TweetViewModel>>(profileOwner.Following.SelectMany(ut => ut.User.Tweets));
             var userRetweets = _mapper.Map<IEnumerable<TweetViewModel>>(profileOwner.Retweets);
 
             Tweets = userTweets
-                .Concat(followingTweets)
                 .Concat(userRetweets)
                 .OrderByDescending(rt => rt.RetweetDate)
                 //.ThenByDescending(p=>p.PostedOn)

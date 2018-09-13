@@ -29,9 +29,9 @@ namespace TwitterCopy.Infrastructure.Data
                     .ThenInclude(u => u.Follower)
                 .Include(fg => fg.Following)
                     .ThenInclude(u => u.User)
-                        .ThenInclude(ft => ft.Tweets)
                 .Include(rt => rt.Retweets)
                     .ThenInclude(rtt => rtt.Tweet)
+                        .ThenInclude(tu => tu.User)
                 .FirstOrDefaultAsync(u => u.Slug.Equals(slug));
         }
 
