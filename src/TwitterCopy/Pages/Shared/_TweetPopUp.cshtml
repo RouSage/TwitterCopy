@@ -45,9 +45,8 @@
 <div class="w-100">
     @if (Model.UserName == User.Identity.Name)
     {
-        <button type="button" class="btn btn-danger" data-toggle="modal"
-                data-target="#deleteTweetModal" data-tweet-id="@Model.Id">
-            Delete
+        <button type="button" class="btn btn-danger btn-delete-tweet" data-tweet-id="@Model.Id">
+            <span>Delete</span>
         </button>
     }
     <button type="button" class="btn btn-outline-secondary btn-reply" data-tweet-id="@Model.Id">

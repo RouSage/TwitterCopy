@@ -3,44 +3,70 @@
     /*
      * Show modal dialog for confirmation of deletion of tweet
      */
-    $('#deleteTweetModal').on('show.bs.modal', function (event) {
-        // Button that triggered the modal
-        var button = $(event.relatedTarget);
-        // Extract tweet's id from the button's 'data-tweet' attribute
+    $(document.body).on('click', '.btn-delete-tweet', function (event) {
+        var button = $(this);
+        // Extract tweet's id from the button's 'data-tweet-id' attribute
         var tweetId = button.data('tweet-id');
-
-        // Add 'action' attribute to the form with url to the delete action
-        var deleteForm = $('#deleteTweetForm');
-        // Provide 'page-handler' OnPostDeleteAsync and the tweet's id in the url
-        deleteForm.attr('action', `/Tweets/Delete?id=${tweetId}`);
 
         // AJAX request to get tweet from database
         $.ajax({
             type: 'GET',
-            url: 'Tweets/GetTweet/',
+            url: 'Tweets/GetTweet',
             data: {
                 id: tweetId
             },
-            contentType: 'application/json',
-            dataType: 'json',
             success: function (response) {
-                var tweetInfoBody = $('#tweetInfoBody');
-                tweetInfoBody.empty();
+                var deleteTweetModal = $('#deleteTweetModal');
+                var tweetInfoBody = deleteTweetModal.find('#tweetInfoBody');
+                var confirmDeleteBtn = deleteTweetModal.find('#confirmDeleteBtn');
 
-                // List for the userName and user's slug
-                var $ul = $('<ul class="list-inline">');
-                // Username as link to the profile
-                var $userName = $('<li class="list-inline-item">')
-                    .append(`<a href="/${response.Slug}">${response.UserName}</a>`);
-                // User's slug as unclickable text
-                var $userSlug = $('<li class="list-inline-item">')
-                    .append(`<span class="text-muted">@${response.Slug}</span>`);
-                // Appent two <li> tags to the <ul> and the whole list to the <div>
-                $ul.append($userName, $userSlug).appendTo(tweetInfoBody);
-                // Tweet's text. Appens to the <div>
-                var $tweetText = $('<p>').append(response.text).appendTo(tweetInfoBody);
+                // Empty modal's body <div> and fill it with response HTML
+                tweetInfoBody.empty();
+                tweetInfoBody.html(response);
+                // Add data-* attribute to the modal's Delete button
+                // so you can send tweet id to the server
+                confirmDeleteBtn.attr('data-tweet-id', tweetId);
+                // Show modal
+                deleteTweetModal.modal('show');
             },
             failure: function (response) {
+                AlertMessage.showAlertMessage(response);
+            }
+        });
+    });
+
+    $(document.body).on('click', '#confirmDeleteBtn', function (event) {
+        var button = $(this);
+        var tweetId = button.data('tweet-id');
+        var deleteTweetModal = $('#deleteTweetModal');
+
+        $.ajax({
+            type: 'POST',
+            url: 'Tweets/Delete',
+            data: {
+                id: tweetId
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            success: function (response) {
+                // Hide modal if it's still open
+                if (deleteTweetModal.hasClass('.show')
+                    || deleteTweetModal.css('display') !== 'none') {
+                    deleteTweetModal.modal('hide');
+                }
+                // Empty modal's body <div>
+                var tweetInfoBody = deleteTweetModal.find('#tweetInfoBody');
+                tweetInfoBody.empty();
+
+                AlertMessage.showAlertMessage(response.message);
+            },
+            failure: function (response) {
+                if (deleteTweetModal.hasClass('.show')
+                    || deleteTweetModal.css('display') !== 'none') {
+                    deleteTweetModal.modal('hide');
+                }
                 AlertMessage.showAlertMessage(response);
             }
         });
@@ -50,13 +76,8 @@
      * After modal dialog is closed, remove content (tweet info) from the body
      */
     $('#deleteTweetModal').on('hide.bs.modal', function (event) {
-        // Clean form's 'action' attribute if the form was just closed
-        // and not submitted
-        var deleteForm = $('#deleteTweetForm');
-        deleteForm.removeAttr('action');
-
         // Clean div from tweet info
-        var tweetInfoBody = $('#tweetInfoBody');
+        var tweetInfoBody = $('#deleteTweetModal').find('#tweetInfoBody');
         tweetInfoBody.empty();
     });
 
@@ -428,12 +449,11 @@
             && e.target.localName !== 'b') {
             $.ajax({
                 type: 'GET',
-                url: `/Profiles/Index/${userSlug}`,
+                url: 'Tweets/GetStatus',
                 data: {
-                    handler: 'Status',
+                    slug: userSlug,
                     tweetId: tweetId
                 },
-                contentType: 'application/json; charset=utf-8',
                 success: function (response) {
                     var tweetContainer = tweetModal.find('.modal-body');
                     tweetContainer.html(response);
@@ -502,12 +522,15 @@
 
             $.ajax({
                 type: 'POST',
-                url: `/Profiles/Index?handler=Reply&replyText=${replyText}&tweetId=${tweetId}`,
+                url: 'Tweets/Reply',
+                data: {
+                    replyText: replyText,
+                    tweetId: tweetId
+                },
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("XSRF-TOKEN",
                         $('input:hidden[name="__RequestVerificationToken"]').val());
                 },
-                contentType: 'application/json; charset=utf-8',
                 success: function (response) {
                     console.log(response);
                 },

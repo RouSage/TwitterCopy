@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
@@ -14,15 +15,18 @@ namespace TwitterCopy.Controllers
         private readonly UserManager<TwitterCopyUser> _userManager;
         private readonly ITweetService _tweetService;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
         public TweetsController(
             UserManager<TwitterCopyUser> userManager,
             ITweetService tweetService,
-            IMapper mapper)
+            IMapper mapper,
+            IUserService userService)
         {
             _userManager = userManager;
             _tweetService = tweetService;
             _mapper = mapper;
+            _userService = userService;
         }
 
         public async Task<IActionResult> UpdateLikes(int? id)
@@ -48,12 +52,14 @@ namespace TwitterCopy.Controllers
         /// </summary>
         /// <param name="id">Tweet's id</param>
         /// <returns>Tweet info in JSON</returns>
+        [HttpGet]
         public async Task<IActionResult> GetTweet(int? id)
         {
             var tweetToDelete = await _tweetService.GetTweetWithAuthor(id.Value);
             if (tweetToDelete == null)
             {
-                return NotFound("Tweet to delete not found.");
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return Json(new { Message = "Requested Tweet was not found" });
             }
 
             var userId = _userManager.GetUserId(User);
@@ -73,7 +79,7 @@ namespace TwitterCopy.Controllers
 
             var tweetVM = _mapper.Map<TweetViewModel>(tweetToDelete);
 
-            return Json(tweetVM);
+            return PartialView("_Tweet", tweetVM);
         }
 
         /// <summary>
@@ -92,14 +98,16 @@ namespace TwitterCopy.Controllers
             var tweetToDelete = await _tweetService.GetTweetAsync(id.Value);
             if (tweetToDelete == null)
             {
-                return NotFound("Tweet to delete not found.");
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return Json(new { Message = "Requested Tweet was not found" });
             }
 
             await _tweetService.DeleteTweet(tweetToDelete);
-            // TODO: return success message as json and rewrite JS
-            return View();
+
+            return Json(new { Message = "Tweet deleted successfully" });
         }
 
+        [HttpPost]
         public async Task<IActionResult> Retweet(int? id)
         {
             if (id == null)
@@ -116,6 +124,67 @@ namespace TwitterCopy.Controllers
             var updatedRetweetCount = await _tweetService.UpdateRetweets(id.Value, currentUser);
 
             return Json(updatedRetweetCount);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetStatus(string slug, int? tweetId)
+        {
+            if (string.IsNullOrEmpty(slug) || tweetId == null)
+            {
+                return NotFound();
+            }
+
+            var profileOwner = await _userService.GetProfileOwnerWithFollowersAsync(slug);
+            if (profileOwner == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
+
+            var tweet = await _tweetService.GetTweetWithAuthorAndRepliesAsync(tweetId.Value);
+            if (tweet == null)
+            {
+                return NotFound();
+            }
+
+            var tweetVM = _mapper.Map<TweetViewModel>(tweet);
+
+            ViewData["IsYourself"] = profileOwner.Slug == currentUser.Slug;
+            ViewData["IsFollowed"] = profileOwner.Followers
+                .Any(x => x.FollowerId.Equals(currentUser.Id));
+
+            return PartialView("_TweetPopUp", tweetVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Reply(string replyText, int? tweetId)
+        {
+            if (tweetId == null)
+            {
+                return NotFound();
+            }
+
+            var replyTo = await _tweetService.GetTweetWithUserAndRepliesForEditingAsync(tweetId.Value);
+            if (replyTo == null)
+            {
+                return NotFound(replyTo);
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound(user);
+            }
+
+            await _tweetService.AddReply(replyText, user, replyTo);
+            // Return PartialView(?) and insert it to the replies on the page
+            // modify JS too
+            return new JsonResult(replyTo.RepliesFrom.Count);
         }
     }
 }
