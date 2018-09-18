@@ -119,7 +119,6 @@ namespace TwitterCopy.Core.Services
                 // If no duplicate was found
                 // Add new like to the database
                 _likeRepository.Add(like);
-                tweet.LikeCount++;
             }
             else
             {
@@ -127,14 +126,11 @@ namespace TwitterCopy.Core.Services
                 // Delete dupe instead of like because
                 // like doesn't have Id values
                 _likeRepository.Delete(dupe);
-                tweet.LikeCount--;
             }
 
-            // Update Tweet entity because LikeCount property was changed
-            _tweetRepository.Update(tweet);
-            await _tweetRepository.SaveAsync();
+            await _likeRepository.SaveAsync();
 
-            return tweet.LikeCount;
+            return tweet.Likes.Count;
         }
 
         public async Task<int> UpdateRetweets(int tweetId, TwitterCopyUser user)
@@ -153,7 +149,6 @@ namespace TwitterCopy.Core.Services
                 // If no duplicate was found
                 // Add new retweet to the database
                 _retweetRepository.Add(retweet);
-                tweet.RetweetCount++;
             }
             else
             {
@@ -161,13 +156,11 @@ namespace TwitterCopy.Core.Services
                 // Delete dupe instead of retweer because
                 // retweet doesn't have Id value
                 _retweetRepository.Delete(dupe);
-                tweet.RetweetCount--;
             }
 
-            _tweetRepository.Update(tweet);
-            await _tweetRepository.SaveAsync();
+            await _retweetRepository.SaveAsync();
 
-            return tweet.RetweetCount;
+            return tweet.Retweets.Count;
         }
     }
 }

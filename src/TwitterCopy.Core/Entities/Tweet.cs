@@ -17,10 +17,6 @@ namespace TwitterCopy.Core.Entities
         [DataType(DataType.DateTime)]
         public DateTime PostedOn { get; set; } = DateTime.UtcNow;
 
-        public int LikeCount { get; set; }
-
-        public int RetweetCount { get; set; }
-
         // Relationships
 
         [ForeignKey("UserId")]
