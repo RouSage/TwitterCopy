@@ -364,16 +364,15 @@
 
         // Post values to the server
         $.ajax({
-            url: '/Profiles/Index?handler=EditUser',
             type: 'POST',
+            url: 'Profile/EditUser',
+            data: postedValues,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $('input:hidden[name="__RequestVerificationToken"]').val());
             },
             contentType: false,
-            data: postedValues,
             dataType: 'json',
-            cache: false,
             processData: false,
             success: function (response) {
                 // update profile info
@@ -387,16 +386,17 @@
     });
 
     $('#removeAvatarBtn').click(function (e) {
+
         var avatar = $('#profileInfoAvatar').data('avatar');
         $.ajax({
-            url: '/Profiles/Index?handler=RemoveAvatar',
             type: 'POST',
+            url: '/Profile/RemoveAvatar',
+            data: {
+                avatar: avatar
+            },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $('input:hidden[name="__RequestVerificationToken"]').val());
-            },
-            data: {
-                avatar: avatar
             },
             dataType: 'json',
             success: function (response) {
@@ -410,16 +410,17 @@
     });
 
     $('#removeBannerBtn').click(function (e) {
+
         var banner = $('#profileInfoBanner').data('banner');
         $.ajax({
-            url: '/Profiles/Index?handler=RemoveBanner',
             type: 'POST',
+            url: '/Profile/RemoveBanner',
+            data: {
+                banner: banner
+            },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $('input:hidden[name="__RequestVerificationToken"]').val());
-            },
-            data: {
-                banner: banner
             },
             dataType: 'json',
             success: function (response) {

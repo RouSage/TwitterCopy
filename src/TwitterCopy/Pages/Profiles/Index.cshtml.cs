@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
 using TwitterCopy.Core.Interfaces;
@@ -73,119 +71,6 @@ namespace TwitterCopy.Pages.Profiles
             Input = _mapper.Map<ProfileInputModel>(profileOwner);
 
             return Page();
-        }
-
-        public async Task<IActionResult> OnPostEditUserAsync(ProfileInputModel postedData)
-        {
-            if (!ModelState.IsValid)
-            {
-                foreach (var modelError in ModelState)
-                {
-                    if (modelError.Value.Errors.Count > 0)
-                    {
-                        Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        return new JsonResult(new { Message = modelError.Value.Errors[0].ErrorMessage });
-                    }
-                }
-            }
-
-            if (postedData == null)
-            {
-                return NotFound("No data posted.");
-            }
-
-            var userToUpdate = await _userManager.GetUserAsync(User);
-            if (userToUpdate == null)
-            {
-                return NotFound("User not found.");
-            }
-
-            userToUpdate.UserName = postedData.UserName;
-            userToUpdate.Bio = postedData.Bio;
-            userToUpdate.Location = postedData.Location;
-            userToUpdate.Website = postedData.Website;
-
-            if (postedData.Avatar?.Length > 0)
-            {
-                userToUpdate.Avatar = await _userService.UploadImage(postedData.Avatar, Globals.AvatarsFolder);
-            }
-            else
-            {
-                userToUpdate.Avatar = Globals.DefaultAvatar;
-            }
-
-            if (postedData.Banner?.Length > 0)
-            {
-                userToUpdate.Banner = await _userService.UploadImage(postedData.Banner, Globals.BannersFolder);
-            }
-            else
-            {
-                userToUpdate.Banner = Globals.DefaultBanner;
-            }
-
-            await _userService.UpdateUserAsync(userToUpdate);
-
-            return new JsonResult(new
-            {
-                userToUpdate.UserName,
-                userToUpdate.Bio,
-                userToUpdate.Location,
-                userToUpdate.Website,
-                Avatar = string.Concat("/images/profile-images/", userToUpdate.Avatar),
-                Banner = string.Concat("/images/profile-banners/", userToUpdate.Banner)
-            });
-        }
-
-        public async Task<IActionResult> OnPostRemoveAvatarAsync(string avatar)
-        {
-            if (string.Equals(avatar, Globals.DefaultAvatar))
-            {
-                Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return new JsonResult(new { Message = "You cannot remove the default avatar." });
-            }
-
-            var userToUpdate = await _userManager.GetUserAsync(User);
-            if (userToUpdate == null)
-            {
-                return NotFound("User not found.");
-            }
-
-            _userService.RemoveImage(avatar, Globals.AvatarsFolder);
-            userToUpdate.Avatar = Globals.DefaultAvatar;
-
-            await _userService.UpdateUserAsync(userToUpdate);
-
-            return new JsonResult(new
-            {
-                Message = "Avatar removed successfully",
-                Avatar = string.Concat("/images/profile-images/", userToUpdate.Avatar)
-            });
-        }
-
-        public async Task<IActionResult> OnPostRemoveBannerAsync(string banner)
-        {
-            if (string.Equals(banner, Globals.DefaultBanner))
-            {
-                Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return new JsonResult(new { Message = "You cannot remove the default banner." });
-            }
-
-            var userToUpdate = await _userManager.GetUserAsync(User);
-            if (userToUpdate == null)
-            {
-                return NotFound("User not found.");
-            }
-
-            _userService.RemoveImage(banner, Globals.BannersFolder);
-            userToUpdate.Banner = Globals.DefaultBanner;
-
-            await _userService.UpdateUserAsync(userToUpdate);
-
-            return new JsonResult(new
-            {
-                Message = "Avatar removed successfully",
-                Banner = string.Concat("/images/profile-banners/", userToUpdate.Banner)
-            });
         }
     }
 }
