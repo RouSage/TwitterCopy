@@ -47,16 +47,13 @@ namespace TwitterCopy.Infrastructure.Data
         {
             return await _context.Users
                 .AsNoTracking()
+                .Include(t => t.Tweets).ThenInclude(rf => rf.RepliesFrom)
+                .Include(t => t.Tweets).ThenInclude(l => l.Likes)
+                .Include(t => t.Tweets).ThenInclude(l => l.Retweets)
+                .Include(rt => rt.Retweets).ThenInclude(rtt => rtt.Tweet).ThenInclude(tu => tu.User)
+                .Include(fg => fg.Following).ThenInclude(fu => fu.User).ThenInclude(ft => ft.Tweets).ThenInclude(rf => rf.RepliesFrom)
+                .Include(fg => fg.Following).ThenInclude(fu => fu.User).ThenInclude(ft => ft.Tweets).ThenInclude(l => l.Likes)
                 .Include(fs => fs.Followers)
-                .Include(t => t.Tweets)
-                    .ThenInclude(rf => rf.RepliesFrom)
-                .Include(fg => fg.Following)
-                    .ThenInclude(fu => fu.User)
-                        .ThenInclude(ft => ft.Tweets)
-                            .ThenInclude(rf => rf.RepliesFrom)
-                .Include(rt => rt.Retweets)
-                    .ThenInclude(rtt => rtt.Tweet)
-                        .ThenInclude(tu => tu.User)
                 .FirstOrDefaultAsync(x => x.Id.ToString().Equals(userId));
         }
 
