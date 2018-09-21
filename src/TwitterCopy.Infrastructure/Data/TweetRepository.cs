@@ -41,12 +41,15 @@ namespace TwitterCopy.Infrastructure.Data
             return await _context.Tweets
                 .AsNoTracking()
                 .Include(u => u.User)
-                .Include(r => r.RepliesFrom)
-                    .ThenInclude(rf => rf.ReplyFrom)
-                        .ThenInclude(tu => tu.User)
-                .Include(r => r.RepliesTo)
-                    .ThenInclude(rt => rt.ReplyTo)
-                        .ThenInclude(tu => tu.User)
+                .Include(rt => rt.Retweets)
+                .Include(l => l.Likes)
+                .Include(r => r.RepliesFrom).ThenInclude(rf => rf.ReplyFrom).ThenInclude(tu => tu.User)
+                .Include(r => r.RepliesFrom).ThenInclude(rf => rf.ReplyFrom).ThenInclude(l => l.Likes)
+                .Include(r => r.RepliesFrom).ThenInclude(rf => rf.ReplyFrom).ThenInclude(rt => rt.Retweets)
+                .Include(r => r.RepliesFrom).ThenInclude(rf => rf.ReplyFrom).ThenInclude(rt => rt.RepliesFrom)
+                .Include(r => r.RepliesTo).ThenInclude(rt => rt.ReplyTo).ThenInclude(tu => tu.User)
+                .Include(r => r.RepliesTo).ThenInclude(rt => rt.ReplyTo).ThenInclude(l => l.Likes)
+                .Include(r => r.RepliesTo).ThenInclude(rt => rt.ReplyTo).ThenInclude(rt => rt.Retweets)
                 .FirstOrDefaultAsync(x => x.Id == tweetId);
         }
 
