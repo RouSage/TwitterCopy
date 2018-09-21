@@ -8,57 +8,83 @@
         <partial name="_Tweet" model="tweet" />
     }
 }
-<div class="d-flex justify-content-between align-items-center mb-2">
-    <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">
-        <span class="d-block">
-            <strong>@Model.UserName</strong>
-        </span>
-        <span>
-            <small class="text-muted">@@@Model.Slug</small>
-        </span>
-    </a>
-    <div class="profile-actions">
-        @if (!(bool)ViewData["IsYourself"])
-        {
-            <div class="profile-follow-actions">
-                <button type="button" class="btn btn-outline-primary btn-follow-main @((bool)ViewData["IsFollowed"] ? "d-none" : "")">
-                    <span data-userslug="@Model.Slug">Follow</span>
-                </button>
-                <button type="button" class="btn btn-primary btn-following-main @((bool)ViewData["IsFollowed"] ? "" : "d-none")">
-                    <span data-userslug="@Model.Slug">Following</span>
-                </button>
-                <button type="button" class="btn btn-danger btn-unfollow-main d-none">
-                    <span data-userslug="@Model.Slug">Unfollow</span>
-                </button>
-            </div>
-        }
+<div class="row">
+    <div class="col-md-2 p-0 d-flex justify-content-center">
+        <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">
+            <img class="avatar" src="~/images/profile-images/@Model.Avatar" />
+        </a>
+    </div>
+    <!-- /.col-md-2 -->
+    <div class="col-md pl-0">
+        <div class="d-flex flex-column">
+            <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug" class="main-profile-card-username">
+                <span>
+                    <strong>@Model.UserName</strong>
+                </span>
+            </a>
+            <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug" class="slug">
+                <span>
+                    @@<b>@Model.Slug</b>
+                </span>
+            </a>
+        </div>
+    </div>
+    <!-- ./col-md -->
+    <div class="col-md-3">
+        <div class="profile-actions">
+            @if (!(bool)ViewData["IsYourself"])
+            {
+                <div class="profile-follow-actions">
+                    <button type="button" class="btn btn-outline-primary btn-follow-main @((bool)ViewData["IsFollowed"] ? "d-none" : "")">
+                        <span data-userslug="@Model.Slug">Follow</span>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-following-main @((bool)ViewData["IsFollowed"] ? "" : "d-none")">
+                        <span data-userslug="@Model.Slug">Following</span>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-unfollow-main d-none">
+                        <span data-userslug="@Model.Slug">Unfollow</span>
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+    <!-- /.col-md-3 -->
+</div>
+<!-- /.row -->
+<div class="row mt-2">
+    <div class="col-md">
+        <p class="tweet-text-size mb-0">@Model.Text</p>
     </div>
 </div>
-<div class="w-100 mb-2">
-    <p class="text-body mb-0">@Model.Text</p>
+<!-- /.row -->
+<div class="row mt-2">
+    <div class="col-md">
+        <span class="text-muted">
+            <small>@Model.PostedOn.ToString("h:mm tt '-' d MMM yyyy")</small>
+        </span>
+    </div>
 </div>
-<div class="w-100 mb-2">
-    <span class="text-muted">
-        <small>@Model.PostedOn.ToString("h:mm tt '-' d MMM yyyy")</small>
-    </span>
-</div>
-<div class="w-100">
-    @if (Model.UserName == User.Identity.Name)
-    {
-        <button type="button" class="btn btn-danger btn-delete-tweet" data-tweet-id="@Model.Id">
-            <span>Delete</span>
+<!-- /.row -->
+<div class="row mt-2">
+    <div class="col-md">
+        @if (Model.UserName == User.Identity.Name)
+        {
+            <button type="button" class="btn btn-danger btn-delete-tweet" data-tweet-id="@Model.Id">
+                <span>Delete</span>
+            </button>
+        }
+        <button type="button" class="btn btn-outline-secondary btn-reply" data-tweet-id="@Model.Id">
+            <span>@Model.ReplyCount</span>
         </button>
-    }
-    <button type="button" class="btn btn-outline-secondary btn-reply" data-tweet-id="@Model.Id">
-        <span>@Model.ReplyCount</span>
-    </button>
-    <button type="button" class="btn btn-outline-success btn-retweet" data-tweet-id="@Model.Id">
-        <span>@Model.RetweetCount</span>
-    </button>
-    <button type="button" class="btn btn-outline-primary btn-like" data-tweet-id="@Model.Id">
-        <span>@Model.LikeCount</span>
-    </button>
+        <button type="button" class="btn btn-outline-success btn-retweet" data-tweet-id="@Model.Id">
+            <span>@Model.RetweetCount</span>
+        </button>
+        <button type="button" class="btn btn-outline-primary btn-like" data-tweet-id="@Model.Id">
+            <span>@Model.LikeCount</span>
+        </button>
+    </div>
 </div>
+<!-- /.row -->
 <div class="reply-container mt-2">
     <div class="reply-tweetbox p-2">
         <form method="post" id="sendReplyForm">
