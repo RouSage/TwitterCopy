@@ -9,10 +9,19 @@
             <div class="row context">
                 <div class="col-md tweet-context">
                     <span>
-                        <a asp-page="/Profile/Index" asp-route-slug="@Model.RetweetSlug">
-                            <b>@Model.RetweetUserName</b>
-                        </a>
-                         Retweeted
+                        @if (Model.RetweetSlug.Equals(ViewData["CurrentUserSlug"].ToString()))
+                        {
+                            <a asp-page="/Profile/Index" asp-route-slug="@Model.RetweetSlug">
+                                <b>You</b>
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-page="/Profile/Index" asp-route-slug="@Model.RetweetSlug">
+                                <b>@Model.RetweetUserName</b>
+                            </a>
+                        }
+                        Retweeted
                     </span>
                 </div>
             </div>
@@ -38,6 +47,20 @@
                         </span>
                     </a>
                 </div>
+                @if (Model.RepliesTo.Count > 0)
+                {
+                    <div class="replying-to-context pt-1 pb-1">
+                        Replying to
+                        @foreach (var tweet in Model.RepliesTo)
+                        {
+                            <a asp-page="/Profiles/Index" asp-route-slug="@tweet.Slug">
+                                <span>
+                                    @@@tweet.Slug
+                                </span>
+                            </a>
+                        }
+                    </div>
+                }
                 <div class="d-block">
                     <p class="tweet-text">@Model.Text</p>
                 </div>

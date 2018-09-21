@@ -324,3 +324,9 @@ a > img:first-child:last-child {
     letter-spacing: .01em;
     word-wrap:break-word;
 }
+
+.replying-to-context {
+    color: #657786;
+    font-size: 14px;
+    line-height: 20px;
+}

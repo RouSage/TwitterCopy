@@ -55,10 +55,6 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound();
             }
 
-            ViewData["IsYourself"] = profileOwner.Slug == currentUser.Slug;
-            ViewData["IsFollowed"] = profileOwner.Followers
-                .Any(x => x.FollowerId.Equals(currentUser.Id));
-
             var userTweets = _mapper.Map<IEnumerable<TweetViewModel>>(profileOwner.Tweets);
             var userRetweets = _mapper.Map<IEnumerable<TweetViewModel>>(profileOwner.Retweets);
 
@@ -69,6 +65,11 @@ namespace TwitterCopy.Pages.Profiles
                 .ToList();
             Profile = _mapper.Map<ProfileViewModel>(profileOwner);
             Input = _mapper.Map<ProfileInputModel>(profileOwner);
+
+            ViewData["CurrentUserSlug"] = currentUser.Slug;
+            ViewData["IsYourself"] = profileOwner.Slug == currentUser.Slug;
+            ViewData["IsFollowed"] = profileOwner.Followers
+                .Any(x => x.FollowerId.Equals(currentUser.Id));
 
             return Page();
         }

@@ -23,11 +23,12 @@ namespace TwitterCopy.Infrastructure.Data
             return await _context.Users
                 .AsNoTracking()
                 .Include(t => t.Tweets).ThenInclude(rf => rf.RepliesFrom)
+                .Include(t => t.Tweets).ThenInclude(rt => rt.RepliesTo).ThenInclude(rtt => rtt.ReplyTo).ThenInclude(rtu => rtu.User)
+                .Include(l => l.Likes).ThenInclude(lt => lt.Tweet)
                 .Include(rt => rt.Retweets).ThenInclude(rtt => rtt.Tweet).ThenInclude(tu => tu.User)
                 .Include(rt => rt.Retweets).ThenInclude(rtt => rtt.Tweet).ThenInclude(rf => rf.RepliesFrom)
                 .Include(fs => fs.Followers).ThenInclude(u => u.Follower)
                 .Include(fg => fg.Following).ThenInclude(u => u.User)
-                .Include(l => l.Likes).ThenInclude(lt => lt.Tweet)
                 .FirstOrDefaultAsync(u => u.Slug.Equals(slug));
         }
 
@@ -43,9 +44,10 @@ namespace TwitterCopy.Infrastructure.Data
         {
             return await _context.Users
                 .AsNoTracking()
-                .Include(t => t.Tweets).ThenInclude(rf => rf.RepliesFrom)
-                .Include(t => t.Tweets).ThenInclude(l => l.Likes)
                 .Include(t => t.Tweets).ThenInclude(l => l.Retweets)
+                .Include(t => t.Tweets).ThenInclude(l => l.Likes)
+                .Include(t => t.Tweets).ThenInclude(rf => rf.RepliesFrom)
+                .Include(t => t.Tweets).ThenInclude(rt => rt.RepliesTo).ThenInclude(rtt => rtt.ReplyTo).ThenInclude(rtu => rtu.User)
                 .Include(rt => rt.Retweets).ThenInclude(rtt => rtt.Tweet).ThenInclude(tu => tu.User)
                 .Include(fg => fg.Following).ThenInclude(fu => fu.User).ThenInclude(ft => ft.Tweets).ThenInclude(rf => rf.RepliesFrom)
                 .Include(fg => fg.Following).ThenInclude(fu => fu.User).ThenInclude(ft => ft.Tweets).ThenInclude(l => l.Likes)

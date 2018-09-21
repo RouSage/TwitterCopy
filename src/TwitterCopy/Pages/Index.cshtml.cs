@@ -67,6 +67,8 @@ namespace TwitterCopy.Pages
                 .ToList();
             CurrentUser = _mapper.Map<ProfileViewModel>(user);
 
+            ViewData["CurrentUserSlug"] = user.Slug;
+
             return Page();
         }
 
