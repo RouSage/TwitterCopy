@@ -11,7 +11,7 @@
         // AJAX request to get tweet from database
         $.ajax({
             type: 'GET',
-            url: 'Tweets/GetTweet',
+            url: '/Tweets/GetTweet',
             data: {
                 id: tweetId
             },
@@ -42,7 +42,7 @@
 
         $.ajax({
             type: 'POST',
-            url: 'Tweets/Delete',
+            url: '/Tweets/Delete',
             data: {
                 id: tweetId
             },
@@ -92,11 +92,10 @@
 
         $.ajax({
             type: 'GET',
-            url: '/Tweets/UpdateLikes/',
+            url: '/Tweets/UpdateLikes',
             data: {
                 id: tweetId
             },
-            contentType: 'application/json',
             dataType: 'json',
             success: function (response) {
                 var tweetLikeCount = btnClicked.find('span');
@@ -260,7 +259,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/Tweets/Retweet/',
+            url: '/Tweets/Retweet',
             data: {
                 id: tweetId
             },
@@ -365,7 +364,7 @@
         // Post values to the server
         $.ajax({
             type: 'POST',
-            url: 'Profile/EditUser',
+            url: '/Profile/EditUser',
             data: postedValues,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
@@ -450,7 +449,7 @@
             && e.target.localName !== 'b') {
             $.ajax({
                 type: 'GET',
-                url: 'Tweets/GetStatus',
+                url: '/Tweets/GetStatus',
                 data: {
                     slug: userSlug,
                     tweetId: tweetId
