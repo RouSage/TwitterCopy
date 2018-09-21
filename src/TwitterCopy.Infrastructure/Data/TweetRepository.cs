@@ -36,7 +36,7 @@ namespace TwitterCopy.Infrastructure.Data
                 .FirstOrDefaultAsync(x => x.Id == tweetId);
         }
 
-        public async Task<Tweet> GetTweetWithUserAndRepliesAsync(int tweetId)
+        public async Task<Tweet> GetTweetWithRepliesAsync(int tweetId)
         {
             return await _context.Tweets
                 .AsNoTracking()

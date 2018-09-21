@@ -88,7 +88,7 @@ namespace TwitterCopy.Core.Services
 
         public async Task<Tweet> GetTweetWithAuthorAndRepliesAsync(int tweetId)
         {
-            return await _tweetRepository.GetTweetWithUserAndRepliesAsync(tweetId);
+            return await _tweetRepository.GetTweetWithRepliesAsync(tweetId);
         }
 
         public async Task<Tweet> GetTweetWithUserAndRepliesForEditingAsync(int tweetId)
