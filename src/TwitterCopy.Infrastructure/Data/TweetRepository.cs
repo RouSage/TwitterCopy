@@ -13,15 +13,6 @@ namespace TwitterCopy.Infrastructure.Data
         {
         }
 
-        public async Task<List<Tweet>> GetTweetsByUserIdAsync(string userId)
-        {
-            return await _context.Tweets
-                .AsNoTracking()
-                .Where(x => x.UserId.ToString() == userId)
-                .OrderByDescending(x => x.PostedOn)
-                .ToListAsync();
-        }
-
         public async Task<Tweet> GetTweetWithLikesAsync(int tweetId)
         {
             return await _context.Tweets
@@ -36,13 +27,13 @@ namespace TwitterCopy.Infrastructure.Data
                 .FirstOrDefaultAsync(x => x.Id == tweetId);
         }
 
-        public async Task<Tweet> GetTweetWithRepliesAsync(int tweetId)
+        public async Task<Tweet> GetWithRepliesAsync(int tweetId)
         {
             return await _context.Tweets
                 .AsNoTracking()
                 .Include(u => u.User)
-                .Include(rt => rt.Retweets)
                 .Include(l => l.Likes)
+                .Include(rt => rt.Retweets)
                 .Include(r => r.RepliesFrom).ThenInclude(rf => rf.ReplyFrom).ThenInclude(tu => tu.User)
                 .Include(r => r.RepliesFrom).ThenInclude(rf => rf.ReplyFrom).ThenInclude(l => l.Likes)
                 .Include(r => r.RepliesFrom).ThenInclude(rf => rf.ReplyFrom).ThenInclude(rt => rt.Retweets)
@@ -53,7 +44,7 @@ namespace TwitterCopy.Infrastructure.Data
                 .FirstOrDefaultAsync(x => x.Id == tweetId);
         }
 
-        public async Task<Tweet> GetTweetWithRepliesForEditingAsync(int tweetId)
+        public async Task<Tweet> GetWithRepliesForEditingAsync(int tweetId)
         {
             return await _context.Tweets
                 .Include(u => u.User)

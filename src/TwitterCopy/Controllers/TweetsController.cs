@@ -146,7 +146,7 @@ namespace TwitterCopy.Controllers
                 return NotFound();
             }
 
-            var tweet = await _tweetService.GetTweetWithAuthorAndRepliesAsync(tweetId.Value);
+            var tweet = await _tweetService.GetTweetWithRepliesAsync(tweetId.Value);
             if (tweet == null)
             {
                 return NotFound();
@@ -170,7 +170,7 @@ namespace TwitterCopy.Controllers
                 return NotFound();
             }
 
-            var replyTo = await _tweetService.GetTweetWithUserAndRepliesForEditingAsync(tweetId.Value);
+            var replyTo = await _tweetService.GetTweetWithRepliesForEditingAsync(tweetId.Value);
             if (replyTo == null)
             {
                 return NotFound(replyTo);

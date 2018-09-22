@@ -22,6 +22,15 @@ namespace TwitterCopy.Core.Services
             _retweetRepository = retweetRepository;
         }
 
+        /// <summary>
+        /// Creates new Tweet entity from 'replyText' and
+        /// populates RepliesTo property with 'replyTo',
+        /// and with its previous replies.
+        /// </summary>
+        /// <param name="replyText"></param>
+        /// <param name="user"></param>
+        /// <param name="replyTo"></param>
+        /// <returns></returns>
         public async Task AddReplyAsync(string replyText, TwitterCopyUser user, Tweet replyTo)
         {
             var replyFrom = new Tweet
@@ -53,6 +62,12 @@ namespace TwitterCopy.Core.Services
             await _tweetRepository.SaveAsync();
         }
 
+        /// <summary>
+        /// Creates a new Tweet entity and saves it to the database
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task AddTweet(string text, TwitterCopyUser user)
         {
             var tweet = new Tweet
@@ -64,6 +79,12 @@ namespace TwitterCopy.Core.Services
             await _tweetRepository.SaveAsync();
         }
 
+        /// <summary>
+        /// Removes a Tweet entity from the database and breaks all
+        /// relations for 'RepliesFrom' and 'RepliesTo' properties
+        /// </summary>
+        /// <param name="tweetToDelete"></param>
+        /// <returns></returns>
         public async Task DeleteTweet(Tweet tweetToDelete)
         {
             if(tweetToDelete.RepliesTo.Count > 0)
@@ -74,17 +95,8 @@ namespace TwitterCopy.Core.Services
             {
                 tweetToDelete.RepliesFrom.Clear();
             }
-            //if(tweetToDelete.Retweets.Count > 0)
-            //{
-            //    tweetToDelete.Retweets.Clear();
-            //}
             _tweetRepository.Delete(tweetToDelete);
             await _tweetRepository.SaveAsync();
-        }
-
-        public async Task<Tweet> GetTweetAsync(int tweetId)
-        {
-            return await _tweetRepository.GetByIdAsync(tweetId);
         }
 
         public async Task<Tweet> GetTweetForDeletion(int tweetId)
@@ -93,7 +105,7 @@ namespace TwitterCopy.Core.Services
         }
 
         /// <summary>
-        /// Always returns Tweet with the User
+        /// Always returns a Tweet with the User
         /// </summary>
         /// <param name="tweetId"></param>
         /// <returns></returns>
@@ -102,21 +114,33 @@ namespace TwitterCopy.Core.Services
             return await _tweetRepository.GetTweetWithUserAsync(tweetId);
         }
 
-        public async Task<Tweet> GetTweetWithAuthorAndRepliesAsync(int tweetId)
+        /// <summary>
+        /// Returns a Tweet with all info about replies
+        /// </summary>
+        /// <param name="tweetId"></param>
+        /// <returns></returns>
+        public async Task<Tweet> GetTweetWithRepliesAsync(int tweetId)
         {
-            return await _tweetRepository.GetTweetWithRepliesAsync(tweetId);
+            return await _tweetRepository.GetWithRepliesAsync(tweetId);
         }
 
-        public async Task<Tweet> GetTweetWithUserAndRepliesForEditingAsync(int tweetId)
+        /// <summary>
+        /// Returns a Tweet with needed info about replies for editing
+        /// </summary>
+        /// <param name="tweetId"></param>
+        /// <returns></returns>
+        public async Task<Tweet> GetTweetWithRepliesForEditingAsync(int tweetId)
         {
-            return await _tweetRepository.GetTweetWithRepliesForEditingAsync(tweetId);
+            return await _tweetRepository.GetWithRepliesForEditingAsync(tweetId);
         }
 
-        public async Task<List<Tweet>> GetUserTweetsAsync(string userId)
-        {
-            return await _tweetRepository.GetTweetsByUserIdAsync(userId);
-        }
-
+        /// <summary>
+        /// Remove a 'Like' from the Tweet if it's already exists
+        /// or add new if it's not
+        /// </summary>
+        /// <param name="tweetId"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<int> UpdateLikes(int tweetId, TwitterCopyUser user)
         {
             var tweet = await _tweetRepository.GetTweetWithLikesAsync(tweetId);
@@ -149,6 +173,13 @@ namespace TwitterCopy.Core.Services
             return tweet.Likes.Count;
         }
 
+        /// <summary>
+        /// Remove a 'Retweet' from the Tweet if it's already exists
+        /// or add new if it's not
+        /// </summary>
+        /// <param name="tweetId"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<int> UpdateRetweets(int tweetId, TwitterCopyUser user)
         {
             var tweet = await _tweetRepository.GetTweetWithRetweetsAsync(tweetId);
