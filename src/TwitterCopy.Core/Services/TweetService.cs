@@ -22,25 +22,34 @@ namespace TwitterCopy.Core.Services
             _retweetRepository = retweetRepository;
         }
 
-        public async Task AddReply(string replyText, TwitterCopyUser user, Tweet replyTo)
+        public async Task AddReplyAsync(string replyText, TwitterCopyUser user, Tweet replyTo)
         {
             var replyFrom = new Tweet
             {
                 Text = replyText,
-                User = user
+                User = user,
+                RepliesTo = new List<TweetToTweet>()
             };
-            _tweetRepository.Add(replyFrom);
-
-            var reply = new TweetToTweet
+            
+            // Add main replyTo
+            replyFrom.RepliesTo.Add(new TweetToTweet
             {
-                ReplyTo = replyTo,
-                ReplyFrom = replyFrom
-            };
+                ReplyFrom = replyFrom,
+                ReplyTo = replyTo
+            });
+            // Add reply to the RepliesTo property of the replyTo tweet
+            // so that you reply not to one tweet but
+            // to the whole 'conversation'
+            foreach (var tweet in replyTo.RepliesTo)
+            {
+                replyFrom.RepliesTo.Add(new TweetToTweet
+                {
+                    ReplyFrom = replyFrom,
+                    ReplyTo = tweet.ReplyTo
+                });
+            }
 
-            // Automatically adds new TweetToTweet entity to the replyFrom's property RepliesTo
-            replyTo.RepliesFrom.Add(reply);
-
-            _tweetRepository.Update(replyTo);
+            _tweetRepository.Add(replyFrom);
             await _tweetRepository.SaveAsync();
         }
 
@@ -93,7 +102,7 @@ namespace TwitterCopy.Core.Services
 
         public async Task<Tweet> GetTweetWithUserAndRepliesForEditingAsync(int tweetId)
         {
-            return await _tweetRepository.GetTweetWithUserAndRepliesForEditingAsync(tweetId);
+            return await _tweetRepository.GetTweetWithRepliesForEditingAsync(tweetId);
         }
 
         public async Task<List<Tweet>> GetUserTweetsAsync(string userId)

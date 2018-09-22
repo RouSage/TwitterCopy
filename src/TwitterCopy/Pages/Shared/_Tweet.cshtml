@@ -53,11 +53,14 @@
                         Replying to
                         @foreach (var tweet in Model.RepliesTo)
                         {
-                            <a asp-page="/Profiles/Index" asp-route-slug="@tweet.Slug">
-                                <span>
-                                    @@@tweet.Slug
-                                </span>
-                            </a>
+                            if (!tweet.Slug.Equals(Model.Slug))
+                            {
+                                <a asp-page="/Profiles/Index" asp-route-slug="@tweet.Slug">
+                                    <span>
+                                        @@@tweet.Slug 
+                                    </span>
+                                </a>
+                            }
                         }
                     </div>
                 }

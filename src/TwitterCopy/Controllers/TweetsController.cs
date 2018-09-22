@@ -181,7 +181,7 @@ namespace TwitterCopy.Controllers
                 return NotFound(user);
             }
 
-            await _tweetService.AddReply(replyText, user, replyTo);
+            await _tweetService.AddReplyAsync(replyText, user, replyTo);
             // Return PartialView(?) and insert it to the replies on the page
             // modify JS too
             return new JsonResult(replyTo.RepliesFrom.Count);
