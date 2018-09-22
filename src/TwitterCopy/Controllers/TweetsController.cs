@@ -95,7 +95,7 @@ namespace TwitterCopy.Controllers
                 return NotFound();
             }
 
-            var tweetToDelete = await _tweetService.GetTweetAsync(id.Value);
+            var tweetToDelete = await _tweetService.GetTweetForDeletion(id.Value);
             if (tweetToDelete == null)
             {
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -154,6 +154,7 @@ namespace TwitterCopy.Controllers
 
             var tweetVM = _mapper.Map<TweetViewModel>(tweet);
 
+            ViewData["CurrentUserSlug"] = currentUser.Slug;
             ViewData["IsYourself"] = profileOwner.Slug == currentUser.Slug;
             ViewData["IsFollowed"] = profileOwner.Followers
                 .Any(x => x.FollowerId.Equals(currentUser.Id));

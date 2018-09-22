@@ -66,23 +66,30 @@ namespace TwitterCopy.Core.Services
 
         public async Task DeleteTweet(Tweet tweetToDelete)
         {
+            if(tweetToDelete.RepliesTo.Count > 0)
+            {
+                tweetToDelete.RepliesTo.Clear();
+            }
+            if(tweetToDelete.RepliesFrom.Count > 0)
+            {
+                tweetToDelete.RepliesFrom.Clear();
+            }
+            //if(tweetToDelete.Retweets.Count > 0)
+            //{
+            //    tweetToDelete.Retweets.Clear();
+            //}
             _tweetRepository.Delete(tweetToDelete);
             await _tweetRepository.SaveAsync();
-        }
-
-        public List<Tweet> GetFeed(TwitterCopyUser user)
-        {
-            return user.Tweets
-                .Concat(user.Following
-                    .SelectMany(ft => ft.User.Tweets))
-                .Concat(user.Retweets
-                    .Select(rt => rt.Tweet))
-                .ToList();
         }
 
         public async Task<Tweet> GetTweetAsync(int tweetId)
         {
             return await _tweetRepository.GetByIdAsync(tweetId);
+        }
+
+        public async Task<Tweet> GetTweetForDeletion(int tweetId)
+        {
+            return await _tweetRepository.GetTweetForDeletion(tweetId);
         }
 
         /// <summary>

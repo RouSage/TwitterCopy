@@ -21,7 +21,7 @@ namespace TwitterCopy.Models.AutoMapper
                 .ForMember(dest => dest.RepliesTo, opt => opt.MapFrom(src => src.RepliesTo.Select(t => t.ReplyTo)))
                 .ForMember(dest => dest.ReplyCount, opt => opt.MapFrom(src => src.RepliesFrom.Count));
             CreateMap<Retweet, TweetViewModel>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Tweet.Id))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.TweetId))
                 .ForMember(dest => dest.LikeCount, opt => opt.MapFrom(src => src.Tweet.Likes.Count))
                 .ForMember(dest => dest.PostedOn, opt => opt.MapFrom(src => src.Tweet.PostedOn))
                 .ForMember(dest => dest.RetweetCount, opt => opt.MapFrom(src => src.Tweet.Retweets.Count))

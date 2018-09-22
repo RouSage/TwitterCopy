@@ -55,7 +55,7 @@ namespace TwitterCopy.Infrastructure.Data
                 .HasOne(t => t.Tweet)
                 .WithMany(r => r.Retweets)
                 .HasForeignKey("TweetId")
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Retweet>()
                 .HasOne(u => u.User)

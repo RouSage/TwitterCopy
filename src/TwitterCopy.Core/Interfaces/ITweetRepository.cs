@@ -12,5 +12,6 @@ namespace TwitterCopy.Core.Interfaces
         Task<Tweet> GetTweetWithRepliesForEditingAsync(int tweetId);
         Task<Tweet> GetTweetWithLikesAsync(int tweetId);
         Task<Tweet> GetTweetWithRetweetsAsync(int tweetId);
+        Task<Tweet> GetTweetForDeletion(int tweetId);
     }
 }

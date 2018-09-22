@@ -69,5 +69,14 @@ namespace TwitterCopy.Infrastructure.Data
                 .Include(u => u.User)
                 .FirstOrDefaultAsync(t => t.Id == tweetId);
         }
+
+        public async Task<Tweet> GetTweetForDeletion(int tweetId)
+        {
+            return await _context.Tweets
+                .Include(r => r.Retweets)
+                .Include(rt => rt.RepliesTo)
+                .Include(rf => rf.RepliesFrom)
+                .FirstOrDefaultAsync(t => t.Id == tweetId);
+        }
     }
 }
