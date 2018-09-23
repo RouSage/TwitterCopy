@@ -481,7 +481,9 @@
     $('#alertMessage .close').on('click', AlertMessage.hideAlertMessage);
 
     $('#tweetModal').on('show.bs.modal', function () {
-        var sendReplyForm = $('#sendReplyForm');
+
+        var modal = $('#tweetModal');
+        var sendReplyForm = modal.find('#sendReplyForm');
         var sendReplyBtn = sendReplyForm.find('#sendReplyBtn'); 
 
         /*
@@ -522,7 +524,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: 'Tweets/Reply',
+                url: '/Tweets/Reply',
                 data: {
                     replyText: replyText,
                     tweetId: tweetId
@@ -532,10 +534,12 @@
                         $('input:hidden[name="__RequestVerificationToken"]').val());
                 },
                 success: function (response) {
-                    console.log(response);
+                    var repliesFromBlock = modal.find('.tweet-replies-from');
+                    repliesFromBlock.prepend(response);
+                    sendReplyForm.find('input[type=text]').val("");
                 },
                 failure: function (response) {
-                    console.log(response);
+                    AlertMessage.showAlertMessage(response.message);
                 }
             });
         });

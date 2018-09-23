@@ -173,7 +173,8 @@ namespace TwitterCopy.Controllers
             var replyTo = await _tweetService.GetTweetWithRepliesForEditingAsync(tweetId.Value);
             if (replyTo == null)
             {
-                return NotFound(replyTo);
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return Json(new { Message = "Requested tweet was not found. Apparently it was deleted." });
             }
 
             var user = await _userManager.GetUserAsync(User);
@@ -182,10 +183,14 @@ namespace TwitterCopy.Controllers
                 return NotFound(user);
             }
 
-            await _tweetService.AddReplyAsync(replyText, user, replyTo);
-            // Return PartialView(?) and insert it to the replies on the page
-            // modify JS too
-            return new JsonResult(replyTo.RepliesFrom.Count);
+            // AddReplyAsync return created reply as a Tweet entity
+            var replyFrom = await _tweetService.AddReplyAsync(replyText, user, replyTo);
+            // Map the Tweet entity to the TweetViewModel
+            var reply = _mapper.Map<TweetViewModel>(replyFrom);
+
+            ViewData["CurrentUserSlug"] = user.Slug;
+
+            return PartialView("_Tweet", reply);
         }
     }
 }

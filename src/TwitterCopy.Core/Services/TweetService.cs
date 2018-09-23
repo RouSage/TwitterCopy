@@ -30,8 +30,8 @@ namespace TwitterCopy.Core.Services
         /// <param name="replyText"></param>
         /// <param name="user"></param>
         /// <param name="replyTo"></param>
-        /// <returns></returns>
-        public async Task AddReplyAsync(string replyText, TwitterCopyUser user, Tweet replyTo)
+        /// <returns>Created Tweet entity (reply)</returns>
+        public async Task<Tweet> AddReplyAsync(string replyText, TwitterCopyUser user, Tweet replyTo)
         {
             var replyFrom = new Tweet
             {
@@ -60,6 +60,8 @@ namespace TwitterCopy.Core.Services
 
             _tweetRepository.Add(replyFrom);
             await _tweetRepository.SaveAsync();
+
+            return replyFrom;
         }
 
         /// <summary>

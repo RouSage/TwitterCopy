@@ -103,8 +103,10 @@
 </div>
 @if (Model.RepliesFrom.Count > 0)
 {
-    foreach (var tweet in Model.RepliesFrom)
-    {
-        <partial name="_Tweet" model="tweet" />
-    }
+    <div class="tweet-replies-from">
+        @foreach (var tweet in Model.RepliesFrom)
+        {
+            <partial name="_Tweet" model="tweet" />
+        }
+    </div>
 }
