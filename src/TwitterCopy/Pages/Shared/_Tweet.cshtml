@@ -68,7 +68,8 @@
                     <p class="tweet-text">@Model.Text</p>
                 </div>
                 <div class="w-100 mt-2">
-                    @if (Model.UserName == User.Identity.Name)
+                    @if (Model.Slug.Equals(ViewData["CurrentUserSlug"].ToString())
+                        && !Model.IsRetweet)
                     {
                         <button type="button" class="btn btn-danger btn-delete-tweet" data-tweet-id="@Model.Id">
                             <span>Delete</span>

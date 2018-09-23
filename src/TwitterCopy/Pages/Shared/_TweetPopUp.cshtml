@@ -67,7 +67,7 @@
 <!-- /.row -->
 <div class="row mt-2">
     <div class="col-md">
-        @if (Model.UserName == User.Identity.Name)
+        @if (Model.Slug.Equals(ViewData["CurrentUserSlug"].ToString()))
         {
             <button type="button" class="btn btn-danger btn-delete-tweet" data-tweet-id="@Model.Id">
                 <span>Delete</span>
