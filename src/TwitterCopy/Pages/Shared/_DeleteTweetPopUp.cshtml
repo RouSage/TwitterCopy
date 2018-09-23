@@ -1,0 +1,30 @@
+﻿@model DeleteTweetViewModel
+
+
+<div class="row p-2">
+    <div class="col-md-1 p-0 pl-1">
+        <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">
+            <img class="avatar" src="~/images/profile-images/@Model.Avatar" />
+        </a>
+    </div>
+    <!-- /.col-md-1 -->
+    <div class="col-md-11">
+        <div class="d-flex align-items-center">
+            <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">
+                <span>
+                    <strong class="username">@Model.UserName</strong>
+                </span>
+            </a>
+            <a asp-page="/Profiles/Index" asp-route-slug="@Model.Slug" class="slug ml-1">
+                <span>
+                    @@<b>@Model.Slug</b>
+                </span>
+            </a>
+        </div>
+        <div class="d-block">
+            <p class="tweet-text">@Model.Text</p>
+        </div>
+    </div>
+    <!-- /.col-md-11 -->
+</div>
+<!-- /.row -->

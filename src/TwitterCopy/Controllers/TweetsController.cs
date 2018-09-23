@@ -48,14 +48,14 @@ namespace TwitterCopy.Controllers
         }
 
         /// <summary>
-        /// Provides tweet for the modal dialog
+        /// Provides tweet for the delete tweet modal dialog
         /// </summary>
         /// <param name="id">Tweet's id</param>
         /// <returns>Tweet info in JSON</returns>
         [HttpGet]
         public async Task<IActionResult> GetTweet(int? id)
         {
-            var tweetToDelete = await _tweetService.GetTweetWithAuthor(id.Value);
+            var tweetToDelete = await _tweetService.GetTweetAsync(id.Value);
             if (tweetToDelete == null)
             {
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -77,9 +77,9 @@ namespace TwitterCopy.Controllers
                 });
             }
 
-            var tweetVM = _mapper.Map<TweetViewModel>(tweetToDelete);
+            var tweetVM = _mapper.Map<DeleteTweetViewModel>(tweetToDelete);
 
-            return PartialView("_Tweet", tweetVM);
+            return PartialView("_DeleteTweetPopUp", tweetVM);
         }
 
         /// <summary>

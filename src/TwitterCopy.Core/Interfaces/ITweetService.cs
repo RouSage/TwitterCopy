@@ -6,7 +6,7 @@ namespace TwitterCopy.Core.Interfaces
 {
     public interface ITweetService
     {
-        Task<Tweet> GetTweetWithAuthor(int tweetId);
+        Task<Tweet> GetTweetAsync(int tweetId);
         Task<Tweet> GetTweetWithRepliesAsync(int tweetId);
         Task AddTweet(string text, TwitterCopyUser user);
         Task DeleteTweet(Tweet tweetToDelete);

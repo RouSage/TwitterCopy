@@ -109,9 +109,9 @@ namespace TwitterCopy.Core.Services
         /// </summary>
         /// <param name="tweetId"></param>
         /// <returns></returns>
-        public async Task<Tweet> GetTweetWithAuthor(int tweetId)
+        public async Task<Tweet> GetTweetAsync(int tweetId)
         {
-            return await _tweetRepository.GetTweetWithUserAsync(tweetId);
+            return await _tweetRepository.GetAsync(tweetId);
         }
 
         /// <summary>

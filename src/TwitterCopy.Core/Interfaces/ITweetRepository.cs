@@ -5,7 +5,7 @@ namespace TwitterCopy.Core.Interfaces
 {
     public interface ITweetRepository : IRepository<Tweet>
     {
-        Task<Tweet> GetTweetWithUserAsync(int tweetId);
+        Task<Tweet> GetAsync(int tweetId);
         Task<Tweet> GetWithRepliesAsync(int tweetId);
         Task<Tweet> GetWithRepliesForEditingAsync(int tweetId);
         Task<Tweet> GetTweetWithLikesAsync(int tweetId);
