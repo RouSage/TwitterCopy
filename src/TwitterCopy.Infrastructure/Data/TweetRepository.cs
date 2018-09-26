@@ -41,6 +41,7 @@ namespace TwitterCopy.Infrastructure.Data
                 .Include(r => r.RepliesTo).ThenInclude(rt => rt.ReplyTo).ThenInclude(tu => tu.User)
                 .Include(r => r.RepliesTo).ThenInclude(rt => rt.ReplyTo).ThenInclude(l => l.Likes)
                 .Include(r => r.RepliesTo).ThenInclude(rt => rt.ReplyTo).ThenInclude(rt => rt.Retweets)
+                .Include(r => r.RepliesTo).ThenInclude(rt => rt.ReplyTo).ThenInclude(rf => rf.RepliesFrom)
                 .FirstOrDefaultAsync(x => x.Id == tweetId);
         }
 

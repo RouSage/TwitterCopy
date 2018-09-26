@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
 using TwitterCopy.Core.Interfaces;
@@ -51,6 +50,7 @@ namespace TwitterCopy.Infrastructure.Data
                 .Include(t => t.Tweets).ThenInclude(rt => rt.RepliesTo).ThenInclude(rtt => rtt.ReplyTo).ThenInclude(rtu => rtu.User)
                 .Include(rt => rt.Retweets).ThenInclude(rtt => rtt.Tweet).ThenInclude(tu => tu.User)
                 .Include(fg => fg.Following).ThenInclude(fu => fu.User).ThenInclude(ft => ft.Tweets).ThenInclude(rf => rf.RepliesFrom)
+                .Include(fg => fg.Following).ThenInclude(fu => fu.User).ThenInclude(ft => ft.Tweets).ThenInclude(rf => rf.RepliesTo).ThenInclude(rtt => rtt.ReplyTo)
                 .Include(fg => fg.Following).ThenInclude(fu => fu.User).ThenInclude(ft => ft.Tweets).ThenInclude(l => l.Likes)
                 .Include(fs => fs.Followers)
                 .FirstOrDefaultAsync(x => x.Id.ToString().Equals(userId));

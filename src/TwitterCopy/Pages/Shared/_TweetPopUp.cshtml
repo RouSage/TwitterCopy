@@ -3,10 +3,12 @@
 
 @if (Model.RepliesTo.Count > 0)
 {
-    foreach (var tweet in Model.RepliesTo)
-    {
-        <partial name="_Tweet" model="tweet" />
-    }
+    <div class="mb-2">
+        @foreach (var tweet in Model.RepliesTo)
+        {
+            <partial name="_Tweet" model="tweet" />
+        }
+    </div>
 }
 <div class="row">
     <div class="col-md-2 p-0 d-flex justify-content-center">
@@ -52,6 +54,25 @@
 </div>
 <!-- /.row -->
 <div class="row mt-2">
+    <div class="col-md">
+        @if (Model.RepliesTo.Count > 0)
+        {
+            <div class="replying-to-context pt-1 pb-1">
+                Replying to
+                @foreach (var replyTo in Model.RepliesTo.Select(s => s.Slug).Distinct())
+                {
+                    <a asp-page="/Profiles/Index" asp-route-slug="@replyTo">
+                        <span>
+                            @@@replyTo&#32;
+                        </span>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</div>
+<!-- /.row -->
+<div class="row">
     <div class="col-md">
         <p class="tweet-text-size mb-0">@Model.Text</p>
     </div>
