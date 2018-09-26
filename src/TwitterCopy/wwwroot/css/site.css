@@ -330,3 +330,12 @@ a > img:first-child:last-child {
     font-size: 14px;
     line-height: 20px;
 }
+
+.tweet .time {
+    margin-left: 5px;
+    color: #657786;
+    font-size: 14px;
+}
+.tweet .time:before {
+    content: "\00b7";
+}

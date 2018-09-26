@@ -46,6 +46,9 @@
                             @@<b>@Model.Slug</b>
                         </span>
                     </a>
+                    <small class="time">
+                        @Model.PostedOn.ToString("MMM dd")
+                    </small>
                 </div>
                 @if (Model.RepliesTo.Count > 0)
                 {
