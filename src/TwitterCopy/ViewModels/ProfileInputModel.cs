@@ -18,6 +18,8 @@ namespace TwitterCopy.Models
         [DataType(DataType.Url)]
         public string Website { get; set; }
 
+        public string Slug { get; set; }
+
         public IFormFile Avatar { get; set; }
 
         public IFormFile Banner { get; set; }

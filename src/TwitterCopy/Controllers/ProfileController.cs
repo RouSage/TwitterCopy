@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
@@ -49,6 +50,12 @@ namespace TwitterCopy.Controllers
             if (userToUpdate == null)
             {
                 return NotFound("User not found.");
+            }
+
+            if(userToUpdate.Slug.Equals(postedData.Slug, StringComparison.OrdinalIgnoreCase))
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return Json(new { Message = "You can't edit other User's profile." });
             }
 
             userToUpdate.UserName = postedData.UserName;

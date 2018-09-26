@@ -29,8 +29,8 @@
                 // Show modal
                 deleteTweetModal.modal('show');
             },
-            failure: function (response) {
-                AlertMessage.showAlertMessage(response);
+            error: function (jqXHR, textStatus, errorThrown) {
+                AlertMessage.showAlertMessage(jqXHR.responseJSON.message);
             }
         });
     });
@@ -62,12 +62,12 @@
 
                 AlertMessage.showAlertMessage(response.message);
             },
-            failure: function (response) {
+            error: function (jqXHR, textStatus, errorThrown) {
                 if (deleteTweetModal.hasClass('.show')
                     || deleteTweetModal.css('display') !== 'none') {
                     deleteTweetModal.modal('hide');
                 }
-                AlertMessage.showAlertMessage(response);
+                AlertMessage.showAlertMessage(jqXHR.responseJSON.message);
             }
         });
     });
@@ -101,8 +101,8 @@
                 var tweetLikeCount = btnClicked.find('span');
                 tweetLikeCount.text(`${response}`);
             },
-            failure: function (response) {
-                AlertMessage.showAlertMessage(response);
+            error: function (jqXHR, textStatus, errorThrown) {
+                AlertMessage.showAlertMessage(jqXHR.responseJSON.message);
             }
         });
     });
@@ -203,7 +203,7 @@
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                AlertMessage.showAlertMessage(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
+                AlertMessage.showAlertMessage(jqXHR.responseJSON.message);
             }
         });
     });
@@ -243,7 +243,7 @@
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                AlertMessage.showAlertMessage(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
+                AlertMessage.showAlertMessage(jqXHR.responseJSON.message);
             }
         });
     });
@@ -275,8 +275,8 @@
                 // set a new count of retweets
                 tweetRetweetCount.text(`${response}`);
             },
-            failure: function (response) {
-                AlertMessage.showAlertMessage(response);
+            error: function (jqXHR, textStatus, errorThrown) {
+                AlertMessage.showAlertMessage(jqXHR.responseJSON.message);
             }
         });
     });
@@ -345,6 +345,7 @@
     $('#saveEditBtn').click(function (e) {
         // Get all values from the form for profile editing
         var userName = $('input[name="userName"]').val();
+        var slug = $('#profileInfoSlug');
         var bio = $('input[name="bio"]').val();
         var location = $('input[name="location"]').val();
         var website = $('input[name="website"]').val();
@@ -355,6 +356,7 @@
         // with new profile info values
         var postedValues = new FormData();
         postedValues.append('userName', userName);
+        postedValues.append('slug', slug);
         postedValues.append('bio', bio);
         postedValues.append('location', location);
         postedValues.append('website', website);
@@ -378,8 +380,8 @@
                 ProfileEditor.updateProfileInfo(response);
                 ProfileEditor.saveChangesButtonClick();
             },
-            failure: function (respones) {
-                AlertMessage.showAlertMessage(JSON.parse(JSON.stringify(jqXHR.responseJSON)).message);
+            error: function (jqXHR, textStatus, errorThrown) {
+                AlertMessage.showAlertMessage(jqXHR.responseJSON.message);
             }
         });
     });
@@ -402,8 +404,8 @@
                 AlertMessage.showAlertMessage(response.message);
                 ProfileEditor.updateProfileAvatar(response.avatar);
             },
-            error: function (response) {
-                AlertMessage.showAlertMessage(JSON.parse(JSON.stringify(response.responseJSON)).message);
+            error: function (jqXHR, textStatus, errorThrown) {
+                AlertMessage.showAlertMessage(jqXHR.responseJSON.message);
             }
         });
     });
@@ -426,8 +428,8 @@
                 AlertMessage.showAlertMessage(response.message);
                 ProfileEditor.updateProfileBanner(response.banner);
             },
-            error: function (response) {
-                AlertMessage.showAlertMessage(JSON.parse(JSON.stringify(response.responseJSON)).message);
+            error: function (jqXHR, textStatus, errorThrown) {
+                AlertMessage.showAlertMessage(jqXHR.responseJSON.message);
             }
         });
     });
@@ -459,8 +461,8 @@
                     tweetContainer.html(response);
                     tweetModal.modal('show');
                 },
-                failure: function (response) {
-                    AlertMessage.showAlertMessage(response);
+                error: function (jqXHR, textStatus, errorThrown) {
+                    AlertMessage.showAlertMessage(jqXHR.responseJSON.message);
                 }
             });
         }
@@ -538,8 +540,8 @@
                     repliesFromBlock.prepend(response);
                     sendReplyForm.find('input[type=text]').val("");
                 },
-                failure: function (response) {
-                    AlertMessage.showAlertMessage(response.message);
+                error: function (jqXHR, textStatus, errorThrown) {
+                    AlertMessage.showAlertMessage(jqXHR.responseJSON.message);
                 }
             });
         });
