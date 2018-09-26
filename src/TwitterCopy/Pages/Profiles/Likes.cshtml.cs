@@ -52,6 +52,7 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound();
             }
 
+            ViewData["CurrentUserSlug"] = currentUser.Slug;
             ViewData["CurrentUserId"] = currentUser.Id.ToString();
             ViewData["IsYourself"] = profileOwner.Slug == currentUser.Slug;
             ViewData["IsFollowed"] = profileOwner.Followers
