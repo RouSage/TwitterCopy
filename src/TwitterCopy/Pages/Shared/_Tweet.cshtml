@@ -49,27 +49,24 @@
                 </div>
                 @if (Model.RepliesTo.Count > 0)
                 {
-                    foreach (var tweet in Model.RepliesTo)
-                    {
-                        if (!Model.Slug.Equals(tweet.Slug))
+                    <div class="replying-to-context pt-1 pb-1">
+                        Replying to
+                        @foreach (var replyTo in Model.RepliesTo.Select(s => s.Slug).Distinct())
                         {
-                            <div class="replying-to-context pt-1 pb-1">
-                                Replying to
-                                <a asp-page="/Profiles/Index" asp-route-slug="@tweet.Slug">
-                                    <span>
-                                        @@@tweet.Slug
-                                    </span>
-                                </a>
-                            </div>
+                            <a asp-page="/Profiles/Index" asp-route-slug="@replyTo">
+                                <span>
+                                    @@@replyTo&#32;
+                                </span>
+                            </a>
                         }
-                    }
+                    </div>
                 }
                 <div class="d-block">
                     <p class="tweet-text">@Model.Text</p>
                 </div>
                 <div class="w-100 mt-2">
                     @if (Model.Slug.Equals(ViewData["CurrentUserSlug"].ToString())
-                       && !Model.IsRetweet)
+                  && !Model.IsRetweet)
                     {
                         <button type="button" class="btn btn-danger btn-delete-tweet" data-tweet-id="@Model.Id">
                             <span>Delete</span>
