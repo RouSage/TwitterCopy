@@ -546,4 +546,23 @@
             });
         });
     });
+
+    $('#selectLanguageForm button[type="button"]').on('click', function (e) {
+        var form = $('#selectLanguageForm');
+        var returnUrl = form.data('return-url');
+        var culture = form.find('select option:selected').val();
+
+        $.ajax({
+            type: 'POST',
+            url: '/Profile/SetLanguage',
+            data: {
+                culture: culture,
+                returnUrl: returnUrl
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            }
+        });
+    });
 });

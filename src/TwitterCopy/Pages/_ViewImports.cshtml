@@ -1,6 +1,10 @@
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.Localization
 @using TwitterCopy
 @using TwitterCopy.Infrastructure.Data
 @using TwitterCopy.Models
 @namespace TwitterCopy.Pages
+
+@inject IViewLocalizer Localizer
+
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

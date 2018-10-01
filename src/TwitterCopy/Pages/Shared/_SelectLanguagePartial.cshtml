@@ -18,11 +18,10 @@
 }
 
 <div title="@Localizer["Request culture provider:"] @requestCulture?.Provider?.GetType().Name">
-    <form id="selectLanguageForm" asp-controller="Profile" asp-action="SetLanguage"
-        asp-route-returnUrl="@Context.Request.Path" method="post">
+    <form id="selectLanguageForm" data-return-url="@Context.Request.Path" method="post">
         @Localizer["Language:"]
-        <select name="Culture" asp-for="@requestCulture.RequestCulture.UICulture.Name"
+        <select name="culture" asp-for="@requestCulture.RequestCulture.UICulture.Name"
             asp-items="cultureItems"></select>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary">Save</button>
 </form>
 </div>

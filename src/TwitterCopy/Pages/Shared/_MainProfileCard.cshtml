@@ -31,19 +31,19 @@
             <ul class="nav text-center">
                 <li class="nav-item">
                     <a class="nav-link" asp-page="/Profiles/Index" asp-route-slug="@Model.Slug">
-                        <small class="profile-card-label">Tweets</small>
+                        <small class="profile-card-label">@Localizer["Tweets"]</small>
                         <span id="tweetsCount" class="profile-card-value">@Model.TweetCount</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-page="/Profiles/Following" asp-route-slug="@Model.Slug">
-                        <small class="profile-card-label">Following</small>
+                        <small class="profile-card-label">@Localizer["Following"]</small>
                         <span id="followingsCount" class="profile-card-value">@Model.FollowingCount</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-page="/Profiles/Followers" asp-route-slug="@Model.Slug">
-                        <small class="profile-card-label">Followers</small>
+                        <small class="profile-card-label">@Localizer["Followers"]</small>
                         <span id="followersCount" class="profile-card-value">@Model.FollowersCount</span>
                     </a>
                 </li>

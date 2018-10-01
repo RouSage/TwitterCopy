@@ -12,16 +12,16 @@
                         @if (Model.RetweetSlug.Equals(ViewData["CurrentUserSlug"].ToString()))
                         {
                             <a asp-page="/Profile/Index" asp-route-slug="@Model.RetweetSlug">
-                                <b>You</b>
+                                <b>@Localizer["You"]</b>&#32;
                             </a>
                         }
                         else
                         {
                             <a asp-page="/Profile/Index" asp-route-slug="@Model.RetweetSlug">
-                                <b>@Model.RetweetUserName</b>
+                                <b>@Model.RetweetUserName</b>&#32;
                             </a>
                         }
-                        Retweeted
+                        @Localizer["retweeted"]
                     </span>
                 </div>
             </div>
@@ -53,13 +53,11 @@
                 @if (Model.RepliesTo.Count > 0)
                 {
                     <div class="replying-to-context pt-1 pb-1">
-                        Replying to
+                        @Localizer["Replying to"]&#32;
                         @foreach (var replyTo in Model.RepliesTo.Select(s => s.Slug).Distinct())
                         {
                             <a asp-page="/Profiles/Index" asp-route-slug="@replyTo">
-                                <span>
-                                    @@@replyTo&#32;
-                                </span>
+                                <span>@@@replyTo&#32;</span>
                             </a>
                         }
                     </div>
@@ -71,7 +69,7 @@
                     @if (Model.Slug.Equals(ViewData["CurrentUserSlug"].ToString()) && !Model.IsRetweet)
                     {
                         <button type="button" class="btn btn-danger btn-delete-tweet" data-tweet-id="@Model.Id">
-                            <span>Delete</span>
+                            <span>@Localizer["Delete"]</span>
                         </button>
                     }
                     <button type="button" class="btn btn-outline-secondary btn-reply" data-tweet-id="@Model.Id">

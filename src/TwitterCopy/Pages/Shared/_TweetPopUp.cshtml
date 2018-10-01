@@ -38,13 +38,13 @@
             {
                 <div class="profile-follow-actions">
                     <button type="button" class="btn btn-outline-primary btn-follow-main @((bool)ViewData["IsFollowed"] ? "d-none" : "")">
-                        <span data-userslug="@Model.Slug">Follow</span>
+                        <span data-userslug="@Model.Slug">@Localizer["Follow"]</span>
                     </button>
                     <button type="button" class="btn btn-primary btn-following-main @((bool)ViewData["IsFollowed"] ? "" : "d-none")">
-                        <span data-userslug="@Model.Slug">Following</span>
+                        <span data-userslug="@Model.Slug">@Localizer["Following"]</span>
                     </button>
                     <button type="button" class="btn btn-danger btn-unfollow-main d-none">
-                        <span data-userslug="@Model.Slug">Unfollow</span>
+                        <span data-userslug="@Model.Slug">@Localizer["Unfollow"]</span>
                     </button>
                 </div>
             }
@@ -58,13 +58,11 @@
         @if (Model.RepliesTo.Count > 0)
         {
             <div class="replying-to-context pt-1 pb-1">
-                Replying to
+                @Localizer["Replying to"]&#32;
                 @foreach (var replyTo in Model.RepliesTo.Select(s => s.Slug).Distinct())
                 {
                     <a asp-page="/Profiles/Index" asp-route-slug="@replyTo">
-                        <span>
-                            @@@replyTo&#32;
-                        </span>
+                        <span>@@@replyTo&#32;</span>
                     </a>
                 }
             </div>
@@ -91,7 +89,7 @@
         @if (Model.Slug.Equals(ViewData["CurrentUserSlug"].ToString()))
         {
             <button type="button" class="btn btn-danger btn-delete-tweet" data-tweet-id="@Model.Id">
-                <span>Delete</span>
+                <span>@Localizer["Delete"]</span>
             </button>
         }
         <button type="button" class="btn btn-outline-secondary btn-reply" data-tweet-id="@Model.Id">
@@ -112,11 +110,11 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <input asp-for="Text" id="replyTextInput" value=""
-                       class="form-control" placeholder="Tweet your reply" />
+                       class="form-control" placeholder="@Localizer["Tweet your reply"]" />
                 <span asp-validation-for="Text" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="button" id="sendReplyBtn" value="Reply" class="btn btn-primary"
+                <input type="button" id="sendReplyBtn" value="@Localizer["Reply"]" class="btn btn-primary"
                        data-tweet-id="@Model.Id" />
             </div>
         </form>
