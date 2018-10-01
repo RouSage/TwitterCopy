@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitterCopy", "src\TwitterC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitterCopy.Core", "src\TwitterCopy.Core\TwitterCopy.Core.csproj", "{9527A88C-8704-48BC-96B2-41E9A5B318D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterCopy.Infrastructure", "src\TwitterCopy.Infrastructure\TwitterCopy.Infrastructure.csproj", "{AA764984-B48B-44E0-BA05-16462A18BF27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitterCopy.Infrastructure", "src\TwitterCopy.Infrastructure\TwitterCopy.Infrastructure.csproj", "{AA764984-B48B-44E0-BA05-16462A18BF27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

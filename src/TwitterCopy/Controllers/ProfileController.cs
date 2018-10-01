@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
 using TwitterCopy.Core.Interfaces;
 using TwitterCopy.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace TwitterCopy.Controllers
 {
@@ -146,6 +148,17 @@ namespace TwitterCopy.Controllers
                 Message = "Avatar removed successfully",
                 Banner = string.Concat("/images/profile-banners/", userToUpdate.Banner)
             });
+        }
+
+        [HttpPost]
+        public IActionResult SetLanguage(string culture, string returnUrl)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) });
+
+            return LocalRedirect(returnUrl);
         }
     }
 }
