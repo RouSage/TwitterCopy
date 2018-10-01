@@ -34,6 +34,7 @@ namespace TwitterCopy
             services.AddDbContext<TwitterCopyContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("TwitterCopyContextConnection")));
 
+            services.ConfigureLocalization();
             services.AddAutoMapper();
             services.ConfigureIdentity();
             services.ConfigureRouting();
@@ -61,6 +62,7 @@ namespace TwitterCopy
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.ConfigureLocalization();
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseMvc();

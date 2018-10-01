@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TwitterCopy.Services.Startup
@@ -8,6 +9,10 @@ namespace TwitterCopy.Services.Startup
         public static IServiceCollection ConfigureRouting(this IServiceCollection services)
         {
             services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
+                .AddViewLocalization(
+                    LanguageViewLocationExpanderFormat.Suffix,
+                    options => { options.ResourcesPath = "Resources"; })
+                .AddDataAnnotationsLocalization()
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AddPageRoute("/Account/Register", "/Account/Signup");
