@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -20,17 +21,20 @@ namespace TwitterCopy.Pages
         private readonly ITweetService _tweetService;
         private readonly UserManager<TwitterCopyUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
         public IndexModel(
             IUserService userService,
             ITweetService tweetService,
             UserManager<TwitterCopyUser> userManager,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<IndexModel> logger)
         {
             _userService = userService;
             _tweetService = tweetService;
             _userManager = userManager;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [BindProperty]
@@ -49,9 +53,11 @@ namespace TwitterCopy.Pages
         public async Task<IActionResult> OnGet()
         {
             var userId = _userManager.GetUserId(User);
+            _logger.LogInformation("Getting User entity {ID}", userId);
             var user = await _userService.GetUserAndFeedMainInfoAsync(userId);
             if (user == null)
             {
+                _logger.LogWarning("User ({ID}) NOT FOUND", userId);
                 return NotFound(user);
             }
 
@@ -83,12 +89,15 @@ namespace TwitterCopy.Pages
                 return Page();
             }
 
+            _logger.LogInformation("Getting authenticated User");
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
+                _logger.LogWarning("User NOT FOUND");
                 return NotFound();
             }
 
+            _logger.LogInformation("Inserting new Tweet entity with text ({TEXT}) and User Id ({ID})", Tweet.Text, user.Id);
             await _tweetService.AddTweet(Tweet.Text, user);
 
             return RedirectToPage();
@@ -101,15 +110,19 @@ namespace TwitterCopy.Pages
                 return NotFound();
             }
 
+            _logger.LogInformation("Getting User by slug ({SLUG})", userSlug);
             var userToFollow = await _userService.GetProfileOwnerWithFollowersForEditAsync(userSlug);
             if (userToFollow == null)
             {
+                _logger.LogWarning("User with slug ({SLUG}) NOT FOUND", userSlug);
                 return NotFound(userToFollow);
             }
 
+            _logger.LogInformation("Getting authenticated User");
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null)
             {
+                _logger.LogWarning("Authenticated User NOT FOUND");
                 return NotFound(currentUser);
             }
 
@@ -125,12 +138,14 @@ namespace TwitterCopy.Pages
                 return new JsonResult(new { Message = "You can't follow the user you're already following." });
             }
 
+            _logger.LogInformation("Inserting new follower ({FOLLOWER}) to the User ({ID})", currentUser.Id, userToFollow.Id);
             userToFollow.Followers.Add(new UserToUser
             {
                 User = userToFollow,
                 Follower = currentUser
             });
 
+            _logger.LogInformation("Updating User ({ID}) entity", userToFollow.Id);
             await _userService.UpdateUserAsync(userToFollow);
 
             return new JsonResult(new
@@ -148,15 +163,19 @@ namespace TwitterCopy.Pages
                 return NotFound();
             }
 
+            _logger.LogInformation("Getting User by slug ({SLUG})", userSlug);
             var userToUnfollow = await _userService.GetProfileOwnerWithFollowersForEditAsync(userSlug);
             if (userToUnfollow == null)
             {
+                _logger.LogWarning("User with slug ({SLUG}) NOT FOUND", userSlug);
                 return NotFound(userToUnfollow);
             }
 
+            _logger.LogInformation("Getting authenticated User");
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null)
             {
+                _logger.LogWarning("Authenticated User NOT FOUND");
                 return NotFound(currentUser);
             }
 
@@ -172,8 +191,11 @@ namespace TwitterCopy.Pages
                 return new JsonResult(new { Message = "You can't unfollow the user you're alredy unfollowing."});
             }
 
+            _logger.LogInformation("Removing follower ({FOLLOWER}) from User ({ID})", currentUser.Id, userToUnfollow.Id);
             userToUnfollow.Followers.Remove(userToUnfollow.Followers
                 .FirstOrDefault(x => x.FollowerId.Equals(currentUser.Id)));
+
+            _logger.LogInformation("Updating User ({ID}) entity", userToUnfollow.Id);
             await _userService.UpdateUserAsync(userToUnfollow);
 
             return new JsonResult(new

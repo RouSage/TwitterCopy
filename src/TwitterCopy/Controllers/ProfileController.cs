@@ -9,6 +9,7 @@ using TwitterCopy.Core.Entities;
 using TwitterCopy.Core.Interfaces;
 using TwitterCopy.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace TwitterCopy.Controllers
 {
@@ -17,15 +18,18 @@ namespace TwitterCopy.Controllers
         private readonly UserManager<TwitterCopyUser> _userManager;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
         public ProfileController(
             UserManager<TwitterCopyUser> userManager,
             IUserService userService,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<ProfileController> logger)
         {
             _userManager = userManager;
             _userService = userService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -48,13 +52,15 @@ namespace TwitterCopy.Controllers
                 return NotFound("No data posted.");
             }
 
+            _logger.LogInformation("Getting authenticated User");
             var userToUpdate = await _userManager.GetUserAsync(User);
             if (userToUpdate == null)
             {
+                _logger.LogInformation("Authenticated User NOT FOUND");
                 return NotFound("User not found.");
             }
 
-            if(userToUpdate.Slug.Equals(postedData.Slug, StringComparison.OrdinalIgnoreCase))
+            if(userToUpdate.Slug.Equals(postedData.Slug, StringComparison.InvariantCultureIgnoreCase))
             {
                 Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return Json(new { Message = "You can't edit other User's profile." });
@@ -83,6 +89,7 @@ namespace TwitterCopy.Controllers
                 userToUpdate.Banner = Globals.DefaultBanner;
             }
 
+            _logger.LogInformation("Updating User ({ID})", userToUpdate.Id);
             await _userService.UpdateUserAsync(userToUpdate);
 
             return Json(new
@@ -105,15 +112,18 @@ namespace TwitterCopy.Controllers
                 return Json(new { Message = "You cannot remove the default avatar." });
             }
 
+            _logger.LogInformation("Getting authenticated User");
             var userToUpdate = await _userManager.GetUserAsync(User);
             if (userToUpdate == null)
             {
+                _logger.LogWarning("Authenticated User NOT FOUND");
                 return NotFound("User not found.");
             }
 
             _userService.RemoveImage(avatar, Globals.AvatarsFolder);
             userToUpdate.Avatar = Globals.DefaultAvatar;
 
+            _logger.LogInformation("Updating User ({ID}) entity", userToUpdate.Id);
             await _userService.UpdateUserAsync(userToUpdate);
 
             return Json(new
@@ -132,15 +142,18 @@ namespace TwitterCopy.Controllers
                 return Json(new { Message = "You cannot remove the default banner." });
             }
 
+            _logger.LogInformation("Getting authenticated User");
             var userToUpdate = await _userManager.GetUserAsync(User);
             if (userToUpdate == null)
             {
+                _logger.LogWarning("Authenticated User NOT FOUND");
                 return NotFound("User not found.");
             }
 
             _userService.RemoveImage(banner, Globals.BannersFolder);
             userToUpdate.Banner = Globals.DefaultBanner;
 
+            _logger.LogInformation("Updating User ({ID}) entity", userToUpdate.Id);
             await _userService.UpdateUserAsync(userToUpdate);
 
             return Json(new

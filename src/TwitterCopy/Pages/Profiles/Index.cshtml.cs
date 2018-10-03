@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,17 +18,20 @@ namespace TwitterCopy.Pages.Profiles
         private readonly IUserService _userService;
         private readonly UserManager<TwitterCopyUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
         public IndexModel(
             ITweetService tweetService,
             IUserService userService,
             UserManager<TwitterCopyUser> userManager,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<IndexModel> logger)
         {
             _tweetSevice = tweetService;
             _userService = userService;
             _userManager = userManager;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public List<TweetViewModel> Tweets { get; set; } = new List<TweetViewModel>();
@@ -43,15 +47,19 @@ namespace TwitterCopy.Pages.Profiles
                 return NotFound();
             }
 
+            _logger.LogInformation("Get User by slug ({SLUG})", slug);
             var profileOwner = await _userService.GetProfileOwnerAsync(slug);
             if (profileOwner == null)
             {
+                _logger.LogWarning("User with slug ({SLUG}) NOT FOUND", slug);
                 return NotFound();
             }
 
+            _logger.LogInformation("Getting authenticated User");
             var currentUser = await _userManager.GetUserAsync(User);
             if(currentUser == null)
             {
+                _logger.LogWarning("Authenticated User NOT FOUND");
                 return NotFound();
             }
 

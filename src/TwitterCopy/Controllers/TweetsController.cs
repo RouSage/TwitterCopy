@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -16,17 +17,20 @@ namespace TwitterCopy.Controllers
         private readonly ITweetService _tweetService;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
+        private readonly ILogger _logger;
 
         public TweetsController(
             UserManager<TwitterCopyUser> userManager,
             ITweetService tweetService,
             IMapper mapper,
-            IUserService userService)
+            IUserService userService,
+            ILogger<TweetsController> logger)
         {
             _userManager = userManager;
             _tweetService = tweetService;
             _mapper = mapper;
             _userService = userService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> UpdateLikes(int? id)
@@ -36,12 +40,15 @@ namespace TwitterCopy.Controllers
                 return NotFound();
             }
 
+            _logger.LogInformation("Getting authenticated User");
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
+                _logger.LogWarning("Authenticated User NOT FOUND");
                 return NotFound(user);
             }
 
+            _logger.LogInformation("Updating Likes for Tweet ({ID})", id.Value);
             var updatedLikeCount = await _tweetService.UpdateLikes(id.Value, user);
 
             return Json(updatedLikeCount);
@@ -55,13 +62,16 @@ namespace TwitterCopy.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTweet(int? id)
         {
+            _logger.LogInformation("Getting Tweet ({ID})", id.Value);
             var tweetToDelete = await _tweetService.GetTweetAsync(id.Value);
             if (tweetToDelete == null)
             {
+                _logger.LogWarning("Tweet ({ID}) NOT FOUND", id.Value);
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return Json(new { Message = "Requested Tweet was not found" });
             }
 
+            _logger.LogInformation("Getting authenticated User Id");
             var userId = _userManager.GetUserId(User);
             if (string.IsNullOrEmpty(userId))
             {
@@ -79,6 +89,7 @@ namespace TwitterCopy.Controllers
 
             var tweetVM = _mapper.Map<DeleteTweetViewModel>(tweetToDelete);
 
+            _logger.LogInformation("Returning _DeleteTweetPopUp partial view for Tweet ({ID})", tweetVM.Id);
             return PartialView("_DeleteTweetPopUp", tweetVM);
         }
 
@@ -95,13 +106,16 @@ namespace TwitterCopy.Controllers
                 return NotFound();
             }
 
+            _logger.LogInformation("Getting Tweet ({ID})", id.Value);
             var tweetToDelete = await _tweetService.GetTweetForDeletion(id.Value);
             if (tweetToDelete == null)
             {
+                _logger.LogWarning("Tweet ({ID}) NOT FOUND", id.Value);
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return Json(new { Message = "Requested Tweet was not found" });
             }
 
+            _logger.LogInformation("Deleting Tweet ({ID})", id.Value);
             await _tweetService.DeleteTweet(tweetToDelete);
 
             return Json(new { Message = "Tweet deleted successfully" });
@@ -115,12 +129,15 @@ namespace TwitterCopy.Controllers
                 return NotFound();
             }
 
+            _logger.LogInformation("Getting authenticated User");
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null)
             {
+                _logger.LogWarning("Authenticated User NOT FOUND");
                 return NotFound(currentUser);
             }
 
+            _logger.LogInformation("Updating Retweet for Tweet ({ID})", id.Value);
             var updatedRetweetCount = await _tweetService.UpdateRetweets(id.Value, currentUser);
 
             return Json(updatedRetweetCount);
@@ -134,21 +151,27 @@ namespace TwitterCopy.Controllers
                 return NotFound();
             }
 
+            _logger.LogInformation("Getting User by slug ({SLUG})", slug);
             var profileOwner = await _userService.GetProfileOwnerWithFollowersAsync(slug);
             if (profileOwner == null)
             {
+                _logger.LogWarning("User with slug ({SLUG}) NOT FOUND", slug);
                 return NotFound();
             }
 
+            _logger.LogInformation("Getting authenticated User");
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null)
             {
+                _logger.LogWarning("Authenticated User NOT FOUND");
                 return NotFound();
             }
 
+            _logger.LogInformation("Getting Tweet ({ID})", tweetId.Value);
             var tweet = await _tweetService.GetTweetWithRepliesAsync(tweetId.Value);
             if (tweet == null)
             {
+                _logger.LogWarning("Tweet ({ID}) NOT FOUND");
                 return NotFound();
             }
 
@@ -170,19 +193,24 @@ namespace TwitterCopy.Controllers
                 return NotFound();
             }
 
+            _logger.LogInformation("Getting Tweet ({ID})", tweetId.Value);
             var replyTo = await _tweetService.GetTweetWithRepliesForEditingAsync(tweetId.Value);
             if (replyTo == null)
             {
+                _logger.LogWarning("Tweet ({ID}) NOT FOUND", tweetId.Value);
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return Json(new { Message = "Requested tweet was not found. Apparently it was deleted." });
             }
 
+            _logger.LogInformation("Getting authenticated User");
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
+                _logger.LogWarning("Authenticated User NOT FOUND");
                 return NotFound(user);
             }
 
+            _logger.LogInformation("Inserting new Reply ({REPLY}) to Tweet ({ID})", replyText, replyTo.Id);
             // AddReplyAsync return created reply as a Tweet entity
             var replyFrom = await _tweetService.AddReplyAsync(replyText, user, replyTo);
             // Map the Tweet entity to the TweetViewModel
