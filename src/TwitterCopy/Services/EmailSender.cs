@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -8,10 +9,15 @@ namespace TwitterCopy.Services
 {
     public class EmailSender : IEmailSender
     {
-        public EmailSender(IOptions<AuthMessageSenderOptions> optionsAccessor)
+        public EmailSender(
+            IOptions<AuthMessageSenderOptions> optionsAccessor,
+            IConfiguration configuration)
         {
             Options = optionsAccessor.Value;
+            Configuration = configuration;
         }
+
+        public IConfiguration Configuration { get; }
 
         // Set only via Secret Manager
         public AuthMessageSenderOptions Options { get; }
@@ -26,7 +32,7 @@ namespace TwitterCopy.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("therousage@gmail.com", name: "RouSage"),
+                From = new EmailAddress(email: Configuration["Email"], name: Configuration["Name"]),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
