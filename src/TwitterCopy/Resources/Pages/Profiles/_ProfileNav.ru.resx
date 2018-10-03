@@ -117,16 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Delete" xml:space="preserve">
-    <value>Удалить твит</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Отмена</value>
   </data>
-  <data name="Reply" xml:space="preserve">
-    <value>Ответить</value>
+  <data name="Edit profile" xml:space="preserve">
+    <value>Изменить профиль</value>
   </data>
-  <data name="Replying to" xml:space="preserve">
-    <value>В ответ</value>
+  <data name="Followers" xml:space="preserve">
+    <value>Читатели</value>
   </data>
-  <data name="Tweet your reply" xml:space="preserve">
-    <value>Твитнуть в ответ</value>
+  <data name="Following" xml:space="preserve">
+    <value>Читаемые</value>
+  </data>
+  <data name="Likes" xml:space="preserve">
+    <value>Нравится</value>
+  </data>
+  <data name="Save changes" xml:space="preserve">
+    <value>Сохранить изменения</value>
+  </data>
+  <data name="Tweets" xml:space="preserve">
+    <value>Твиты</value>
   </data>
 </root>

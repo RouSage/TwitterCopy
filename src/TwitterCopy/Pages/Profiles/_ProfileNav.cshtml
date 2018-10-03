@@ -10,28 +10,28 @@
                 <li class="nav-item">
                     <a class="nav-link @ManageProfileNavPages.IndexNavClass(ViewContext)"
                        asp-page="./Index" asp-route-slug="@Model.Slug">
-                        <span class="profile-nav-label">Tweets</span>
+                        <span class="profile-nav-label">@Localizer["Tweets"]</span>
                         <span id="tweetsCount" class="profile-nav-value">@Model.TweetCount</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link @ManageProfileNavPages.FollowingNavClass(ViewContext)"
                        asp-page="./Following" asp-route-slug="@Model.Slug">
-                        <span class="profile-nav-label">Following</span>
+                        <span class="profile-nav-label">@Localizer["Following"]</span>
                         <span id="followingCount" class="profile-nav-value">@Model.FollowingCount</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link @ManageProfileNavPages.FollowersNavClass(ViewContext)"
                        asp-page="./Followers" asp-route-slug="@Model.Slug">
-                        <span class="profile-nav-label">Followers</span>
+                        <span class="profile-nav-label">@Localizer["Followers"]</span>
                         <span id="followersCount" class="profile-nav-value">@Model.FollowersCount</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link @ManageProfileNavPages.LikesNavClass(ViewContext)"
                        asp-page="./Likes" asp-route-slug="@Model.Slug">
-                        <span class="profile-nav-label">Likes</span>
+                        <span class="profile-nav-label">@Localizer["Likes"]</span>
                         <span id="likesCount" class="profile-nav-value">@Model.LikesCount</span>
                     </a>
                 </li>
@@ -39,29 +39,19 @@
                     <div id="profileActions">
                         @if (!(bool)ViewData["IsYourself"])
                         {
-                            <div class="profile-follow-actions">
-                                <button type="button" class="btn btn-outline-primary btn-follow-main @((bool)ViewData["IsFollowed"] ? "d-none" : "")">
-                                    <span data-userslug="@Model.Slug">Follow</span>
-                                </button>
-                                <button type="button" class="btn btn-primary btn-following-main @((bool)ViewData["IsFollowed"] ? "" : "d-none")">
-                                    <span data-userslug="@Model.Slug">Following</span>
-                                </button>
-                                <button type="button" class="btn btn-danger btn-unfollow-main d-none">
-                                    <span data-userslug="@Model.Slug">Unfollow</span>
-                                </button>
-                            </div>
+                            <partial name="_FollowActions" for="Slug" view-data="ViewData" />
                         }
                         else if ((bool)ViewData["IsYourself"])
                         {
                             <div class="profile-edit-actions">
                                 <button type="button" id="editProfileBtn" class="btn btn-outline-secondary">
-                                    <span>Edit profile</span>
+                                    <span>@Localizer["Edit profile"]</span>
                                 </button>
                                 <button type="button" id="cancelEditBtn" class="btn btn-outline-secondary d-none">
-                                    <span>Cancel</span>
+                                    <span>@Localizer["Cancel"]</span>
                                 </button>
                                 <button type="button" id="saveEditBtn" class="btn btn-outline-primary d-none">
-                                    <span>Save changes</span>
+                                    <span>@Localizer["Save changes"]</span>
                                 </button>
                             </div>
                         }

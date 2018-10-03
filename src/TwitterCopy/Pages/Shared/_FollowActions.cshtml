@@ -1,0 +1,14 @@
+﻿@model string
+
+
+<div class="profile-follow-actions">
+    <button type="button" class="btn btn-outline-primary btn-follow-main @((bool)ViewData["IsFollowed"] ? "d-none" : "")">
+        <span data-userslug="@Model">@Localizer["Follow"]</span>
+    </button>
+    <button type="button" class="btn btn-primary btn-following-main @((bool)ViewData["IsFollowed"] ? "" : "d-none")">
+        <span data-userslug="@Model">@Localizer["Following"]</span>
+    </button>
+    <button type="button" class="btn btn-danger btn-unfollow-main d-none">
+        <span data-userslug="@Model">@Localizer["Unfollow"]</span>
+    </button>
+</div>

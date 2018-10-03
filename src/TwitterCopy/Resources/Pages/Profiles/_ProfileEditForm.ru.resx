@@ -117,16 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Delete" xml:space="preserve">
-    <value>Удалить твит</value>
+  <data name="Bio" xml:space="preserve">
+    <value>О себе</value>
   </data>
-  <data name="Reply" xml:space="preserve">
-    <value>Ответить</value>
+  <data name="Edit Avatar" xml:space="preserve">
+    <value>Редактировать фотографию профиля</value>
   </data>
-  <data name="Replying to" xml:space="preserve">
-    <value>В ответ</value>
+  <data name="Edit Banner" xml:space="preserve">
+    <value>Изменить изображение шапки</value>
   </data>
-  <data name="Tweet your reply" xml:space="preserve">
-    <value>Твитнуть в ответ</value>
+  <data name="Location" xml:space="preserve">
+    <value>Местоположение</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="Remove avatar" xml:space="preserve">
+    <value>Удалить фотографию</value>
+  </data>
+  <data name="Remove banner" xml:space="preserve">
+    <value>Удалить изображение</value>
+  </data>
+  <data name="Website" xml:space="preserve">
+    <value>Сайт</value>
   </data>
 </root>

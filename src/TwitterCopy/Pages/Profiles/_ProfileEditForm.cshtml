@@ -4,23 +4,23 @@
     <form method="post" id="profileEditForm" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
-            <input asp-for="UserName" name="userName" class="form-control" placeholder="Name" />
+            <input asp-for="UserName" name="userName" class="form-control" placeholder="@Localizer["Name"]" />
             <span asp-validation-for="UserName" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <input asp-for="Bio" name="bio" class="form-control" placeholder="Bio" />
+            <input asp-for="Bio" name="bio" class="form-control" placeholder="@Localizer["Bio"]" />
             <span asp-validation-for="Bio" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <input asp-for="Location" name="location" class="form-control" placeholder="Location" />
+            <input asp-for="Location" name="location" class="form-control" placeholder="@Localizer["Location"]" />
         </div>
         <div class="form-group">
-            <input asp-for="Website" name="website" class="form-control" placeholder="Website" />
+            <input asp-for="Website" name="website" class="form-control" placeholder="@Localizer["Website"]" />
             <span asp-validation-for="Website" class="text-danger"></span>
         </div>
         <button class="btn btn-primary d-block mb-2" type="button" data-toggle="collapse" data-target="#avatarEditing"
                 aria-expanded="false" aria-controls="avatarEditing">
-            Edit Avatar
+            @Localizer["Edit Avatar"]
         </button>
         <div id="avatarEditing" class="collapse mb-2">
             <div class="form-group">
@@ -29,12 +29,12 @@
                        accept="image/png,image/jpeg,image/gif,image/jpg" class="form-control-file" />
             </div>
             <button class="btn btn-danger" type="button" id="removeAvatarBtn">
-                <span>Remove avatar</span>
+                <span>@Localizer["Remove avatar"]</span>
             </button>
         </div>
         <button class="btn btn-primary mb-2" type="button" data-toggle="collapse" data-target="#bannerEditing"
                 aria-expanded="false" aria-controls="bannerEditing">
-            Edit Banner
+            @Localizer["Edit Banner"]
         </button>
         <div id="bannerEditing" class="collapse">
             <div class="form-group">
@@ -43,7 +43,7 @@
                        accept="image/png,image/jpeg,image/gif,image/jpg" class="form-control-file" />
             </div>
             <button class="btn btn-danger" type="button" id="removeBannerBtn">
-                <span>Remove banner</span>
+                <span>@Localizer["Remove banner"]</span>
             </button>
         </div>
     </form>

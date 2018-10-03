@@ -117,16 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Delete" xml:space="preserve">
-    <value>Удалить твит</value>
+  <data name="Follow" xml:space="preserve">
+    <value>Читать</value>
   </data>
-  <data name="Reply" xml:space="preserve">
-    <value>Ответить</value>
+  <data name="Following" xml:space="preserve">
+    <value>Читаю</value>
   </data>
-  <data name="Replying to" xml:space="preserve">
-    <value>В ответ</value>
+  <data name="Unfollow" xml:space="preserve">
+    <value>Отмена</value>
   </data>
-  <data name="Tweet your reply" xml:space="preserve">
-    <value>Твитнуть в ответ</value>
+  <data name="User doesn't follow anyone yet." xml:space="preserve">
+    <value>Пользователь пока что никого не читает.</value>
   </data>
 </root>

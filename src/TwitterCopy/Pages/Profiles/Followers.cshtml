@@ -23,14 +23,14 @@
                                 <button type="button" class="btn btn-sm btn-outline-primary btn-follow-main
                                         @((follower.UserId.ToString() == ViewData["CurrentUserId"].ToString()
                                             || !(bool)ViewData["IsYourself"]) ? "d-none" : "")">
-                                    <span data-userslug="@follower.Follower.Slug">Follow</span>
+                                    <span data-userslug="@follower.Follower.Slug">@Localizer["Follow"]</span>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-primary btn-following-main
                                         @(follower.FollowerId.ToString() == ViewData["CurrentUserId"].ToString() ? "d-none" : "")">
-                                    <span data-userslug="@follower.Follower.Slug">Following</span>
+                                    <span data-userslug="@follower.Follower.Slug">@Localizer["Following"]</span>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-danger btn-unfollow-main d-none">
-                                    <span data-userslug="@follower.Follower.Slug">Unfollow</span>
+                                    <span data-userslug="@follower.Follower.Slug">@Localizer["Unfollow"]</span>
                                 </button>
                             </div>
                             <h4>
@@ -53,7 +53,7 @@
         }
         else
         {
-            <p>User doesn't have followers yet.</p>
+            <p>@Localizer["User doesn't have followers yet."]</p>
         }
     </div>
 </div>

@@ -36,17 +36,7 @@
         <div class="profile-actions">
             @if (!(bool)ViewData["IsYourself"])
             {
-                <div class="profile-follow-actions">
-                    <button type="button" class="btn btn-outline-primary btn-follow-main @((bool)ViewData["IsFollowed"] ? "d-none" : "")">
-                        <span data-userslug="@Model.Slug">@Localizer["Follow"]</span>
-                    </button>
-                    <button type="button" class="btn btn-primary btn-following-main @((bool)ViewData["IsFollowed"] ? "" : "d-none")">
-                        <span data-userslug="@Model.Slug">@Localizer["Following"]</span>
-                    </button>
-                    <button type="button" class="btn btn-danger btn-unfollow-main d-none">
-                        <span data-userslug="@Model.Slug">@Localizer["Unfollow"]</span>
-                    </button>
-                </div>
+                <partial name="_FollowActions" for="Slug" view-data="ViewData" />
             }
         </div>
     </div>

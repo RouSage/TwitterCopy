@@ -24,14 +24,14 @@
                                         @(follow.UserId.ToString() == ViewData["CurrentUserId"].ToString()
                                             || follow.FollowerId.ToString() == ViewData["CurrentUserId"].ToString()
                                             ? "d-none" : "")">
-                                    <span data-userslug="@follow.User.Slug">Follow</span>
+                                    <span data-userslug="@follow.User.Slug">@Localizer["Follow"]</span>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-primary btn-following-main
                                         @(follow.FollowerId.ToString() == ViewData["CurrentUserId"].ToString() ? "" : "d-none")">
-                                    <span data-userslug="@follow.User.Slug">Following</span>
+                                    <span data-userslug="@follow.User.Slug">@Localizer["Following"]</span>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-danger btn-unfollow-main d-none">
-                                    <span data-userslug="@follow.User.Slug">Unfollow</span>
+                                    <span data-userslug="@follow.User.Slug">@Localizer["Unfollow"]</span>
                                 </button>
                             </div>
                             <h4>
@@ -54,7 +54,7 @@
         }
         else
         {
-            <p>User doesn't follow anyone yet.</p>
+            <p>@Localizer["User doesn't follow anyone yet."]</p>
         }
     </div>
 </div>
