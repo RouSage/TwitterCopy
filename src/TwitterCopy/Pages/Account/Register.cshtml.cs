@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using TwitterCopy.Core.Entities;
+using TwitterCopy.Helpers;
 
 namespace TwitterCopy.Pages.Account
 {
@@ -74,7 +75,7 @@ namespace TwitterCopy.Pages.Account
                 {
                     UserName = Input.UserName,
                     Email = Input.Email,
-                    Slug = Input.UserName,
+                    Slug = Input.UserName.GenerateSlug(),
                     Avatar = Globals.DefaultAvatar,
                     Banner = Globals.DefaultBanner
                 };
