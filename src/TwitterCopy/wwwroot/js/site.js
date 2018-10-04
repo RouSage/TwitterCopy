@@ -182,13 +182,14 @@
 
         $.ajax({
             type: 'POST',
-            url: `/Index/?handler=Follow&userSlug=${userToFollow}`,
+            url: '/Profile/Follow',
+            data: {
+                userSlug: userToFollow
+            },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $('input:hidden[name="__RequestVerificationToken"]').val());
             },
-            contentType: 'application/json',
-            dataType: 'json',
             success: function (response) {
                 // hide Follow button
                 pressedBtn.addClass('d-none');
@@ -222,13 +223,14 @@
 
         $.ajax({
             type: 'POST',
-            url: `/Index?handler=Unfollow&userSlug=${userSlug}`,
+            url: '/Profile/Unfollow',
+            data: {
+                userSlug: userSlug
+            },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $('input:hidden[name="__RequestVerificationToken"]').val());
             },
-            contentType: 'application/json',
-            dataType: 'json',
             success: function (response) {
                 // hide Unfollow button
                 pressedBtn.addClass('d-none');

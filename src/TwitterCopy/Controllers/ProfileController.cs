@@ -10,6 +10,7 @@ using TwitterCopy.Core.Interfaces;
 using TwitterCopy.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace TwitterCopy.Controllers
 {
@@ -160,6 +161,111 @@ namespace TwitterCopy.Controllers
             {
                 Message = "Avatar removed successfully",
                 Banner = string.Concat("/images/profile-banners/", userToUpdate.Banner)
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Follow(string userSlug)
+        {
+            if (string.IsNullOrEmpty(userSlug))
+            {
+                return NotFound();
+            }
+
+            _logger.LogInformation("Getting User by slug ({SLUG})", userSlug);
+            var userToFollow = await _userService.GetProfileOwnerWithFollowersForEditAsync(userSlug);
+            if (userToFollow == null)
+            {
+                _logger.LogWarning("User with slug ({SLUG}) NOT FOUND", userSlug);
+                return NotFound(userToFollow);
+            }
+
+            _logger.LogInformation("Getting authenticated User");
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                _logger.LogWarning("Authenticated User NOT FOUND");
+                return NotFound(currentUser);
+            }
+
+            if (userSlug == currentUser.Slug)
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return Json(new { Message = "You can't follow yourself." });
+            }
+
+            if (_userService.CheckFollower(userToFollow, currentUser.Id))
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return Json(new { Message = "You can't follow the user you're already following." });
+            }
+
+            _logger.LogInformation("Inserting new follower ({FOLLOWER}) to the User ({ID})", currentUser.Id, userToFollow.Id);
+            userToFollow.Followers.Add(new UserToUser
+            {
+                User = userToFollow,
+                Follower = currentUser
+            });
+
+            _logger.LogInformation("Updating User ({ID}) entity", userToFollow.Id);
+            await _userService.UpdateUserAsync(userToFollow);
+
+            return Json(new
+            {
+                userToFollow.Followers.Count,
+                userToFollow.Slug,
+                CurrentUserSlug = currentUser.Slug
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Unfollow(string userSlug)
+        {
+            if (string.IsNullOrEmpty(userSlug))
+            {
+                return NotFound();
+            }
+
+            _logger.LogInformation("Getting User by slug ({SLUG})", userSlug);
+            var userToUnfollow = await _userService.GetProfileOwnerWithFollowersForEditAsync(userSlug);
+            if (userToUnfollow == null)
+            {
+                _logger.LogWarning("User with slug ({SLUG}) NOT FOUND", userSlug);
+                return NotFound(userToUnfollow);
+            }
+
+            _logger.LogInformation("Getting authenticated User");
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                _logger.LogWarning("Authenticated User NOT FOUND");
+                return NotFound(currentUser);
+            }
+
+            if (userSlug == currentUser.Slug)
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return Json(new { Message = "You can't unfollow yourself." });
+            }
+
+            if (!_userService.CheckFollower(userToUnfollow, currentUser.Id))
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return Json(new { Message = "You can't unfollow the user you're alredy unfollowing." });
+            }
+
+            _logger.LogInformation("Removing follower ({FOLLOWER}) from User ({ID})", currentUser.Id, userToUnfollow.Id);
+            userToUnfollow.Followers.Remove(userToUnfollow.Followers
+                .FirstOrDefault(x => x.FollowerId.Equals(currentUser.Id)));
+
+            _logger.LogInformation("Updating User ({ID}) entity", userToUnfollow.Id);
+            await _userService.UpdateUserAsync(userToUnfollow);
+
+            return Json(new
+            {
+                userToUnfollow.Followers.Count,
+                userToUnfollow.Slug,
+                CurrentUserSlug = currentUser.Slug
             });
         }
 
