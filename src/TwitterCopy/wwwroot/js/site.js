@@ -492,12 +492,18 @@
 
         var modal = $('#tweetModal');
         var sendReplyForm = modal.find('#sendReplyForm');
-        var sendReplyBtn = sendReplyForm.find('#sendReplyBtn'); 
+        var sendReplyBtn = sendReplyForm.find('#sendReplyBtn');
+        var input = sendReplyForm.find('input[type=text]');
+
+        modal.find('.btn-reply').on('click', function (e) {
+            if (!input.is(':focus'))
+                input.focus();
+        });
 
         /*
          * Show Send Reply button when any element inside form is focused
          */
-        sendReplyForm.on('focusin', function () {
+        input.on('focus', function () {
             sendReplyBtn.show();
         });
 
@@ -505,23 +511,23 @@
          * Hide Send Reply button when any element inside form loses
          * focus or text box doesn't have any value
          */
-        sendReplyForm.on('focusout', function () {
-            if (!$(this).find('input[type=text]').val().trim())
+        input.on('focusout', function () {
+            if (!input.val().trim())
                 sendReplyBtn.hide();
         });
 
         /*
          * Enable Send Reply button only if text box has value
          */
-        sendReplyForm.find('input[type=text]').on('keyup', function () {
-            if ($(this).val().trim())
+        input.on('keyup', function () {
+            if (input.val().trim())
                 sendReplyBtn.prop('disabled', false);
             else
                 sendReplyBtn.prop('disabled', true);
         });
 
         sendReplyBtn.on('click', function (e) {
-            var replyText = sendReplyForm.find('input[type=text]').val();
+            var replyText = input.val();
             var tweetId = $(this).data('tweet-id');
 
             $.ajax({
@@ -538,7 +544,7 @@
                 success: function (response) {
                     var repliesFromBlock = modal.find('.tweet-replies-from');
                     repliesFromBlock.prepend(response);
-                    sendReplyForm.find('input[type=text]').val("");
+                    input.val("");
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     AlertMessage.showAlertMessage(jqXHR.responseJSON.message);
