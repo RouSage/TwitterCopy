@@ -436,6 +436,10 @@
         });
     });
 
+    $(document.body).on('click', '.btn-reply', function (e) {
+        $(this).closest('.tweet-actionable').click();
+    });
+
     $(document.body).on('click', '.tweet-actionable', function (e) {
         var tweet = $(this);
         var tweetId = tweet.data('tweet-id');
@@ -484,17 +488,11 @@
 
     $('#alertMessage .close').on('click', AlertMessage.hideAlertMessage);
 
-    $('#tweetModal').on('show.bs.modal', function () {
+    $(document.body).on('show.bs.modal', '#tweetModal', function() {
 
         var modal = $('#tweetModal');
         var sendReplyForm = modal.find('#sendReplyForm');
         var sendReplyBtn = sendReplyForm.find('#sendReplyBtn'); 
-
-        /*
-         * Send Reply button disabled and hidden by default
-         */
-        sendReplyBtn.prop('disabled', true);
-        sendReplyBtn.hide();
 
         /*
          * Show Send Reply button when any element inside form is focused

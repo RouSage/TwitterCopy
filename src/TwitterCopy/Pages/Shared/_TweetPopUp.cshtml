@@ -82,7 +82,7 @@
                 <span>@Localizer["Delete"]</span>
             </button>
         }
-        <button type="button" class="btn btn-outline-secondary btn-reply" data-tweet-id="@Model.Id">
+        <button type="button" class="btn btn-outline-secondary btn-reply" data-tweet-id="@Model.Id" data-user-slug="@Model.Slug">
             <span>@Model.ReplyCount</span>
         </button>
         <button type="button" class="btn btn-outline-success btn-retweet" data-tweet-id="@Model.Id">
@@ -105,7 +105,7 @@
             </div>
             <div class="form-group">
                 <input type="button" id="sendReplyBtn" value="@Localizer["Reply"]" class="btn btn-primary"
-                       data-tweet-id="@Model.Id" />
+                       data-tweet-id="@Model.Id" disabled="disabled" style="display: none;" />
             </div>
         </form>
     </div>
