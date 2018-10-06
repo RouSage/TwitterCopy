@@ -11,7 +11,7 @@
         <form method="post" id="sendTweetForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <input asp-for="Tweet.Text" id="tweetTextInput"
+                <input asp-for="Tweet.Text" id="tweetTextInput" autocomplete="off"
                        class="form-control" placeholder="What's happening?" />
                 <span asp-validation-for="Tweet.Text" class="text-danger"></span>
             </div>

@@ -339,3 +339,10 @@ a > img:first-child:last-child {
 .tweet .time:before {
     content: "\00b7";
 }
+
+.profile-card {
+    background-color: #fff;
+    border: 1px solid #e6ecf0;
+    box-sizing: border-box;
+    text-align: left;
+}

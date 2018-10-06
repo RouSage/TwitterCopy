@@ -18,8 +18,18 @@
                 @foreach (var follow in Model.Following)
                 {
                     <div class="col-md-4">
-                        <div class="border mt-3">
-                            <div class="profile-follow-actions d-flex justify-content-end p-1">
+                        <div class="profile-card">
+                            <a asp-page="/Profiles/Index" asp-route-slug="@follow.User.Slug"
+                               class="main-profile-card-bg d-block"
+                               tabindex="-1" aria-hidden="true">
+                                <img src="~/images/profile-banners/@follow.User.Banner" class="main-profile-card-banner" />
+                            </a>
+                            <div class="main-profile-card-content ml-2">
+                                <a asp-page="/Profiles/Index" asp-route-slug="@follow.User.Slug"
+                                   class="main-profile-card-avatar-link"
+                                   title="@follow.User.UserName" tabindex="-1" aria-hidden="true">
+                                    <img class="main-profile-card-avatar" src="~/images/profile-images/@follow.User.Avatar" />
+                                </a>
                                 <button type="button" class="btn btn-sm btn-outline-primary btn-follow-main
                                         @(follow.UserId.ToString() == ViewData["CurrentUserId"].ToString()
                                             || follow.FollowerId.ToString() == ViewData["CurrentUserId"].ToString()
@@ -33,20 +43,25 @@
                                 <button type="button" class="btn btn-sm btn-danger btn-unfollow-main d-none">
                                     <span data-userslug="@follow.User.Slug">@Localizer["Unfollow"]</span>
                                 </button>
+                                <div class="d-block">
+                                    <div class="main-profile-card-username text-truncate">
+                                        <a asp-page="/Profiles/Index" asp-route-slug="@follow.User.Slug">
+                                            @follow.User.UserName
+                                        </a>
+                                    </div>
+                                    <span class="d-inline-block">
+                                        <a asp-page="/Profiles/Index" asp-route-slug="@follow.User.Slug"
+                                           class="main-profile-card-slug">
+                                            <span class="slug">
+                                                @@<b>@follow.User.Slug</b>
+                                            </span>
+                                        </a>
+                                    </span>
+                                </div>
+                                <p>
+                                    <span>@follow.User.Bio</span>
+                                </p>
                             </div>
-                            <h4>
-                                <a asp-page="./Index" asp-route-slug="@follow.User.Slug">
-                                    @follow.User.UserName
-                                </a>
-                            </h4>
-                            <p>
-                                <a asp-page="./Index" asp-route-slug="@follow.User.Slug">
-                                    @@@follow.User.Slug
-                                </a>
-                            </p>
-                            <p>
-                                <span>@follow.User.Bio</span>
-                            </p>
                         </div>
                     </div>
                 }
@@ -58,5 +73,3 @@
         }
     </div>
 </div>
-
-
