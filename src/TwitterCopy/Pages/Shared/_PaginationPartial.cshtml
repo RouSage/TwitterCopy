@@ -1,0 +1,27 @@
+﻿@model PaginationViewModel
+
+
+<div class="mt-2">
+    <ul class="pagination">
+        <li class="page-item @(!Model.ShowFirst ? "disabled" : "")">
+            <a asp-page="@Context.Request.PathBase" asp-route-p="1" class="page-link">
+                First
+            </a>
+        </li>
+        <li class="page-item @(!Model.ShowPrevious ? "disabled" : "")">
+            <a asp-page="@Context.Request.PathBase" asp-route-p="@(Model.CurrentPage - 1)" class="page-link">
+                Previous
+            </a>
+        </li>
+        <li class="page-item @(!Model.ShowNext ? "disabled" : "")">
+            <a asp-page="@Context.Request.PathBase" asp-route-p="@(Model.CurrentPage + 1)" class="page-link">
+                Next
+            </a>
+        </li>
+        <li class="page-item @(!Model.ShowLast ? "disabled" : "")">
+            <a asp-page="@Context.Request.PathBase" asp-route-p="@Model.TotalPages" class="page-link">
+                Last
+            </a>
+        </li>
+    </ul>
+</div>
