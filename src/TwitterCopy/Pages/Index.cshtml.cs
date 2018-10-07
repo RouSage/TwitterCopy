@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -44,13 +45,16 @@ namespace TwitterCopy.Pages
 
         public List<TweetViewModel> FeedTweets { get; set; } = new List<TweetViewModel>();
 
+        public PaginationViewModel Pagination { get; set; }
+
         /// <summary>
         /// Provides data for the view
         /// - User
         /// - Feed for the user
         /// </summary>
+        /// <param name="page"></param>
         /// <returns></returns>
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGet(int p = 1)
         {
             var userId = _userManager.GetUserId(User);
             _logger.LogInformation("Getting User entity {ID}", userId);
@@ -65,11 +69,18 @@ namespace TwitterCopy.Pages
             var followingTweets = _mapper.Map<IEnumerable<TweetViewModel>>(user.Following.SelectMany(ut => ut.User.Tweets));
             var userRetweets = _mapper.Map<IEnumerable<TweetViewModel>>(user.Retweets);
 
+            Pagination = new PaginationViewModel
+            {
+                CurrentPage = p,
+                Count = userTweets.Count() + followingTweets.Count() + userRetweets.Count()
+            };
+
             FeedTweets = userTweets
                 .Concat(followingTweets)
                 .Concat(userRetweets)
                 .OrderByDescending(rt => rt.RetweetDate)
-                //.ThenByDescending(p=>p.PostedOn)
+                .Skip((p - 1) * Pagination.PageSize)
+                .Take(Pagination.PageSize)
                 .ToList();
             CurrentUser = _mapper.Map<ProfileViewModel>(user);
 

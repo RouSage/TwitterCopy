@@ -40,7 +40,9 @@ namespace TwitterCopy.Pages.Profiles
 
         public ProfileInputModel Input { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string slug)
+        public PaginationViewModel Pagination { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(string slug, int p = 1)
         {
             if (slug == null)
             {
@@ -66,10 +68,17 @@ namespace TwitterCopy.Pages.Profiles
             var userTweets = _mapper.Map<IEnumerable<TweetViewModel>>(profileOwner.Tweets);
             var userRetweets = _mapper.Map<IEnumerable<TweetViewModel>>(profileOwner.Retweets);
 
+            Pagination = new PaginationViewModel
+            {
+                Count = userTweets.Count() + userRetweets.Count(),
+                CurrentPage = p
+            };
+
             Tweets = userTweets
                 .Concat(userRetweets)
                 .OrderByDescending(rt => rt.RetweetDate)
-                //.ThenByDescending(p=>p.PostedOn)
+                .Skip((p - 1) * Pagination.PageSize)
+                .Take(Pagination.PageSize)
                 .ToList();
             Profile = _mapper.Map<ProfileViewModel>(profileOwner);
             Input = _mapper.Map<ProfileInputModel>(profileOwner);

@@ -37,7 +37,9 @@ namespace TwitterCopy.Pages.Profiles
 
         public ProfileInputModel Input { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string slug)
+        public PaginationViewModel Pagination { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(string slug, int p = 1)
         {
             if (slug == null)
             {
@@ -66,9 +68,17 @@ namespace TwitterCopy.Pages.Profiles
             ViewData["IsFollowed"] = profileOwner.Followers
                 .Any(x => x.FollowerId.Equals(currentUser.Id));
 
+            Pagination = new PaginationViewModel
+            {
+                Count = profileOwner.Likes.Count(),
+                CurrentPage = p
+            };
+
             ProfileUser = _mapper.Map<ProfileViewModel>(profileOwner);
             LikedTweets = _mapper.Map<List<TweetViewModel>>(profileOwner.Likes
                 .OrderByDescending(d => d.DateLiked)
+                .Skip((p - 1) * Pagination.PageSize)
+                .Take(Pagination.PageSize)
                 .Select(x => x.Tweet));
             Input = _mapper.Map<ProfileInputModel>(profileOwner);
 
